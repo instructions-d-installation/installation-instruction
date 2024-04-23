@@ -15,15 +15,17 @@ name = "installation_instruction"
 description = "Add short description here"
 readme = "README.md"
 maintainers = [
-    { name = "Adam McKellar", email = "your@email.com" },
+    { name = "Adam McKellar", email = "dev@mckellar.eu" },
+    { name = "Kanushka Gupta" },
+    { name = "Timo Ege" },
 ]
 version = "0.0.1"
 requires-python = ">=3.8"
-license = { text = "MIT" }
+license = { text = "Apache-2.0" }
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache-2.0 License",
 ]
 dependencies = [
 ]
