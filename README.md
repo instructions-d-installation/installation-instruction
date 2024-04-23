@@ -1,8 +1,14 @@
-# Welcome to installation-instruction
+<div align="center">
+
+# `installation-instruction`
+
+**Library for checking and parsing installation instruction schemas.**
 
 ![GitHub License](https://img.shields.io/github/license/instructions-d-installation/installation-instruction)
 [![Documentation Status](https://readthedocs.org/projects/installation-instruction/badge/?version=latest)](https://installation-instruction.readthedocs.io/en/latest/?badge=latest)
-[![codecov](https://codecov.io/none/None/None/branch/main/graph/badge.svg)](https://codecov.io/none/None/None)
+[![codecov](https://codecov.io/gh/instructions-d-installation/installation-instruction/graph/badge.svg?token=5AIH36HYG3)](https://codecov.io/gh/instructions-d-installation/installation-instruction)
+
+</div>
 
 ## Installation
 
