@@ -70,5 +70,5 @@ jobs:
       with:
         fail_ci_if_error: true
         files: ./tests/coverage.xml
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        token: ${{ secrets.CODECOV_TOKEN }}
+        slug: instructions-d-installation/installation-instruction
