@@ -17,7 +17,7 @@ readme = "README.md"
 maintainers = [
     { name = "Adam McKellar", email = "dev@mckellar.eu" },
     { name = "Kanushka Gupta" },
-    { name = "Timo Ege" },
+    { name = "Timo Ege", email = "Timoege@online.de" },
 ]
 version = "0.0.1"
 requires-python = ">=3.8"
