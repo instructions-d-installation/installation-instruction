@@ -72,5 +72,4 @@ jobs:
         files: ./tests/coverage.xml
         token: ${{ secrets.CODECOV_TOKEN }}
         slug: instructions-d-installation/installation-instruction
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        verbose: true
