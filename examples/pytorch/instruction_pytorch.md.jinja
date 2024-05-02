@@ -1,0 +1,104 @@
+{# Adams spaghetti code #}
+# Pytorch Installation Instruction
+{% if package == 'Conda' %}
+{% if os == 'Mac' %}
+{% if computer_platform == 'CPU' %}
+`conda install pytorch::pytorch torchvision torchaudio -c pytorch`
+{% else %}
+> [!IMPORTANT]
+> Mac does not support ROCm or CUDA!
+{% endif %}
+{% else %}
+{% if computer_platform == 'CUDA 11.8' %}
+`conda install pytorch torchvision torchaudio pytorch-cuda=11.8 -c pytorch -c nvidia`
+{% elif computer_platform == 'CUDA 12.1' %}
+`conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia`
+{% elif computer_platform == 'ROCm 6.0' %}
+> [!IMPORTANT]
+> ROCm is currently not supported with conda on linux and not supported at all on windows!
+{% else %}
+`conda install pytorch torchvision torchaudio cpuonly -c pytorch`
+{% endif %}
+{% endif %}
+{% elif package == 'Pip' %}
+{% if os == 'Mac' %}
+{% if computer_platform == 'CPU' %}
+`pip3 install torch torchvision torchaudio`
+{% else %}
+> [!IMPORTANT]
+> Mac does not support ROCm or CUDA!
+{% endif %}
+{% else %}
+{% if computer_platform == 'CUDA 11.8' %}
+`pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118`
+{% elif computer_platform == 'CUDA 12.1' %}
+{% if os == 'Linux' %}
+`pip3 install torch torchvision torchaudio`
+{% else %}
+`pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121`
+{% endif %}
+{% elif computer_platform == 'ROCm 6.0' %}
+{% if os == 'Linux' %}
+`pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/rocm6.0`
+{% else %}
+> [!IMPORTANT]
+> Windows does not support ROCm! 
+{% endif %}
+{% else %}
+{% if os == 'Linux' %}
+`pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu`
+{% else %}
+`pip3 install torch torchvision torchaudio`
+{% endif %}
+{% endif %}
+{% endif %}
+{% elif package == 'LibTorch' %}
+{% if os == 'Mac' %}
+Download arm64 libtorch here (ROCm and CUDA are not supported):
+https://download.pytorch.org/libtorch/cpu/libtorch-macos-arm64-2.3.0.zip
+{% elif os == 'Linux' %}
+{% if computer_platform == 'CUDA 11.8' %}
+Download here (Pre-cxx11 ABI):
+https://download.pytorch.org/libtorch/cu118/libtorch-shared-with-deps-2.3.0%2Bcu118.zip
+Download here (cxx11 ABI):
+https://download.pytorch.org/libtorch/cu118/libtorch-cxx11-abi-shared-with-deps-2.3.0%2Bcu118.zip
+{% elif computer_platform == 'CUDA 12.1' %}
+Download here (Pre-cxx11 ABI):
+https://download.pytorch.org/libtorch/cu121/libtorch-shared-with-deps-2.3.0%2Bcu121.zip
+Download here (cxx11 ABI):
+https://download.pytorch.org/libtorch/cu121/libtorch-cxx11-abi-shared-with-deps-2.3.0%2Bcu121.zip
+{% elif computer_platform == 'ROCm 6.0' %}
+Download here (Pre-cxx11 ABI):
+https://download.pytorch.org/libtorch/rocm6.0/libtorch-shared-with-deps-2.3.0%2Brocm6.0.zip
+Download here (cxx11 ABI):
+https://download.pytorch.org/libtorch/rocm6.0/libtorch-cxx11-abi-shared-with-deps-2.3.0%2Brocm6.0.zip
+{% else %}
+Download here (Pre-cxx11 ABI):
+https://download.pytorch.org/libtorch/cpu/libtorch-shared-with-deps-2.3.0%2Bcpu.zip
+Download here (cxx11 ABI):
+https://download.pytorch.org/libtorch/cpu/libtorch-cxx11-abi-shared-with-deps-2.3.0%2Bcpu.zip
+{% endif %}
+{% else %}
+{% if computer_platform == 'CUDA 11.8' %}
+Download here (Release version):
+https://download.pytorch.org/libtorch/cu118/libtorch-win-shared-with-deps-2.3.0%2Bcu118.zip
+Download here (Debug version):
+https://download.pytorch.org/libtorch/cu118/libtorch-win-shared-with-deps-debug-2.3.0%2Bcu118.zip
+{% elif computer_platform == 'CUDA 12.1' %}
+Download here (Release version):
+https://download.pytorch.org/libtorch/cu121/libtorch-win-shared-with-deps-2.3.0%2Bcu121.zip
+Download here (Debug version):
+https://download.pytorch.org/libtorch/cu121/libtorch-win-shared-with-deps-debug-2.3.0%2Bcu121.zip
+{% elif computer_platform == 'ROCm 6.0' %}
+> [!IMPORTANT]
+> Windows does not support ROCm! 
+{% else %}
+Download here (Release version):
+https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-2.3.0%2Bcpu.zip
+Download here (Debug version):
+https://download.pytorch.org/libtorch/cpu/libtorch-win-shared-with-deps-debug-2.3.0%2Bcpu.zip
+{% endif %}
+{% endif %}
+{% else %}
+Follow instructions at this URL: https://github.com/pytorch/pytorch#from-source 
+{% endif %}
