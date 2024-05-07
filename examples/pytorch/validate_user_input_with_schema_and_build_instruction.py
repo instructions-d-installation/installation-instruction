@@ -5,7 +5,7 @@ except ImportError:
 
 from jsonschema import validate
 
-from jinja2 import Template
+from jinja2 import Environment, Template
 
 
 
@@ -19,7 +19,12 @@ def load_template(path: str) -> Template:
     with open(path, 'r') as file:
         template_str = file.read()
 
-    return Template(template_str)
+    env = Environment(
+        trim_blocks=True,
+        lstrip_blocks=True
+    )
+
+    return env.from_string(template_str)
 
 
 
