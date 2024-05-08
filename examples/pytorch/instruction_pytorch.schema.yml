@@ -6,12 +6,17 @@ type: object
 $comment: by Adam McKellar
 properties:
   build:
+    title: Build
+    description: Use the latest or the tested version.
     anyOf:
       - title: Stable (2.3.0)
         const: stable
       - title: Preview (Nightly)
         const: preview
+    default: stable
   os:
+    title: Operating System
+    description: The operating system you use.
     anyOf:
       - title: Linux
         const: linux
@@ -19,13 +24,19 @@ properties:
         const: mac
       - title: Windows
         const: win
+    default: win
   package:
+    title: Package Manager
+    description: The package manager you use.
     anyOf:
       - title: Conda
         const: conda
       - title: Pip
         const: pip
-  computer_platform:
+    default: pip
+  compute_platform:
+    title: Compute Platform
+    description: Should your gpu or your cpu handle the task?
     anyOf:
       - title: CUDA 11.8
         const: cu118
@@ -35,9 +46,10 @@ properties:
         const: ro60
       - title: CPU
         const: cpu
+    default: cu118
 required:
   - build
   - os
   - package
-  - computer_platform
+  - compute_platform
 additionalProperties: false

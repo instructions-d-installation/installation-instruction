@@ -1,4 +1,4 @@
-build: stable
-os: linux
-package: conda
-computer_platform: cpu
+build: preview
+os: win
+package: pip
+compute_platform: ro60

@@ -57,7 +57,6 @@ def _split_string_at_delimiter(string: str) -> tuple[str, str]:
     matches = reg.search(string)
     if matches is None:
         raise Exception("No delimiter (------) found.")
-    print("HERE ", matches.group("template"))
     return (
                 matches.group("schema"),
                 matches.group("template")
