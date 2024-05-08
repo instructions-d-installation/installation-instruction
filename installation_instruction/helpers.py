@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Optional
 import re
 from jinja2 import Environment, Template
 
 
-def _get_error_message_from_string(string: str) -> str|None:
+def _get_error_message_from_string(string: str) -> Optional[str]:
     """
     Parses via regex and returns error message enquoted in "[[ERROR]]". if no error message is found returns `None`.
 
