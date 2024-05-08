@@ -7,6 +7,7 @@ from jsonschema import validate
 
 from jinja2 import Environment, Template
 
+import re
 
 
 def load_yml(path: str) -> dict:
@@ -26,12 +27,19 @@ def load_template(path: str) -> Template:
 
     return env.from_string(template_str)
 
+def get_error_message(parsed_template) -> bool:
+    reg = re.compile(".*\[\[ERROR\]\]\s*(?P<errmsg>.*?)\s*\[\[ERROR\]\].*", re.S)
+    matches = reg.search(parsed_template)
+    if matches is None:
+        return None
+    return matches.group("errmsg")
 
+def replace_blank_space(string: str) -> str:
+    return re.sub("\s{1,}", " ", string, 0, re.S).strip()
 
 
 schema = load_yml('instruction_pytorch.schema.yml')
 input = load_yml('potential_user_input.yml')
-#bad_input = load_yml('bad_user_input.yml')
 
 
 
@@ -39,13 +47,12 @@ print("Test valid input.")
 validate(input, schema)
 print("It worked!")
 
-
-# print("Test invalid input.")
-# validate(bad_input, schema)
-# print("It worked!")
-
-
-template = load_template("instruction_pytorch.md.jinja")
+template = load_template("instruction_pytorch.txt.jinja")
 
 instructions = template.render(input)
-print(instructions)
+instructions = replace_blank_space(instructions)
+
+if errmsg := get_error_message(instructions):
+    print(errmsg)
+else:
+    print(instructions)

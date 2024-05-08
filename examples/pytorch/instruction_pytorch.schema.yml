@@ -1,38 +1,43 @@
 $schema: https://json-schema.org/draft/2020-12/schema
-$id: https://github.com/instructions-d-installation/installation-instruction/examples/pytorch/schema_pytorch.yml
+$id: https://github.com/instructions-d-installation/installation-instruction/examples/pytorch/instruction_pytorch.schema.yml
 title: PyTorch Install Schema
 description: This is a schema which is used for constructing interactive installation instructions.
 type: object
 $comment: by Adam McKellar
 properties:
   build:
-    enum:
-      - Stable (2.3.0)
-      - Preview (Nightly)
+    anyOf:
+      - title: Stable (2.3.0)
+        const: stable
+      - title: Preview (Nightly)
+        const: preview
   os:
-    enum:
-      - Linux
-      - Mac
-      - Windows
+    anyOf:
+      - title: Linux
+        const: linux
+      - title: Mac
+        const: mac
+      - title: Windows
+        const: win
   package:
-    enum:
-      - Conda
-      - Pip
-      - LibTorch
-      - Source
-  language:
-    enum:
-      - Python
-      - C++/Java
+    anyOf:
+      - title: Conda
+        const: conda
+      - title: Pip
+        const: pip
   computer_platform:
-    enum:
-      - CUDA 11.8
-      - CUDA 12.1
-      - ROCm 6.0
-      - CPU
+    anyOf:
+      - title: CUDA 11.8
+        const: cu118
+      - title: CUDA 12.1
+        const: cu121
+      - title: ROCm 6.0
+        const: ro60
+      - title: CPU
+        const: cpu
 required:
   - build
   - os
   - package
-  - language
   - computer_platform
+additionalProperties: false

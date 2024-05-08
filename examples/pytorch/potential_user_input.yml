@@ -1,5 +1,4 @@
-build: Stable (2.3.0)
-os: Linux
-package: Conda
-language: Python
-computer_platform: CPU
+build: stable
+os: linux
+package: conda
+computer_platform: cpu

@@ -1,0 +1,61 @@
+{# Adams spaghetti code #}
+{% if package == "conda" %}
+    conda install
+
+    {% if os == "mac" %}
+        {% if computer_platform == "cpu" %}
+            pytorch::pytorch torchvision torchaudio
+        {% else %}
+            [[ERROR]]
+                Mac does not support ROCm or CUDA!
+            [[ERROR]]
+        {% endif %}
+    {% else %}
+        pytorch torchvision torchaudio
+
+        {% if computer_platform == "cu118" %}
+            pytorch-cuda=11.8 -c nvidia
+        {% elif computer_platform == "cu121" %}
+            pytorch-cuda=12.1 -c nvidia
+        {% elif computer_platform == "ro60" %}
+            [[ERROR]]
+                ROCm is currently not supported with conda on linux and not supported at all on windows!
+            [[ERROR]]
+        {% else %}
+            cpuonly
+        {% endif %}
+    {% endif %}
+
+    -c pytorch
+
+{% elif package == "pip" %}
+    pip3 install torch torchvision torchaudio
+
+    {% if os == "mac" %}
+        {% if computer_platform != "cpu" %}
+            [[ERROR]]
+                Mac does not support ROCm or CUDA!
+            [[ERROR]]
+        {% endif %}
+    {% else %}
+        {% if computer_platform == "cu118" %}
+            --index-url https://download.pytorch.org/whl/cu118
+        {% elif computer_platform == "cu121" %}
+            {% if os == "win" %}
+                --index-url https://download.pytorch.org/whl/cu121
+            {% endif %}
+        {% elif computer_platform == "ro60" %}
+            {% if os == "linux" %}
+                --index-url https://download.pytorch.org/whl/rocm6.0
+            {% else %}
+                [[ERROR]]
+                    Windows does not support ROCm!
+                [[ERROR]]
+            {% endif %}
+        {% else %}
+            {% if os == "linux" %}
+                --index-url https://download.pytorch.org/whl/cpu
+            {% endif %}
+        {% endif %}
+    {% endif %}
+{% endif %}

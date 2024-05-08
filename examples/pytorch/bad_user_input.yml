@@ -1,5 +1,0 @@
-build: Stable (2.3.0)
-os: Windows
-package: Cortana
-language: Python
-computer_platform: CUDA 12.1
