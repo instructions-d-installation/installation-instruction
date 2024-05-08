@@ -28,6 +28,9 @@ classifiers = [
     "License :: OSI Approved :: Apache-2.0 License",
 ]
 dependencies = [
+    "jinja2",
+    "jsonschema",
+    "yaml"
 ]
 
 [project.optional-dependencies]

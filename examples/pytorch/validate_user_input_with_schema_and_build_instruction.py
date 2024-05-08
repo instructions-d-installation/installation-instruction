@@ -27,7 +27,7 @@ def load_template(path: str) -> Template:
 
     return env.from_string(template_str)
 
-def get_error_message(parsed_template) -> bool:
+def get_error_message(parsed_template: str) -> str|None:
     reg = re.compile(".*\[\[ERROR\]\]\s*(?P<errmsg>.*?)\s*\[\[ERROR\]\].*", re.S)
     matches = reg.search(parsed_template)
     if matches is None:
