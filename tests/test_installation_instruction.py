@@ -30,12 +30,9 @@ def test_validate_and_render_pytorch():
         "os": "win",
         "package": "piiip",
         "compute_platform": "ro60"
-    }
+    }   
 
-    with open("examples/pytorch/pytorch-instruction.schema.yml.jinja", 'r') as file:
-        config = file.read()
-
-    install = InstallationInstruction(config)
+    install = InstallationInstruction.from_file("examples/pytorch/pytorch-instruction.schema.yml.jinja")
 
     good_installation_instruction = install.validate_and_render(valid_user_input)
 

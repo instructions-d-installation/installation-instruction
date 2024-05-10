@@ -13,10 +13,7 @@
 # limitations under the License.
 
 
-try:
-    from yaml import safe_load
-except ImportError:
-    from yaml import safe_load
+from yaml import safe_load
 
 import json
 
@@ -71,3 +68,18 @@ class InstallationInstruction:
                 raise Exception("Schema is neither a valid json nor a valid yaml.")
 
         self.template = helpers._load_template_from_string(template)
+
+    
+    def from_file(path: str):
+        """
+        Returns class initialized via config file from path.
+
+        :param path: Path to config file.
+        :ptype path: str
+        :return: InstallationInstruction class
+        :rtype: InstallationInstruction
+        """
+        with open(path, 'r') as file:
+            config = file.read()
+        return InstallationInstruction(config)
+
