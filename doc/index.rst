@@ -6,7 +6,6 @@ installation-instruction
    :caption: Contents:
 
    intro
-   api
 
 Indices and tables
 ==================

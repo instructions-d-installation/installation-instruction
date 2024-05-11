@@ -8,8 +8,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'installation-instruction'
-copyright = '2024, Adam McKellar'
-author = 'Adam McKellar'
+copyright = '2024, Adam McKellar, Kanushka Gupta, Timo Ege'
+author = 'Adam McKellar, Kanushka Gupta, Timo Ege'
 
 # -- General configuration ---------------------------------------------------
 
@@ -20,7 +20,10 @@ extensions = [
     "sphinx_mdinclude",
     "sphinx.ext.autodoc",
     "sphinx_rtd_theme",
+    "autoapi.extension",
 ]
+
+autoapi_dirs = ['../installation_instruction']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = []

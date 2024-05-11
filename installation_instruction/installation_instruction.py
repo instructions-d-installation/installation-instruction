@@ -40,7 +40,7 @@ class InstallationInstruction:
         :ptype input: dict
         :return: Returns instructions as string and False. Or Error and True.
         :rtpye: (str, bool)
-        :raise Exception: If no delimiter is found.
+        :raise Exception: If schema or user input is invalid.
         """
         validate(input, self.schema)
         instruction = self.template.render(input)
@@ -55,8 +55,11 @@ class InstallationInstruction:
 
     def __init__(self, config: str) -> None:
         """
-        :param config: Config file with schema and template seperated by ------ delimiter.
+        Returns `InstallationInstruction` from config string.
+
+        :param config: Config string with schema and template seperated by delimiter.
         :raise Exception: If schema part of config is neither valid json nor valid yaml.
+        :raise Exception: If no delimiter is found.
         """
         (schema, template) = helpers._split_string_at_delimiter(config)
         try:

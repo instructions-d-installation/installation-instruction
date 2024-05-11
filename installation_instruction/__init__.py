@@ -19,4 +19,5 @@ __version__ = metadata.version(__package__)
 del metadata
 
 from installation_instruction.installation_instruction import InstallationInstruction
+import installation_instruction.helpers
 
