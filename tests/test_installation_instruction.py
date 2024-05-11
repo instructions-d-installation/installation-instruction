@@ -40,3 +40,17 @@ def test_validate_and_render_pytorch():
 
     with raises(Exception):
         install.validate_and_render(bad_user_input)
+
+
+def test_validate_and_render_pytorch():
+    valid_user_input = {
+        "os": "Windows",
+        "packager": "pip",
+        "virtualenv": False
+    }
+
+    install = InstallationInstruction.from_file("examples/scikit-learn/scikit-learn-instruction.schema.yml.jinja")
+
+    good_installation_instruction = install.validate_and_render(valid_user_input)
+
+    assert ('pip install -U scikit-learn', False) == good_installation_instruction
