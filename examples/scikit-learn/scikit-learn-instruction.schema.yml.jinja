@@ -1,0 +1,68 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://github.com/instructions-d-installation/installation-instruction/examples/scikit-learn/scikit-learn-instruction.schema.yml
+title: Scikit-learn installation schema
+description: This is a Schema to construct installation instructions for the python package scikit-learn by Timo Ege.
+
+type: object
+properties:
+    os:
+        title: Operating System
+        description: The operating system in which the package is installed.
+        enum: 
+            - Windows
+            - macOS
+            - Linux
+        default: Windows
+
+    packager:
+        title: Packager
+        description: The package manager of your choosing.
+        enum: 
+            - pip
+            - conda
+        default: pip
+
+    virtualenv:
+        title: Use pip virtualenv
+        description: Choose if you want to use a virtual environment to install the package.   
+        type: boolean 
+        default: false
+
+    required:
+        - os
+        - packager
+
+    additionalProperties: false
+
+------
+
+{% if package == "conda" %}
+    conda create -n sklearn-env -c conda-forge scikit-learn \n
+    conda activate sklearn-env
+{% endif %}
+{% else %}
+    {% if os == "Linux"%}
+        {% if virtualenv%}
+            python3 -m venv sklearn-venv \n
+            source sklearn-venv/bin/activate \n
+            pip3 install -U scikit-learn
+        {% else %}
+            pip3 install -U scikit-learn
+        {% endif %}
+    {% else %}
+        {% if virtualenv%}
+            {% if os == "macOS"%}
+                python -m venv sklearn-venv \n
+                source sklearn-venv/bin/activate \n
+                pip install -U scikit-learn 
+            {% else %}
+                python -m venv sklearn-venv \n
+                sklearn-venv\Scripts\activate \n
+                pip install -U scikit-learn 
+            {% endif %}
+        {% else %}
+            pip install -U scikit-learn
+        {% endif %}
+    {% endif %}
+{% endif %}
+
