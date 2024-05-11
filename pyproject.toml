@@ -41,7 +41,7 @@ tests = [
 docs = [
     "sphinx",
     "sphinx_mdinclude",
-    "sphinx-nefertiti",
+    "sphinx_rtd_theme",
     "sphinx-autoapi",
 ]
 
