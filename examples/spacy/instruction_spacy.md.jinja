@@ -1,0 +1,22 @@
+{# Kanushka's code #}
+# Spacy Installation Instruction
+{% if os == 'Windows' %}
+{% if platform == 'x86' %}
+{% if package_manager == 'pip' %}
+{% if hardware == 'CPU' %}
+{% if configuration == 'virtual env' %}
+{% if pipeline == 'efficiency' %}
+`pip install -U spacy`
+{% else %}
+> [!IMPORTANT]
+> Error!
+{% endif %}
+{% endif %}
+{% endif %}
+{% endif %}
+{% else %}
+{% if package_manager == 'conda' %}
+{% if hardware == 'CPU' %}
+{% if configuration == 'virtual env' %}
+{% if pipeline == 'efficiency' %}
+`conda install -c conda-forge spacy`
