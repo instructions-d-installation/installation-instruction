@@ -14,20 +14,68 @@
 
 
 from installation_instruction.get_flags_and_options_from_schema import get_flags_and_options
-from installation_instruction.helpers import _split_string_at_delimiter
+import click
 import yaml
 
 def test_get_flags_and_options():
-    with open("examples/scikit-learn/scikit-learn-instruction.schema.yml.jinja", 'r') as file:
-        example_scikit = file.read()
-    example_schema, example_jinja = _split_string_at_delimiter(example_scikit)
-    dict_schema = yaml.safe_load(example_schema)
-    options = get_flags_and_options(dict_schema)
+    example_schema = '''$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://github.com/instructions-d-installation/installation-instruction/examples/scikit-learn/scikit-learn-instruction.schema.yml
+title: Scikit-learn installation schema
+description: This is a Schema to construct installation instructions for the python package scikit-learn by Timo Ege.
+type: object
+properties:
+  os:
+    title: Operating System
+    description: The operating system in which the package is installed.
+    enum: 
+      - Windows
+      - macOS
+      - Linux
+    default: Windows
 
-    assert len(options) == 3
-    assert options[0].name == '--os'
-    assert options[0].help == "The operating system in which the package is installed. Choices: Windows, macOS, Linux (default: Windows)"
-    assert options[1].name == '--packager'
-    assert options[1].help == "The package manager of your choosing. Choices: pip, conda (default: pip)"
-    assert options[2].name == '--virtualenv'
-    assert options[2].help == "Choose if you want to use a virtual environment to install the package. (default: False)"
+  packager:
+    title: Packager
+    description: The package manager of your choosing.
+    enum: 
+      - pip
+      - conda
+    default: pip
+
+  virtualenv:
+    title: Use pip virtualenv
+    description: Choose if you want to use a virtual environment to install the package.   
+    type: boolean 
+    default: false
+
+  compute_platform:
+    title: Compute Platform
+    description: Should your gpu or your cpu handle the task?
+    anyOf:
+      - title: CUDA 11.8
+        const: cu118
+      - title: CUDA 12.1
+        const: cu121
+    default: cu118
+
+required:
+  - os
+  - packager
+
+additionalProperties: false'''
+    example = yaml.safe_load(example_schema)
+    options = get_flags_and_options(example)
+
+    assert len(options) == 4
+    assert options[0]['name'] == '--os'
+    assert options[0]['description'] == "The operating system in which the package is installed."
+    assert options[0]['required'] == True
+    assert options[1]['name'] == '--packager'
+    assert options[1]['description'] == "The package manager of your choosing."
+    assert options[1]['required'] == True
+    assert options[2]['name'] == '--virtualenv'
+    assert options[2]['description'] == "Choose if you want to use a virtual environment to install the package."
+    assert options[2]['required'] == False
+    assert options[3]['name'] == '--compute_platform'
+    assert options[3]['description'] == "CUDA 11.8\nCUDA 12.1"
+    assert options[3]['required'] == False
+    print(options[3]['description'])

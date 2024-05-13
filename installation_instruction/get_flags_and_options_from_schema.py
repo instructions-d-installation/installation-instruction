@@ -24,6 +24,7 @@ def get_flags_and_options(schema: dict) -> list:
     :rtype: list
     """
     options = []
+    required_args = set(schema.get('required', []))
 
     for key, value in schema.get('properties', {}).items():
         option_name = '--{}'.format(key)
@@ -45,6 +46,15 @@ def get_flags_and_options(schema: dict) -> list:
         else:
             option_type = click.STRING
 
-        options.append(click.option(option_name, type=option_type, help=option_description))
+        required = False
+        if key in required_args:
+            required = True
+
+        options.append({
+            'name': option_name,
+            'type': option_type,
+            'description': option_description,
+            'required': required
+        })
 
     return options
