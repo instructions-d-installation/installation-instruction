@@ -78,4 +78,3 @@ additionalProperties: false'''
     assert options[3]['name'] == '--compute_platform'
     assert options[3]['description'] == "CUDA 11.8\nCUDA 12.1"
     assert options[3]['required'] == False
-    print(options[3]['description'])
