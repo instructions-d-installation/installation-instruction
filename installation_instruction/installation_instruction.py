@@ -14,15 +14,19 @@
 
 
 from yaml import safe_load
-
 import json
-
 from jsonschema import validate
-
 from jinja2 import Environment, Template
-
+from jinja2.exceptions import UndefinedError
 
 import installation_instruction.helpers as helpers
+
+
+RAISE_JINJA_MACRO_STRING = """
+{% macro raise(error) %}
+    {{ None['[ERROR] ' ~ error][0] }}
+{% endmacro %}
+"""
 
 
 class InstallationInstruction:
@@ -34,7 +38,7 @@ class InstallationInstruction:
         """
         Validates user input against schema and renders with the template.
         Returns installation instructions and False. 
-        If template '[[ERROR]]' is called returns error message and True.
+        If jinja macro `raise` is called returns error message and True.
 
         :param input: Enduser input.
         :ptype input: dict
@@ -43,10 +47,12 @@ class InstallationInstruction:
         :raise Exception: If schema or user input is invalid.
         """
         validate(input, self.schema)
-        instruction = self.template.render(input)
-        
-        if error := helpers._get_error_message_from_string(instruction):
-            return (error, True)
+
+        try:
+            instruction = self.template.render(input)
+        except UndefinedError as e:
+            if errmsg := helpers._get_error_message_from_string(str(e)):
+                return (errmsg, True)
         
         instruction = helpers._replace_whitespace_in_string(instruction)
 
@@ -55,7 +61,7 @@ class InstallationInstruction:
 
     def __init__(self, config: str) -> None:
         """
-        Returns `InstallationInstruction` from config string.
+        Returns `InstallationInstruction` from config string. This also adds raise macro to template.
 
         :param config: Config string with schema and template seperated by delimiter.
         :raise Exception: If schema part of config is neither valid json nor valid yaml.
@@ -70,7 +76,7 @@ class InstallationInstruction:
             except:
                 raise Exception("Schema is neither a valid json nor a valid yaml.")
 
-        self.template = helpers._load_template_from_string(template)
+        self.template = helpers._load_template_from_string(RAISE_JINJA_MACRO_STRING+template)
 
     
     def from_file(path: str):

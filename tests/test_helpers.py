@@ -20,9 +20,7 @@ from installation_instruction import helpers
 def test_get_error_message_from_string_with_err_message():
     err_string = """
     abcd
-    [[ERROR]]
-        Mac does not support ROCm or CUDA!
-    [[ERROR]]
+    '[ERROR] Mac does not support ROCm or CUDA!'
     
     efg
     """
