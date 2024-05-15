@@ -15,6 +15,26 @@
 
 from jinja2 import Template
 from installation_instruction import helpers
+from installation_instruction.installation_instruction import InstallationInstruction
+
+
+def test_get_error_message_from_string_with_macro():
+    example_config = r"""
+type: object
+properties:
+   err:
+      type: boolean
+------
+something
+{{ raise("test message") if err }}
+something
+"""
+
+    install = InstallationInstruction(example_config)
+
+    assert install.validate_and_render({ "err": True }) == ("test message", True)
+    assert install.validate_and_render({ "err": False }) == ("something something", False)
+
 
 
 def test_get_error_message_from_string_with_err_message():
