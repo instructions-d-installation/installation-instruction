@@ -78,8 +78,9 @@ class InstallationInstruction:
 
         self.template = helpers._load_template_from_string(RAISE_JINJA_MACRO_STRING+template)
 
-    
-    def from_file(path: str):
+
+    @classmethod
+    def from_file(cls, path: str):
         """
         Returns class initialized via config file from path.
 
@@ -90,5 +91,5 @@ class InstallationInstruction:
         """
         with open(path, 'r') as file:
             config = file.read()
-        return InstallationInstruction(config)
+        return cls(config)
 
