@@ -25,7 +25,7 @@ def _get_error_message_from_string(string: str) -> str | None:
     :return: Error message if found else None.
     :rtpye: str or None
     """
-    reg = re.compile(r".*\[\[ERROR\]\]\s*(?P<errmsg>.*?)\s*\[\[ERROR\]\].*", re.S)
+    reg = re.compile(r"^.*\'\[ERROR\]\s*(?P<errmsg>.*?)\s*\'.*$", re.S)
     matches = reg.search(string)
     if matches is None:
         return None

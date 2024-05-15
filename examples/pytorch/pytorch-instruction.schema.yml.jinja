@@ -64,9 +64,7 @@ additionalProperties: false
         {% if compute_platform == "cpu" %}
             pytorch{{ "-nightly" if build == "preview" }}::pytorch torchvision torchaudio
         {% else %}
-            [[ERROR]]
-                Mac does not support ROCm or CUDA!
-            [[ERROR]]
+            {{ raise("Mac does not support ROCm or CUDA!") }}
         {% endif %}
     {% else %}
         pytorch torchvision torchaudio
@@ -76,9 +74,7 @@ additionalProperties: false
         {% elif compute_platform == "cu121" %}
             pytorch-cuda=12.1 -c nvidia
         {% elif compute_platform == "ro60" %}
-            [[ERROR]]
-                ROCm is currently not supported with conda on linux and not supported at all on windows!
-            [[ERROR]]
+            {{ raise("ROCm is currently not supported with conda on linux and not supported at all on windows!") }}
         {% else %}
             cpuonly
         {% endif %}
@@ -90,7 +86,7 @@ additionalProperties: false
     pip3 install {{ "--pre" if build == "preview" }} torch torchvision torchaudio
 
     {% if os == "mac" %}
-        {{ "[[ERROR]] Mac does not support ROCm or CUDA! [[ERROR]]" if compute_platform != "cpu" }}
+        {{ raise("Mac does not support ROCm or CUDA!") if compute_platform != "cpu" }}
         {% if build == "preview" %}
             --index-url https://download.pytorch.org/whl/nightly/cpu
         {% endif %}
@@ -109,7 +105,7 @@ additionalProperties: false
             {% endif %}
 
         {% elif compute_platform == "ro60" %}
-            {{ "[[ERROR]] Windows does not support ROCm! [[ERROR]]" if os != "linux" }}
+            {{ raise("Windows does not support ROCm!") if os != "linux" }}
             --index-url https://download.pytorch.org/whl/{{ "nightly/" if build == "preview" }}rocm6.0
 
         {# CPU #}

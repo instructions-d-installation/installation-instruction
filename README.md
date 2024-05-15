@@ -11,6 +11,22 @@
 
 </div>
 
+## Config
+
+The config is comprised of a single file. (Currently there is no fixed filename.) 
+For ease of use you should use the file extension `.yml.jinja` and develope said config file as two seperate files at first.
+The config file has two parts delimited by `------` (6 or more `-`).
+The first part is the schema (*What is valid user input?*). The second part is the template (*What is the actual command for said user input?*).
+The first part must be a valid [JSON Schema](https://json-schema.org/) in [JSON](https://www.json.org/json-en.html) or to JSON capabilites restricted [YAML](https://yaml.org/) and the second part must be a valid [jinja2 template](https://jinja.palletsprojects.com/en/3.0.x/templates/).
+The exception to this is that `anyOf` and `oneOf` are only usable for enum like behaviour on the schema side.
+Instead of an `enum` you might want to use `anyOf` with `const` and `tile` properties.
+The `title` of a property is used for the pretty print name, while the `description` is used for the help message.
+There exists a jinja2 macro called `raise`, which is usefull if there is actually no installation instruction for said user input.
+All lineends in the template are removed after render, which means that commands can be splitted within the template (`conda install {{ "xyz" if myvar else "abc" }}` ).
+This also means that multiple commands need to be chained via `&&`.
+For examples please look at the [examples folder](./examples/).
+
+
 ## Installation
 
 The Python package `installation_instruction` can be installed from PyPI:

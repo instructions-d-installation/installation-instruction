@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* Added config section in readme.
+* Added examples.
+* Added many tests.
+* Added `raise` jinja macro.
 * Generated project with template.
 * Added badges.
 * Added contributors.
