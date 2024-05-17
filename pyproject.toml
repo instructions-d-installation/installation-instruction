@@ -30,7 +30,8 @@ classifiers = [
 dependencies = [
     "jinja2",
     "jsonschema",
-    "PyYAML"
+    "PyYAML",
+    "click"
 ]
 
 [project.optional-dependencies]

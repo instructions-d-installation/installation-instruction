@@ -42,9 +42,15 @@ def test_validate_and_render_pytorch():
         install.validate_and_render(bad_user_input)
 
 
-def test_validate_and_render_pytorch():
+def test_validate_and_render_scikit():
     valid_user_input = {
         "os": "Windows",
+        "packager": "pip",
+        "virtualenv": False
+    }
+
+    invalid_user_input = {
+        "os": "Kali",
         "packager": "pip",
         "virtualenv": False
     }
@@ -54,3 +60,6 @@ def test_validate_and_render_pytorch():
     good_installation_instruction = install.validate_and_render(valid_user_input)
 
     assert ('pip install -U scikit-learn', False) == good_installation_instruction
+
+    with raises(Exception):
+        install.validate_and_render(invalid_user_input)
