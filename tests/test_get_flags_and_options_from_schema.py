@@ -83,19 +83,6 @@ additionalProperties: false'''
     assert options[2].default == False
 
     assert options[3].opts == ["--compute-platform"]
-    assert options[3].help == "CUDA 11.8\nCUDA 12.1"
+    assert options[3].help == "Should your gpu or your cpu handle the task?"
     assert options[3].required == False
     assert options[3].default == "cu118"
-
-    # assert options[0]['name'] == '--os'
-    # assert options[0]['description'] == "The operating system in which the package is installed."
-    # assert options[0]['required'] == True
-    # assert options[1]['name'] == '--packager'
-    # assert options[1]['description'] == "The package manager of your choosing."
-    # assert options[1]['required'] == True
-    # assert options[2]['name'] == '--virtualenv'
-    # assert options[2]['description'] == "Choose if you want to use a virtual environment to install the package."
-    # assert options[2]['required'] == False
-    # assert options[3]['name'] == '--compute_platform'
-    # assert options[3]['description'] == "CUDA 11.8\nCUDA 12.1"
-    # assert options[3]['required'] == False

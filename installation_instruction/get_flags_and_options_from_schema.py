@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import click
-from click import Option
+from click import Option, Choice
 
 SCHEMA_TO_CLICK_TYPE_MAPPING = {
     "string": click.STRING,
@@ -42,10 +42,11 @@ def get_flags_and_options(schema: dict) -> list[Option]:
         option_default = value.get('default', None)
 
         if 'anyOf' in value:
-            type_options = [t['title'] for t in value['anyOf'] if 'title' in t]
-            option_description = '\n'.join(type_options)
-
-        option_type = SCHEMA_TO_CLICK_TYPE_MAPPING.get(type, click.STRING)
+            option_type = Choice( [c['const'] for c in value['anyOf'] if 'const' in c] )
+        elif "enum" in value:
+            option_type = Choice( value["enum"] )
+        else:
+            option_type = SCHEMA_TO_CLICK_TYPE_MAPPING.get(option_type, click.STRING)
 
         required = key in required_args
 
