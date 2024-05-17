@@ -55,7 +55,9 @@ def get_flags_and_options(schema: dict) -> list[Option]:
             type=option_type,
             help=option_description,
             required=required,
-            default=option_default
+            default=option_default,
+            show_default=True,
+            show_choices=True
         ))
 
     return options
