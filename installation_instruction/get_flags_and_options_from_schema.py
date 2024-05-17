@@ -13,48 +13,48 @@
 # limitations under the License.
 
 import click
+from click import Option
 
-def get_flags_and_options(schema: dict) -> list:
+SCHEMA_TO_CLICK_TYPE_MAPPING = {
+    "string": click.STRING,
+    "integer": click.INT,
+    "number": click.FLOAT,
+    "boolean": click.BOOL,
+}
+
+def get_flags_and_options(schema: dict) -> list[Option]:
     """
     Generates Click flags and options from a JSON schema.
 
-    :param schema: schema which contains the options
-    :type ditcionary: dict
-    :return: list of all the clickoptions from the schema
-    :rtype: list
+    :param schema: Schema which contains the options.
+    :type schema: dict
+    :return: List of all the clickoptions from the schema.
+    :rtype: list[Option]
     """
     options = []
     required_args = set(schema.get('required', []))
 
     for key, value in schema.get('properties', {}).items():
+        key = key.replace('_', '-').replace(' ', '-')
         option_name = '--{}'.format(key)
         option_type = value.get('type', 'string')
         option_description = value.get('description', '')
+        option_default = value.get('default', None)
 
         if 'anyOf' in value:
             type_options = [t['title'] for t in value['anyOf'] if 'title' in t]
             option_description = '\n'.join(type_options)
 
-        if option_type == 'string':
-            option_type = click.STRING
-        elif option_type == 'integer':
-            option_type = click.INT
-        elif option_type == 'number':
-            option_type = click.FLOAT
-        elif option_type == 'boolean':
-            option_type = click.BOOL
-        else:
-            option_type = click.STRING
+        option_type = SCHEMA_TO_CLICK_TYPE_MAPPING.get(type, click.STRING)
 
-        required = False
-        if key in required_args:
-            required = True
+        required = key in required_args
 
-        options.append({
-            'name': option_name,
-            'type': option_type,
-            'description': option_description,
-            'required': required
-        })
+        options.append(Option(
+            param_decls=[option_name],
+            type=option_type,
+            help=option_description,
+            required=required,
+            default=option_default
+        ))
 
     return options
