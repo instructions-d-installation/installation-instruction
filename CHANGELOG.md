@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* Added cli for rendering installation instructions for end users.
 * Added config section in readme.
 * Added examples.
 * Added many tests.
