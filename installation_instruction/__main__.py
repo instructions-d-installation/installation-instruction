@@ -12,5 +12,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from sys import argv, exit
+from os.path import isfile
+
+import click
+
+from .get_flags_and_options_from_schema import get_flags_and_options
+from .installation_instruction import InstallationInstruction
+
+
+class ConfigReadCommand(click.MultiCommand):
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            *args,
+            **kwargs,
+            subcommand_metavar="CONFIG [OPTIONS]...",
+            options_metavar="",
+        )
+
+    def get_command(self, ctx, config_file: str) -> click.Command:
+        if not isfile(config_file):
+            print("Config file not found.")
+            exit(1)
+
+        instruction = InstallationInstruction.from_file(config_file)
+        options = get_flags_and_options(instruction.schema)
+
+        return click.Command(
+            name=config_file,
+            params=options,
+        )
+
+
+@click.command(cls=ConfigReadCommand)
 def main():
-    print("hello")
+    pass
+
+
+if __name__ == "__main__":
+    main()
