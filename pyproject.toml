@@ -46,6 +46,9 @@ docs = [
     "sphinx-autoapi",
 ]
 
+# Here you can list scripts. (Listed is a shim to the cli.)
+[project.scripts]
+ibi = "installation_instruction.__main__:main"
 
 # The following section contains setuptools-specific configuration
 # options. For a full reference of available options, check the overview
