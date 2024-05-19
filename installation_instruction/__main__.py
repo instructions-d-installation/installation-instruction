@@ -26,14 +26,14 @@ class ConfigReadCommand(click.MultiCommand):
         super().__init__(
             *args,
             **kwargs,
-            subcommand_metavar="CONFIG [OPTIONS]...",
+            subcommand_metavar="CONFIG_FILE [OPTIONS]...",
             options_metavar="",
         )
 
-    def get_command(self, ctx, config_file: str) -> click.Command:
+    def get_command(self, ctx, config_file: str) -> click.Command|None:
         if not isfile(config_file):
-            print("Config file not found.")
-            exit(1)
+            click.echo("Config file not found.")
+            return None
 
         instruction = InstallationInstruction.from_file(config_file)
         options = get_flags_and_options(instruction.schema)
@@ -54,10 +54,15 @@ class ConfigReadCommand(click.MultiCommand):
         )
 
 
-@click.command(cls=ConfigReadCommand)
+@click.command(cls=ConfigReadCommand, help="Shows installation instructions for your specified config file and parameters.")
+def show():
+    pass
+
+@click.group()
 def main():
     pass
 
+main.add_command(show)
 
 if __name__ == "__main__":
     main()
