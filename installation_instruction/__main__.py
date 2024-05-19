@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from sys import argv, exit
+from sys import exit
 from os.path import isfile
 
 import click
@@ -22,6 +22,10 @@ from .installation_instruction import InstallationInstruction
 
 
 class ConfigReadCommand(click.MultiCommand):
+    """
+    Custom click command class to read config file and show installation instructions with parameters.
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(
             *args,
@@ -40,12 +44,8 @@ class ConfigReadCommand(click.MultiCommand):
 
         def callback(**kwargs):
             inst = instruction.validate_and_render(kwargs)
-            if not inst[1]:
-                print(inst[0])
-                exit(0)
-            else:
-                print(inst[0])
-                exit(1)
+            print(inst[0])
+            exit(0 if not inst[1] else 1)
 
         return click.Command(
             name=config_file,
