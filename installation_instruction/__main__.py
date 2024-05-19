@@ -38,9 +38,19 @@ class ConfigReadCommand(click.MultiCommand):
         instruction = InstallationInstruction.from_file(config_file)
         options = get_flags_and_options(instruction.schema)
 
+        def callback(**kwargs):
+            inst = instruction.validate_and_render(kwargs)
+            if not inst[1]:
+                print(inst[0])
+                exit(0)
+            else:
+                print(inst[0])
+                exit(1)
+
         return click.Command(
             name=config_file,
             params=options,
+            callback=callback,
         )
 
 
