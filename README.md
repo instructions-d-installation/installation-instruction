@@ -11,11 +11,29 @@
 
 </div>
 
+## CLI Usage
+
+```
+Usage: ibi [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  show  Shows installation instructions for your specified config file...
+```
+
+Options are dynamically created with the schema part of the config file.   
+
+> [!TIP]
+> Show help for a config file with: `ibi show CONFIG_FILE --help`.
+
+
 ## Config
 
 The config is comprised of a single file. (Currently there is no fixed filename.) 
 For ease of use you should use the file extension `.yml.jinja` and develope said config file as two seperate files at first.
-The config file has two parts delimited by `------` (6 or more `-`).
+The config file has two parts delimited by `------` (6 or more `-`).   
 The first part is the schema (*What is valid user input?*). The second part is the template (*What is the actual command for said user input?*).
 The first part must be a valid [JSON Schema](https://json-schema.org/) in [JSON](https://www.json.org/json-en.html) or to JSON capabilites restricted [YAML](https://yaml.org/) and the second part must be a valid [jinja2 template](https://jinja.palletsprojects.com/en/3.0.x/templates/).
 The exception to this is that `anyOf` and `oneOf` are only usable for enum like behaviour on the schema side.
