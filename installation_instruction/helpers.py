@@ -18,9 +18,9 @@ from jinja2 import Environment, Template
 
 def _get_error_message_from_string(string: str) -> str | None:
     """
-    Parses via regex and returns error message enquoted in "[[ERROR]]". if no error message is found returns `None`.
+    Parses error message of error given by using jinja macro `RAISE_JINJA_MACRO_STRING`. If no error message is found returns `None`.
 
-    :param string: This is the raw input string where an error message might be.
+    :param string: This is the raw error string where an error message might be.
     :type string: str
     :return: Error message if found else None.
     :rtpye: str or None

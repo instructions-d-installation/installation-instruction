@@ -12,14 +12,14 @@ build-backend = "setuptools.build_meta"
 # single source of truth for installation_instruction's version
 [project]
 name = "installation_instruction"
-description = "Add short description here"
+description = "Library and CLI for generating installation instructions from json schema and jinja templates."
 readme = "README.md"
 maintainers = [
     { name = "Adam McKellar", email = "dev@mckellar.eu" },
     { name = "Kanushka Gupta" },
     { name = "Timo Ege", email = "Timoege@online.de" },
 ]
-version = "0.0.1"
+version = "0.1.0"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 classifiers = [

@@ -39,12 +39,17 @@ class ConfigReadCommand(click.MultiCommand):
             click.echo("Config file not found.")
             return None
 
-        instruction = InstallationInstruction.from_file(config_file)
-        options = get_flags_and_options(instruction.schema)
+        try:
+            instruction = InstallationInstruction.from_file(config_file)
+            options = get_flags_and_options(instruction.schema)
+        except Exception as e:
+            click.echo(str(e))
+            exit(1)
+
 
         def callback(**kwargs):
             inst = instruction.validate_and_render(kwargs)
-            print(inst[0])
+            click.echo(inst[0])
             exit(0 if not inst[1] else 1)
 
         return click.Command(
