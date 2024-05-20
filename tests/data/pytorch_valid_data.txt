@@ -1,0 +1,6 @@
+{
+"build": "preview",
+"os": "win",
+"package": "pip",
+"compute_platform": "ro60"
+}
