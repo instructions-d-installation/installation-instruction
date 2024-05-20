@@ -63,3 +63,27 @@ def test_validate_and_render_scikit():
 
     with raises(Exception):
         install.validate_and_render(invalid_user_input)
+
+def test_validate_and_render_spacy():
+    valid_user_input = {
+        "os": "Windows",
+        "platform": "x86",
+        "package": "pip",
+        "hardware": "CPU"
+    }
+
+    invalid_user_input = {
+        "os": "Windows",
+        "platform": "x86",
+        "package": "forge",
+        "hardware": "CPU"
+    }
+
+    install = InstallationInstruction.from_file("examples/scikit-learn/scikit-learn-instruction.schema.yml.jinja")
+
+    good_installation_instruction = install.validate_and_render(valid_user_input)
+
+    assert ('pip install -U scikit-learn', False) == good_installation_instruction
+
+    with raises(Exception):
+        install.validate_and_render(invalid_user_input)

@@ -1,6 +1,0 @@
-os: Windows
-platform: x86
-package_manager: pip
-hardware: CPU
-configuration: virtual env
-pipeline: efficiency

@@ -1,6 +1,0 @@
-os: Windows
-platform: x86
-package_manager: conda
-hardware: GPU
-configuration: virtual env
-pipeline: efficiency

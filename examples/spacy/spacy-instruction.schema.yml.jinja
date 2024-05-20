@@ -1,0 +1,143 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: https://github.com/instructions-d-installation/installation-instruction/examples/spacy/schema_spacy.yml
+title: Spacy Install Schema
+description: This is a schema which is used for constructing interactive installation instructions.
+type: object
+$comment: by Kanushka Gupta
+properties:
+  os:
+    title: Operating System
+    description: Specify your Operating System
+    enum:
+      - title: macOs/OSX
+        const: mac
+      - title: Windows
+        const: windows
+      - title: Linux
+        const: linux
+    default: Windows
+  platform:
+    title: Platform
+    description: platform
+    enum:
+      - title: x86
+        const: x86
+      - title: ARM/M1
+        const: arm
+  package:
+    title: Package Manager
+    description: The package manager you use.
+    enum:
+      - title: Conda
+        const: conda
+      - title: Pip
+        const: pip
+      - title: from source
+        const: source
+    default: pip
+  hardware:
+  title: Hardware
+  description: Hardware you want to use- CPU or GPU?
+    enum:
+      - title: CPU
+        const: cpu
+      - title: GPU
+        const: gpu
+      type: string
+    default: cpu
+    if:
+    properties:
+    hardware:
+    const: "gpu"
+    then:
+    properties:
+    cuda runtime:
+      enum:
+        - CUDA 8.0
+        - CUDA 9.0
+        - CUDA 9.1
+        - CUDA 9.2
+        - CUDA 10.0
+        - CUDA 10.1
+        - CUDA 10.2
+        - CUDA 11.0
+        - CUDA 11.1
+        - CUDA 11.2 - 11.x
+        - CUDA 12.x
+  configuration:
+  title: Configuration
+  description: the configuartion you have
+    enum:
+      -title:  virtual env
+      const: venv
+      -title: train models
+      const: train_models
+  pipeline:
+    enum:
+      -title: efficiency
+      const: efficiency
+      -title: accuracy
+      const: accuracy
+      
+required:
+  - os
+  - platform
+  - package_manager
+  - hardware
+additionalProperties: false
+
+
+------
+
+{% if package == "pip" %}
+  pip install -U pip setuptools wheel
+  pip install -U spacy
+
+    {% if hardware == "cpu"  %}
+      {% if os == "mac"%}
+        {% if platform == "arm"%}
+          -'[apple]'
+        {% endif %}
+      {% endif %}
+    {% endif %}
+
+    {%if hardware == "gpu" %}
+      {% if os == "linux"%}
+        [cuda111]
+      {% endif %}
+      {%if os == "mac"%}
+        [apple]
+      {%endif%}
+    {%endif%}
+{%endif%}    
+
+{% if package == "conda" %}     
+  conda install -c conda-forge spacy
+  {%if hardware == "gpu"%}
+    conda install -c conda-forge cupy
+  {%endif%}
+{%endif%}
+
+{%if package == "source"%}
+  pip install -U pip setuptools wheel
+  git clone https://github.com/explosion/spaCy
+  cd spaCy
+  pip install -r requirements.txt
+  pip install --no-build-isolation --editable .
+
+  {% if hardware == "gpu"%}
+    {% if platform == "x86"%}
+      '[cuda111]'
+    {%endif%}
+    {% if platform == "arm"%}
+      {%if os == "windows"%}
+        '[]'
+      {%endif%}
+      {% if os == "linux"%} 
+        '[cuda111]'
+      {%endif%}
+      {% if os == "mac"%} 
+        '[apple]'
+      {%endif%}
+    {%endif%}
+  {%endif%}
