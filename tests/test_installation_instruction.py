@@ -65,11 +65,11 @@ def test_validate_and_render_spacy():
         "hardware": "CPU"
     }
 
-    install = InstallationInstruction.from_file("examples/scikit-learn/scikit-learn-instruction.schema.yml.jinja")
+    install = InstallationInstruction.from_file("examples/spacy/spacy-instruction.schema.yml.jinja")
 
     good_installation_instruction = install.validate_and_render(valid_user_input)
 
-    assert ('pip install -U scikit-learn', False) == good_installation_instruction
+    assert ('pip install -U pip setuptools wheel \n pip install -U spacy', False) == good_installation_instruction
 
     with raises(Exception):
         install.validate_and_render(invalid_user_input)
