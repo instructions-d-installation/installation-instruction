@@ -11,6 +11,43 @@
 
 </div>
 
+## Installation
+
+### [pipx](https://github.com/pypa/pipx)
+
+```
+pipx install installation_instruction
+```
+
+
+### pip
+
+```
+python -m pip install installation_instruction
+```
+
+
+### installation_instruction
+
+*(Don't try at home.)*
+```yaml
+name: installation_instruction
+type: object
+properties:
+  method:
+    enum:
+      - pipx
+      - pip
+----------------------------------
+{% if method == "pip" %}
+  python -m pip
+{% else %}
+  pipx
+{% endif %}
+  install installation_instruction
+```
+
+
 ## CLI Usage
 
 ```
