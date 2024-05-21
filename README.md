@@ -82,14 +82,6 @@ This also means that multiple commands need to be chained via `&&`.
 For examples please look at the [examples folder](./examples/).
 
 
-## Installation
-
-The Python package `installation_instruction` can be installed from PyPI:
-
-```
-python -m pip install installation_instruction
-```
-
 ## Development installation
 
 If you want to contribute to the development of `installation_instruction`, we recommend
