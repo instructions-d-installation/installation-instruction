@@ -11,7 +11,7 @@ properties:
       - Windows
       - macOS
       - Linux
-    default: Windows
+
 
   packager:
     title: Packager

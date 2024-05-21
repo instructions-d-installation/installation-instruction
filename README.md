@@ -8,6 +8,7 @@
 [![Documentation Status](https://readthedocs.org/projects/installation-instruction/badge/?version=latest)](https://installation-instruction.readthedocs.io/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/instructions-d-installation/installation-instruction/graph/badge.svg?token=5AIH36HYG3)](https://codecov.io/gh/instructions-d-installation/installation-instruction)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Finstructions-d-installation%2Finstallation-instruction.svg?type=small)](https://app.fossa.com/projects/git%2Bgithub.com%2Finstructions-d-installation%2Finstallation-instruction?ref=badge_small)
+![PyPI - Version](https://img.shields.io/pypi/v/installation-instruction)
 
 </div>
 
@@ -16,14 +17,14 @@
 ### [pipx](https://github.com/pypa/pipx)
 
 ```
-pipx install installation_instruction
+pipx install installation-instruction
 ```
 
 
 ### pip
 
 ```
-python -m pip install installation_instruction
+python -m pip install installation-instruction
 ```
 
 
@@ -31,7 +32,7 @@ python -m pip install installation_instruction
 
 *(Don't try at home.)*
 ```yaml
-name: installation_instruction
+name: installation-instruction
 type: object
 properties:
   method:
@@ -44,7 +45,7 @@ properties:
 {% else %}
   pipx
 {% endif %}
-  install installation_instruction
+  install installation-instruction
 ```
 
 

@@ -14,8 +14,6 @@
 
 
 from installation_instruction.get_flags_and_options_from_schema import get_flags_and_options
-import click
-import yaml
 
 def test_get_flags_and_options(test_data_flags_options):
     example_schema = test_data_flags_options
@@ -26,11 +24,11 @@ def test_get_flags_and_options(test_data_flags_options):
     assert options[0].opts == ["--os"]
     assert options[0].help == "The operating system in which the package is installed."
     assert options[0].required == True
-    assert options[0].default == "Windows"
+    assert options[0].default == None
 
     assert options[1].opts == ["--packager"]
     assert options[1].help == "The package manager of your choosing."
-    assert options[1].required == True
+    assert options[1].required == False
     assert options[1].default == "pip"
 
     assert options[2].opts == ["--virtualenv"]

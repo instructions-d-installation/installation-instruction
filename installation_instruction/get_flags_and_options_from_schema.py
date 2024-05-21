@@ -48,7 +48,7 @@ def get_flags_and_options(schema: dict) -> list[Option]:
         else:
             option_type = SCHEMA_TO_CLICK_TYPE_MAPPING.get(option_type, click.STRING)
 
-        required = key in required_args
+        required = (key in required_args) and not option_default
 
         options.append(Option(
             param_decls=[option_name],
