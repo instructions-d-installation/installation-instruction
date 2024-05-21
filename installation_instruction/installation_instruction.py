@@ -53,6 +53,8 @@ class InstallationInstruction:
         except UndefinedError as e:
             if errmsg := helpers._get_error_message_from_string(str(e)):
                 return (errmsg, True)
+            else:
+                raise e
         
         instruction = helpers._replace_whitespace_in_string(instruction)
 

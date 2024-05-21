@@ -8,26 +8,27 @@ properties:
   os:
     title: Operating System
     description: Specify your Operating System
-    enum:
+    anyOf:
       - title: macOs/OSX
         const: mac
       - title: Windows
         const: windows
       - title: Linux
         const: linux
-    default: Windows
+    default: windows
   platform:
     title: Platform
     description: platform
-    enum:
+    anyOf:
       - title: x86
         const: x86
       - title: ARM/M1
         const: arm
+    default: x86
   package:
     title: Package Manager
     description: The package manager you use.
-    enum:
+    anyOf:
       - title: Conda
         const: conda
       - title: Pip
@@ -36,22 +37,37 @@ properties:
         const: source
     default: pip
   hardware:
-  title: Hardware
-  description: Hardware you want to use- CPU or GPU?
-    enum:
+    title: Hardware
+    description: Hardware you want to use- CPU or GPU?
+    anyOf:
       - title: CPU
         const: cpu
       - title: GPU
         const: gpu
-      type: string
+    type: string
     default: cpu
-    if:
-    properties:
+    
+  configuration:
+    title: Configuration
+    description: the configuration you have
+    anyOf:
+      - title: virtual env
+        const: venv
+      - title: train models
+        const: train_models
+  pipeline:
+    anyOf:
+      - title: efficiency
+        const: efficiency
+      - title: accuracy
+        const: accuracy
+if:
+  properties:
     hardware:
-    const: "gpu"
-    then:
-    properties:
-    cuda runtime:
+      const: gpu
+then:
+  properties:
+    cuda_runtime:
       enum:
         - CUDA 8.0
         - CUDA 9.0
@@ -64,25 +80,11 @@ properties:
         - CUDA 11.1
         - CUDA 11.2 - 11.x
         - CUDA 12.x
-  configuration:
-  title: Configuration
-  description: the configuartion you have
-    enum:
-      -title:  virtual env
-      const: venv
-      -title: train models
-      const: train_models
-  pipeline:
-    enum:
-      -title: efficiency
-      const: efficiency
-      -title: accuracy
-      const: accuracy
       
 required:
   - os
   - platform
-  - package_manager
+  - package
   - hardware
 additionalProperties: false
 
@@ -141,3 +143,4 @@ additionalProperties: false
       {%endif%}
     {%endif%}
   {%endif%}
+{%endif%}
