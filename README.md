@@ -2,7 +2,7 @@
 
 # `installation-instruction`
 
-**Library for checking and parsing installation instruction schemas.**
+**Library and CLI for generating installation instructions from json schema and jinja templates.**
 
 [![GitHub License](https://img.shields.io/github/license/instructions-d-installation/installation-instruction)](./LICENSE)
 [![PyPI - Version](https://img.shields.io/pypi/v/installation-instruction)](https://pypi.org/project/installation-instruction/)
@@ -69,18 +69,30 @@ Options are dynamically created with the schema part of the config file.
 
 ## Config
 
-The config is comprised of a single file. (Currently there is no fixed filename.) 
-For ease of use you should use the file extension `.yml.jinja` and develope said config file as two seperate files at first.
-The config file has two parts delimited by `------` (6 or more `-`).   
-The first part is the schema (*What is valid user input?*). The second part is the template (*What is the actual command for said user input?*).
-The first part must be a valid [JSON Schema](https://json-schema.org/) in [JSON](https://www.json.org/json-en.html) or to JSON capabilites restricted [YAML](https://yaml.org/) and the second part must be a valid [jinja2 template](https://jinja.palletsprojects.com/en/3.0.x/templates/).
-The exception to this is that `anyOf` and `oneOf` are only usable for enum like behaviour on the schema side.
-Instead of an `enum` you might want to use `anyOf` with `const` and `tile` properties.
-The `title` of a property is used for the pretty print name, while the `description` is used for the help message.
-There exists a jinja2 macro called `raise`, which is usefull if there is actually no installation instruction for said user input.
-All lineends in the template are removed after render, which means that commands can be splitted within the template (`conda install {{ "xyz" if myvar else "abc" }}` ).
-This also means that multiple commands need to be chained via `&&`.
-For examples please look at the [examples folder](./examples/).
+* The config is comprised of a single file `install.cfg`.
+* The config has two parts delimited by `------` (6 or more `-`).
+* Both parts should be developed in different files for language server support.
+
+
+### Schema
+
+* The first section of the config is a [json-schema](https://json-schema.org/).
+* It can be written in [JSON](https://www.json.org/json-en.html) or to JSON capabilites restricted [YAML](https://yaml.org/).
+* `title` are used for pretty print option names.
+* `description` is used for the options help message.
+* `anyOf` with nested `const` and `title` are a special case as a replacement for `enum` but with pretty print name.
+
+
+### Template
+
+* You can have as much whitespace and line breaks as you wish in and inbetween your commands.
+* Commands must be seperated by `&&`! (`pip install installation-instruction && pip uninstall installation-instruction`.)
+* If you wish to stop the render from within the template you can use the macro `raise`. (`{{ raise("no support!") }}`.) 
+
+
+### MISC
+
+Please have a look at the [examples](./examples/).
 
 
 ## Development installation
