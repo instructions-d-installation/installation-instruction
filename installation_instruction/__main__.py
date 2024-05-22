@@ -19,6 +19,7 @@ import click
 
 from .get_flags_and_options_from_schema import get_flags_and_options
 from .installation_instruction import InstallationInstruction
+from .helpers import _make_pretty_print_line_breaks
 
 
 class ConfigReadCommand(click.MultiCommand):
@@ -49,7 +50,7 @@ class ConfigReadCommand(click.MultiCommand):
 
         def callback(**kwargs):
             inst = instruction.validate_and_render(kwargs)
-            click.echo(inst[0])
+            click.echo(_make_pretty_print_line_breaks(inst[0]))
             exit(0 if not inst[1] else 1)
 
         return click.Command(

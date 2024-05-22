@@ -16,6 +16,9 @@ import re
 from jinja2 import Environment, Template
 
 
+def _make_pretty_print_line_breaks(string: str) -> str:
+    return re.sub(r"\s?&&\s?", "\n", string, 0, re.S)
+
 def _get_error_message_from_string(string: str) -> str | None:
     """
     Parses error message of error given by using jinja macro `RAISE_JINJA_MACRO_STRING`. If no error message is found returns `None`.
