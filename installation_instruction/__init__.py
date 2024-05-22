@@ -16,6 +16,15 @@
 from importlib import metadata
 
 __version__ = metadata.version(__package__)
+
+# This is terrible and I really hate it.
+__description__ = metadata.metadata(__package__)["Summary"]
+__repository__ = metadata.metadata(__package__)["Project-URL"]
+
+__author__ = metadata.metadata(__package__)["Author"]
+__author_email__ = metadata.metadata(__package__)["Author-email"]
+__license__ = metadata.metadata(__package__)["License"]
+
 del metadata
 
 from installation_instruction.installation_instruction import InstallationInstruction

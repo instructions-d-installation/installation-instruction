@@ -9,15 +9,20 @@ build-backend = "setuptools.build_meta"
 
 # This section provides general project metadata that is used across
 # a variety of build tools. Notably, the version specified here is the
-# single source of truth for installation_instruction's version
+# single source of truth for installation-instruction's version
 [project]
-name = "installation_instruction"
+name = "installation-instruction"
 description = "Library and CLI for generating installation instructions from json schema and jinja templates."
 readme = "README.md"
 maintainers = [
     { name = "Adam McKellar", email = "dev@mckellar.eu" },
     { name = "Kanushka Gupta" },
-    { name = "Timo Ege", email = "Timoege@online.de" },
+    { name = "Timo Ege", email = "timoege@online.de" },
+]
+authors = [
+    { name = "Adam McKellar", email = "dev@mckellar.eu" },
+    { name = "Kanushka Gupta" },
+    { name = "Timo Ege", email = "timoege@online.de" },
 ]
 version = "0.1.1"
 requires-python = ">=3.10"
@@ -49,6 +54,12 @@ docs = [
 # Here you can list scripts. (Listed is a shim to the cli.)
 [project.scripts]
 ibi = "installation_instruction.__main__:main"
+
+[project.urls]
+Repository = "https://github.com/instructions-d-installation/installation-instruction"
+Documentation = "https://installation-instruction.readthedocs.io/en/latest/"
+Issues = "https://github.com/instructions-d-installation/installation-instruction/issues"
+Changelog = "https://github.com/instructions-d-installation/installation-instruction/blob/main/CHANGELOG.md"
 
 # The following section contains setuptools-specific configuration
 # options. For a full reference of available options, check the overview

@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added pretty print to show command.
 * Added many colors for cli output.
 * Added PyPi version badge.
+* Added version flag.
+* Added help shorthand.
 
 ### Changed
 

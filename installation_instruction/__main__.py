@@ -18,9 +18,15 @@ from subprocess import run
 
 import click
 
+from .__init__ import __version__, __description__, __repository__, __author__, __author_email__, __license__
 from .get_flags_and_options_from_schema import get_flags_and_options
 from .installation_instruction import InstallationInstruction
 from .helpers import _make_pretty_print_line_breaks
+
+VERSION_STRING = f"""Version: installation-instruction {__version__}
+Copyright: (C) 2024 Adam McKellar, Kanushka Gupta, Timo Ege
+License: {__license__}
+Repository: {__repository__.replace("Repository, ", "")}"""
 
 
 class ConfigReadCommand(click.MultiCommand):
@@ -93,7 +99,8 @@ def install(ctx, verbose):
     ctx.obj['MODE'] = "install"
     ctx.obj['INSTALL_VERBOSE'] = verbose
 
-@click.group()
+@click.group(context_settings={"help_option_names": ["-h", "--help"]}, help=__description__)
+@click.version_option(version=__version__, message=VERSION_STRING)
 @click.pass_context
 def main(ctx):
     ctx.ensure_object(dict)

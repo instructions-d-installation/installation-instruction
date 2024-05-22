@@ -112,9 +112,9 @@ python -m pytest
 
 ## Contributors
 
-* [Adam McKellar](https://github.com/WyvernIXTL) [dev@mckellar.eu](mailto:dev@mckellar.eu)
+* [Adam McKellar](https://github.com/WyvernIXTL) ([dev@mckellar.eu](mailto:dev@mckellar.eu))
 * [Kanushka Gupta](https://github.com/KanushkaGupta)
-* [Timo Ege](https://github.com/TimoEg) [Timoege@online.de](mailto:Timoege@online.de)
+* [Timo Ege](https://github.com/TimoEg) ([timoege@online.de](mailto:timoege@online.de))
 
 
 ## Acknowledgments
