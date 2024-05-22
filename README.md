@@ -28,7 +28,7 @@ python -m pip install installation-instruction
 ```
 
 
-### installation_instruction
+### installation-instruction
 
 *(Don't try at home.)*
 ```yaml
