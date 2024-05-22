@@ -54,11 +54,16 @@ properties:
 ```
 Usage: ibi [OPTIONS] COMMAND [ARGS]...
 
+  Library and CLI for generating installation instructions from json schema
+  and jinja templates.
+
 Options:
-  --help  Show this message and exit.
+  --version   Show the version and exit.
+  -h, --help  Show this message and exit.
 
 Commands:
-  show  Shows installation instructions for your specified config file...
+  install  Installs with config and parameters given.
+  show     Shows installation instructions for your specified config file...
 ```
 
 Options are dynamically created with the schema part of the config file.   
