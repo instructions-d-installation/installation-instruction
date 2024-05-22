@@ -17,6 +17,14 @@ from jinja2 import Environment, Template
 
 
 def _make_pretty_print_line_breaks(string: str) -> str:
+    """
+    Replaces `&& ` with a newline character.
+
+    :param string: String to be processed.
+    :type string: str
+    :return: String with `&& ` replaced with newline character.
+    :rtype: str
+    """
     return re.sub(r"\s?&&\s?", "\n", string, 0, re.S)
 
 def _get_error_message_from_string(string: str) -> str | None:

@@ -14,6 +14,7 @@
 
 from sys import exit
 from os.path import isfile
+from subprocess import run
 
 import click
 
@@ -50,8 +51,20 @@ class ConfigReadCommand(click.MultiCommand):
 
         def callback(**kwargs):
             inst = instruction.validate_and_render(kwargs)
-            click.echo(_make_pretty_print_line_breaks(inst[0]))
-            exit(0 if not inst[1] else 1)
+            if inst[1]:
+                click.echo("Error: " + inst[1])
+                exit(1)
+            if ctx.obj["MODE"] == "show":
+                if ctx.obj["RAW"]:
+                    click.echo(inst[0])
+                else:
+                    click.echo(_make_pretty_print_line_breaks(inst[0]))
+            elif ctx.obj["MODE"] == "install":
+                click.echo("Installation not implemented yet.")
+                
+
+            exit(0)
+            
 
         return click.Command(
             name=config_file,
@@ -61,14 +74,24 @@ class ConfigReadCommand(click.MultiCommand):
 
 
 @click.command(cls=ConfigReadCommand, help="Shows installation instructions for your specified config file and parameters.")
-def show():
-    pass
+@click.option("--raw", is_flag=True, help="Show installation instructions without pretty print.", default=False)
+@click.pass_context
+def show(ctx, raw):
+    ctx.obj['MODE'] = "show"
+    ctx.obj['RAW'] = raw
+
+@click.command(cls=ConfigReadCommand, help="Installs with config and parameters given.")
+@click.pass_context
+def install(ctx):
+    ctx.obj['MODE'] = "install"
 
 @click.group()
-def main():
-    pass
+@click.pass_context
+def main(ctx):
+    ctx.ensure_object(dict)
 
 main.add_command(show)
+main.add_command(install)
 
 if __name__ == "__main__":
     main()
