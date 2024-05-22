@@ -14,11 +14,13 @@
 
 from sys import exit
 from os.path import isfile
+from subprocess import run
 
 import click
 
 from .get_flags_and_options_from_schema import get_flags_and_options
 from .installation_instruction import InstallationInstruction
+from .helpers import _make_pretty_print_line_breaks
 
 
 class ConfigReadCommand(click.MultiCommand):
@@ -43,14 +45,32 @@ class ConfigReadCommand(click.MultiCommand):
             instruction = InstallationInstruction.from_file(config_file)
             options = get_flags_and_options(instruction.schema)
         except Exception as e:
-            click.echo(str(e))
+            click.echo(click.style("Error (parsing options from schema): " + str(e), fg="red"))
             exit(1)
 
 
         def callback(**kwargs):
             inst = instruction.validate_and_render(kwargs)
-            click.echo(inst[0])
-            exit(0 if not inst[1] else 1)
+            if inst[1]:
+                click.echo(click.style("Error: " + inst[0], fg="red"))
+                exit(1)
+            if ctx.obj["MODE"] == "show":
+                if ctx.obj["RAW"]:
+                    click.echo(inst[0])
+                else:
+                    click.echo(_make_pretty_print_line_breaks(inst[0]))
+            elif ctx.obj["MODE"] == "install":
+                result = run(inst[0], shell=True, text=True, capture_output=True)
+                if result.returncode != 0:
+                    click.echo(click.style("Installation failed with:\n" + str(result.stdout) + "\n" + str(result.stderr), fg="red"))
+                    exit(1)
+                else:
+                    if ctx.obj["INSTALL_VERBOSE"]:
+                        click.echo(str(result.stdout))
+                    click.echo(click.style("Installation successful.", fg="green"))
+
+            exit(0)
+            
 
         return click.Command(
             name=config_file,
@@ -60,14 +80,26 @@ class ConfigReadCommand(click.MultiCommand):
 
 
 @click.command(cls=ConfigReadCommand, help="Shows installation instructions for your specified config file and parameters.")
-def show():
-    pass
+@click.option("--raw", is_flag=True, help="Show installation instructions without pretty print.", default=False)
+@click.pass_context
+def show(ctx, raw):
+    ctx.obj['MODE'] = "show"
+    ctx.obj['RAW'] = raw
+
+@click.command(cls=ConfigReadCommand, help="Installs with config and parameters given.")
+@click.option("-v", "--verbose", is_flag=True, help="Show verbose output.", default=False)
+@click.pass_context
+def install(ctx, verbose):
+    ctx.obj['MODE'] = "install"
+    ctx.obj['INSTALL_VERBOSE'] = verbose
 
 @click.group()
-def main():
-    pass
+@click.pass_context
+def main(ctx):
+    ctx.ensure_object(dict)
 
 main.add_command(show)
+main.add_command(install)
 
 if __name__ == "__main__":
     main()

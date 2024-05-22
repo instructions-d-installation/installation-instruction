@@ -9,9 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* Added installation functionality.
+* Added pretty print to show command.
+* Added many colors for cli output.
 * Added PyPi version badge.
 
 ### Changed
+
+* Flags are now handled properly (requiered and default).
+* Reworked config section in readme.
+* Fixed wrong description of project in readme.
+* Fixed wrong section title in readme.
 
 ### Removed
 

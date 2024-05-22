@@ -35,6 +35,7 @@ def get_flags_and_options(schema: dict) -> list[Option]:
     required_args = set(schema.get('required', []))
 
     for key, value in schema.get('properties', {}).items():
+        orig_key = key
         key = key.replace('_', '-').replace(' ', '-')
         option_name = '--{}'.format(key)
         option_type = value.get('type', 'string')
@@ -48,7 +49,10 @@ def get_flags_and_options(schema: dict) -> list[Option]:
         else:
             option_type = SCHEMA_TO_CLICK_TYPE_MAPPING.get(option_type, click.STRING)
 
-        required = (key in required_args) and not option_default
+        required = (orig_key in required_args) and option_default is None
+        is_flag=(option_type == click.BOOL)
+        if is_flag and required:
+            option_name = option_name + "/--no-{}".format(key)
 
         options.append(Option(
             param_decls=[option_name],
@@ -57,7 +61,8 @@ def get_flags_and_options(schema: dict) -> list[Option]:
             required=required,
             default=option_default,
             show_default=True,
-            show_choices=True
+            show_choices=True,
+            is_flag=is_flag,
         ))
 
     return options
