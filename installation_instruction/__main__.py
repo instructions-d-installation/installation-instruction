@@ -45,14 +45,14 @@ class ConfigReadCommand(click.MultiCommand):
             instruction = InstallationInstruction.from_file(config_file)
             options = get_flags_and_options(instruction.schema)
         except Exception as e:
-            click.echo(str(e))
+            click.echo(click.style("Error (parsing options from schema): " + str(e), fg="red"))
             exit(1)
 
 
         def callback(**kwargs):
             inst = instruction.validate_and_render(kwargs)
             if inst[1]:
-                click.echo("Error: " + inst[1])
+                click.echo(click.style("Error: " + inst[0], fg="red"))
                 exit(1)
             if ctx.obj["MODE"] == "show":
                 if ctx.obj["RAW"]:
@@ -60,8 +60,14 @@ class ConfigReadCommand(click.MultiCommand):
                 else:
                     click.echo(_make_pretty_print_line_breaks(inst[0]))
             elif ctx.obj["MODE"] == "install":
-                click.echo("Installation not implemented yet.")
-                
+                result = run(inst[0], shell=True, text=True, capture_output=True)
+                if result.returncode != 0:
+                    click.echo(click.style("Installation failed with:\n" + str(result.stdout) + "\n" + str(result.stderr), fg="red"))
+                    exit(1)
+                else:
+                    if ctx.obj["INSTALL_VERBOSE"]:
+                        click.echo(str(result.stdout))
+                    click.echo(click.style("Installation successful.", fg="green"))
 
             exit(0)
             
@@ -81,9 +87,11 @@ def show(ctx, raw):
     ctx.obj['RAW'] = raw
 
 @click.command(cls=ConfigReadCommand, help="Installs with config and parameters given.")
+@click.option("-v", "--verbose", is_flag=True, help="Show verbose output.", default=False)
 @click.pass_context
-def install(ctx):
+def install(ctx, verbose):
     ctx.obj['MODE'] = "install"
+    ctx.obj['INSTALL_VERBOSE'] = verbose
 
 @click.group()
 @click.pass_context
