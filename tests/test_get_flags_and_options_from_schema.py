@@ -19,7 +19,7 @@ def test_get_flags_and_options(test_data_flags_options):
     example_schema = test_data_flags_options
     options = get_flags_and_options(example_schema)
 
-    assert len(options) == 4
+    assert len(options) == 6
 
     assert options[0].opts == ["--os"]
     assert options[0].help == "The operating system in which the package is installed."
@@ -40,3 +40,11 @@ def test_get_flags_and_options(test_data_flags_options):
     assert options[3].help == "Should your gpu or your cpu handle the task?"
     assert options[3].required == False
     assert options[3].default == "cu118"
+
+    assert options[4].opts == ["--verbose"]
+    assert options[4].required == False
+    assert options[4].default == False
+
+    assert options[5].opts == ["--requiered-flag"]
+    assert options[5].required == True
+    assert options[5].default == None

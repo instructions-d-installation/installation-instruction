@@ -36,9 +36,17 @@ properties:
       - title: CUDA 12.1
         const: cu121
     default: cu118
+  
+  verbose:
+    type: boolean
+    default: false
+
+  requiered_flag:
+    type: boolean
 
 required:
   - os
   - packager
+  - requiered_flag
 
 additionalProperties: false
