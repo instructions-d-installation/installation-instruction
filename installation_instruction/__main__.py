@@ -24,9 +24,9 @@ from .installation_instruction import InstallationInstruction
 from .helpers import _make_pretty_print_line_breaks
 
 VERSION_STRING = f"""Version: installation-instruction {__version__}
-Copyright: (C) 2024 Adam McKellar, Kanushka Gupta, Timo Ege
+Copyright: (C) 2024 {__author_email__}, {__author__}
 License: {__license__}
-Repository: {__repository__.replace("Repository, ", "")}"""
+Repository: {__repository__}"""
 
 
 class ConfigReadCommand(click.MultiCommand):

@@ -19,7 +19,7 @@ __version__ = metadata.version(__package__)
 
 # This is terrible and I really hate it.
 __description__ = metadata.metadata(__package__)["Summary"]
-__repository__ = metadata.metadata(__package__)["Project-URL"]
+__repository__ = metadata.metadata(__package__)["Project-URL"].replace("Repository, ", "")
 
 __author__ = metadata.metadata(__package__)["Author"]
 __author_email__ = metadata.metadata(__package__)["Author-email"]
