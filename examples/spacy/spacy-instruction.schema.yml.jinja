@@ -92,7 +92,7 @@ additionalProperties: false
 ------
 
 {% if package == "pip" %}
-  pip install -U pip setuptools wheel
+  pip install -U pip setuptools wheel &&
   pip install -U spacy
 
     {% if hardware == "cpu"  %}
@@ -121,10 +121,10 @@ additionalProperties: false
 {%endif%}
 
 {%if package == "source"%}
-  pip install -U pip setuptools wheel
-  git clone https://github.com/explosion/spaCy
-  cd spaCy
-  pip install -r requirements.txt
+  pip install -U pip setuptools wheel &&
+  git clone https://github.com/explosion/spaCy &&
+  cd spaCy &&
+  pip install -r requirements.txt &&
   pip install --no-build-isolation --editable .
 
   {% if hardware == "gpu"%}

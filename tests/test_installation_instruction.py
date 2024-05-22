@@ -49,7 +49,7 @@ def test_validate_and_render_spacy():
     install = InstallationInstruction.from_file("examples/spacy/spacy-instruction.schema.yml.jinja")
 
     good_installation_instruction = install.validate_and_render(valid_user_input)
-    assert ('pip install -U pip setuptools wheel pip install -U spacy', False) == good_installation_instruction
+    assert ('pip install -U pip setuptools wheel && pip install -U spacy', False) == good_installation_instruction
 
     with pytest.raises(Exception):
         install.validate_and_render(invalid_user_input)

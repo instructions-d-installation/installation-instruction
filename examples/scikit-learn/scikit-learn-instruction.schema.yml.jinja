@@ -36,31 +36,26 @@ additionalProperties: false
 ------
 
 {% if package == "conda" %}
-    conda create -n sklearn-env -c conda-forge scikit-learn \n
-    conda activate sklearn-env
+    conda create -n sklearn-env -c conda-forge scikit-learn &&
+    conda activate sklearn-env &&
 {% else %}
     {% if os == "Linux"%}
         {% if virtualenv%}
-            python3 -m venv sklearn-venv \n
-            source sklearn-venv/bin/activate \n
-            pip3 install -U scikit-learn
-        {% else %}
-            pip3 install -U scikit-learn
+            python3 -m venv sklearn-venv &&
+            source sklearn-venv/bin/activate &&
         {% endif %}
+        pip3 install -U scikit-learn
     {% else %}
         {% if virtualenv%}
             {% if os == "macOS"%}
-                python -m venv sklearn-venv \n
-                source sklearn-venv/bin/activate \n
-                pip install -U scikit-learn 
+                python -m venv sklearn-venv &&
+                source sklearn-venv/bin/activate &&
             {% else %}
-                python -m venv sklearn-venv \n
-                sklearn-venv\Scripts\activate \n
-                pip install -U scikit-learn 
+                python -m venv sklearn-venv &&
+                sklearn-venv\Scripts\activate &&
             {% endif %}
-        {% else %}
-            pip install -U scikit-learn
         {% endif %}
+        pip install -U scikit-learn
     {% endif %}
 {% endif %}
 
