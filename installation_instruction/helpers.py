@@ -16,6 +16,12 @@ import re
 from jinja2 import Environment, Template
 
 
+def _find_config_file_in_folder(folder_path: str) -> str | None:
+    """
+    Finds file with the name `install.cfg` in the folder and returns its path if it exists.
+    """
+    pass
+
 def _make_pretty_print_line_breaks(string: str) -> str:
     """
     Replaces `&& ` with a newline character.
