@@ -4,15 +4,13 @@ from installation_instruction.installation_instruction import InstallationInstru
 
 
 def test_validate_and_render(user_input_tests):
-    valid_input = user_input_tests[1]
-    invalid_input = user_input_tests[2]
-    expected_output = user_input_tests[3]
-    install = InstallationInstruction.from_file(user_input_tests[0])
+
+    install = InstallationInstruction.from_file(user_input_tests.get("example_file_path"))
     
-    good_installation_instruction = install.validate_and_render(valid_input)
-    assert expected_output == good_installation_instruction
+    good_installation_instruction = install.validate_and_render(user_input_tests.get("valid_data"))
+    assert user_input_tests.get("expected_data") == good_installation_instruction
     
     with pytest.raises(Exception):
-        install.validate_and_render(invalid_input)
+        install.validate_and_render(user_input_tests.get("invalid_data"))
 
 

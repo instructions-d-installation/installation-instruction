@@ -27,33 +27,32 @@ example_schemas = {
 
 _user_input_data = []
 _user_input_name = []
-
-for filename in glob.glob(os.path.join(os.path.split(__file__)[0], "data", "*valid_data.*")):
-    with open(filename, "r") as f:
-        try:
-            with open(filename, "r") as f:
-                _user_input_data.append(json.load(f))
-                _user_input_name.append(os.path.basename(filename))
-        except:
-            with open(filename, "r") as f:
-                split = f.readlines()
-                split[0] = split[0][:-1]
-                _user_input_data.append((split[0],split[1] == 'True'))
-                _user_input_name.append(os.path.basename(filename))
-
 packages = []
-for i in _user_input_name:
-    package = i.split("_")[0]
-    if package not in packages:
-        packages.append(package)
+
+# fills the lists with the right data from the data folder and adds the names of the example packages. For example pytorch.
+for filename in glob.glob(os.path.join(os.path.split(__file__)[0], "data", "*valid_data.*")):
+    try:
+        with open(filename, "r") as f:
+            _user_input_data.append(json.load(f))
+            file_name = os.path.basename(filename)
+            _user_input_name.append(file_name)
+            file_name = file_name.split("_")[0]
+            if file_name not in packages:
+                packages.append(file_name)
+    except:
+        with open(filename, "r") as f:
+            split = f.readlines()
+            _user_input_data.append((split[0][:-1],split[1] == 'True'))
+            _user_input_name.append(os.path.basename(filename))
 
 test_data = []
 for package in packages:
-    valid_id = _user_input_name.index(f"{package}_valid_data.json")
-    invalid_id = _user_input_name.index(f"{package}_invalid_data.json")
-    expected_value = _user_input_name.index(f"{package}_expected_valid_data.txt")
-    tested_file_path = example_schemas.get(package)
-    test_data.append([tested_file_path,_user_input_data[valid_id],_user_input_data[invalid_id],_user_input_data[expected_value]])
+    test_data.append({
+    "valid_data" : _user_input_data[_user_input_name.index(f"{package}_valid_data.json")],
+    "invalid_data" :_user_input_data[ _user_input_name.index(f"{package}_invalid_data.json")],
+    "expected_data" : _user_input_data[_user_input_name.index(f"{package}_expected_valid_data.txt")],
+    "example_file_path" : example_schemas.get(package)
+    })
 
 
 def pytest_generate_tests(metafunc):
