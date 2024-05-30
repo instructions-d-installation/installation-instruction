@@ -1,5 +1,5 @@
 {
 "os": "Windows",
 "packager": "pip",
-"virtualenv": False
+"virtualenv": false
 }
