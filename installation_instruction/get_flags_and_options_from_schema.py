@@ -22,7 +22,7 @@ SCHEMA_TO_CLICK_TYPE_MAPPING = {
     "boolean": click.BOOL,
 }
 
-def get_flags_and_options(schema: dict) -> list[Option]:
+def _get_flags_and_options(schema: dict) -> list[Option]:
     """
     Generates Click flags and options from a JSON schema.
 

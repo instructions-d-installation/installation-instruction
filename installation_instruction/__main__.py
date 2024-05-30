@@ -19,7 +19,7 @@ from subprocess import run
 import click
 
 from .__init__ import __version__, __description__, __repository__, __author__, __author_email__, __license__
-from .get_flags_and_options_from_schema import get_flags_and_options
+from .get_flags_and_options_from_schema import _get_flags_and_options
 from .installation_instruction import InstallationInstruction
 from .helpers import _make_pretty_print_line_breaks
 
@@ -49,7 +49,7 @@ class ConfigReadCommand(click.MultiCommand):
 
         try:
             instruction = InstallationInstruction.from_file(config_file)
-            options = get_flags_and_options(instruction.schema)
+            options = _get_flags_and_options(instruction.schema)
         except Exception as e:
             click.echo(click.style("Error (parsing options from schema): " + str(e), fg="red"))
             exit(1)

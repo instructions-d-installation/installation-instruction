@@ -29,5 +29,5 @@ del metadata
 
 from installation_instruction.installation_instruction import InstallationInstruction
 import installation_instruction.helpers
-from installation_instruction.get_flags_and_options_from_schema import get_flags_and_options
+from installation_instruction.get_flags_and_options_from_schema import _get_flags_and_options
 

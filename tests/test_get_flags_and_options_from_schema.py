@@ -13,11 +13,11 @@
 # limitations under the License.
 
 
-from installation_instruction.get_flags_and_options_from_schema import get_flags_and_options
+from installation_instruction.get_flags_and_options_from_schema import _get_flags_and_options
 
 def test_get_flags_and_options(test_data_flags_options):
     example_schema = test_data_flags_options
-    options = get_flags_and_options(example_schema)
+    options = _get_flags_and_options(example_schema)
 
     assert len(options) == 6
 
