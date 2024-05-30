@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Removed
+
+
+## [0.2.0] - 2024-05-30
+
+### Added
+
 * Added installation functionality.
 * Added pretty print to show command.
 * Added many colors for cli output.
@@ -50,6 +59,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added contributors.
 
 
-[unreleased]: https://github.com/instructions-d-installation/installation-instruction/compare/v0.1.1...HEAD
+[unreleased]: https://github.com/instructions-d-installation/installation-instruction/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/instructions-d-installation/installation-instruction/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/instructions-d-installation/installation-instruction/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/instructions-d-installation/installation-instruction/releases/tag/v0.1.0
