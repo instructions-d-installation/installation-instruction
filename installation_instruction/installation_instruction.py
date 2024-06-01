@@ -15,7 +15,7 @@
 
 from yaml import safe_load
 import json
-from jsonschema import validate
+from jsonschema import validate, Draft202012Validator
 from jinja2 import Environment, Template
 from jinja2.exceptions import UndefinedError
 
@@ -77,7 +77,11 @@ class InstallationInstruction:
                 self.schema = safe_load(schema)
             except:
                 raise Exception("Schema is neither a valid json nor a valid yaml.")
-
+        
+        try:
+            Draft202012Validator.check_schema(self.schema)
+        except:
+            raise Exception("The given schema file is not a valid json schema.")
         self.template = helpers._load_template_from_string(RAISE_JINJA_MACRO_STRING+template)
 
 

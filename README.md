@@ -83,6 +83,7 @@ Options are dynamically created with the schema part of the config file.
 
 * The first section of the config is a [json-schema](https://json-schema.org/).
 * It can be written in [JSON](https://www.json.org/json-en.html) or to JSON capabilites restricted [YAML](https://yaml.org/).
+* When creating a schema use the following schema draft version: https://json-schema.org/draft/2020-12/schema
 * `title` are used for pretty print option names.
 * `description` is used for the options help message.
 * `anyOf` with nested `const` and `title` are a special case as a replacement for `enum` but with pretty print name.
