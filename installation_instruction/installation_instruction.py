@@ -73,17 +73,18 @@ class InstallationInstruction:
 
         result["title"] = self.schema.get("title", "")
         result["description"] = self.schema.get("description", "")
+        result["properties"] = {}
 
         for key, value in self.schema.get('properties', {}).items():
 
-            result[key] = {
+            result["properties"][key] = {
                 "title": value.get("title", key),
                 "description": value.get("description", ""),
                 "type": value.get("type", "enum"),
                 "default": value.get("default", None),
             }
             if "enum" in value:
-                result[key]["enum"] = [
+                result["properties"][key]["enum"] = [
                     {
                         "title": e,
                         "value": e,
@@ -91,7 +92,7 @@ class InstallationInstruction:
                     } for e in value["enum"]
                 ]
             elif type := "anyOf" if "anyOf" in value else "oneOf" if "oneOf" in value else None:
-                result[key]["enum"] = [
+                result["properties"][key]["enum"] = [
                     {
                         "title": c.get("title", c.get("const", "")),
                         "value": c.get("const", ""),
@@ -99,7 +100,7 @@ class InstallationInstruction:
                     } for c in value[type]
                 ]
             else:
-                result[key]["type"] = "string"
+                result["properties"][key]["type"] = "string"
                 
         return result
 

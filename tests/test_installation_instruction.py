@@ -22,7 +22,7 @@ def test_parse_schema(test_data_flags_options):
     schema = install.parse_schema()
     print(schema)
     
-    assert schema["packager"] == {
+    assert schema["properties"]["packager"] == {
         "title": "Packager",
         "description": "The package manager of your choosing.",
         "default": "pip",
@@ -41,7 +41,7 @@ def test_parse_schema(test_data_flags_options):
         ]
     }
 
-    assert schema["compute_platform"] == {
+    assert schema["properties"]["compute_platform"] == {
         "title": "Compute Platform",
         "description": "Should your gpu or your cpu handle the task?",
         "enum": [
