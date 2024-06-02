@@ -27,15 +27,16 @@ def test_parse_schema(test_data_flags_options):
         "description": "The package manager of your choosing.",
         "default": "pip",
         "type": "enum",
+        "key": "packager",
         "enum": [
             {
                 "title": "pip",
-                "value": "pip",
+                "key": "pip",
                 "description": ""
             },
             {
                 "title": "conda",
-                "value": "conda",
+                "key": "conda",
                 "description": ""
             }
         ]
@@ -44,15 +45,16 @@ def test_parse_schema(test_data_flags_options):
     assert schema["properties"]["compute_platform"] == {
         "title": "Compute Platform",
         "description": "Should your gpu or your cpu handle the task?",
+        "key": "compute_platform",
         "enum": [
             {
                 "title": "CUDA 11.8",
-                "value": "cu118",
+                "key": "cu118",
                 "description": ""
             },
             {
                 "title": "CUDA 12.1",
-                "value": "cu121",
+                "key": "cu121",
                 "description": "CUDA 12.1 is the latest version of CUDA."
             }
         ],

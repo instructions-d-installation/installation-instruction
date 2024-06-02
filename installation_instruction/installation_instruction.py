@@ -82,12 +82,13 @@ class InstallationInstruction:
                 "description": value.get("description", ""),
                 "type": value.get("type", "enum"),
                 "default": value.get("default", None),
+                "key": key,
             }
             if "enum" in value:
                 result["properties"][key]["enum"] = [
                     {
                         "title": e,
-                        "value": e,
+                        "key": e,
                         "description": "",
                     } for e in value["enum"]
                 ]
@@ -95,7 +96,7 @@ class InstallationInstruction:
                 result["properties"][key]["enum"] = [
                     {
                         "title": c.get("title", c.get("const", "")),
-                        "value": c.get("const", ""),
+                        "key": c.get("const", ""),
                         "description": c.get("description", ""),
                     } for c in value[type]
                 ]
