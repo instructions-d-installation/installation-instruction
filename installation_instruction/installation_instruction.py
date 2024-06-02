@@ -59,6 +59,46 @@ class InstallationInstruction:
         instruction = helpers._replace_whitespace_in_string(instruction)
 
         return (instruction, False)
+    
+    def parse_schema(self) -> dict:
+        """
+        Parses schema into a dict.
+
+        This is only important for merging enum, anyOf and oneOf into one type.
+
+        :return: Schema as dict.
+        :rtype: dict
+        """
+        result = {}
+
+        for key, value in self.schema.get('properties', {}).items():
+
+            result[key] = {
+                "title": value.get("title", key),
+                "description": value.get("description", ""),
+                "type": value.get("type", "enum"),
+                "default": value.get("default", None),
+            }
+            if "enum" in value:
+                result[key]["enum"] = [
+                    {
+                        "title": e,
+                        "value": e,
+                        "description": "",
+                    } for e in value["enum"]
+                ]
+            elif type := "anyOf" if "anyOf" in value else "oneOf" if "oneOf" in value else None:
+                result[key]["enum"] = [
+                    {
+                        "title": c.get("title", c.get("const", "")),
+                        "value": c.get("const", ""),
+                        "description": c.get("description", ""),
+                    } for c in value[type]
+                ]
+            else:
+                result[key]["type"] = "string"
+                
+        return result
 
 
     def __init__(self, config: str) -> None:
