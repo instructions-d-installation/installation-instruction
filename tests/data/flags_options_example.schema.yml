@@ -35,6 +35,7 @@ properties:
         const: cu118
       - title: CUDA 12.1
         const: cu121
+        description: CUDA 12.1 is the latest version of CUDA.
     default: cu118
   
   verbose:

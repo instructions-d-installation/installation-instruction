@@ -14,3 +14,48 @@ def test_validate_and_render(user_input_tests):
         install.validate_and_render(user_input_tests.get("invalid_data"))
 
 
+
+def test_parse_schema(test_data_flags_options):
+    from .conftest import example_schemas
+    install = InstallationInstruction.from_file(example_schemas.get("pytorch"))
+    install.schema = test_data_flags_options
+    schema = install.parse_schema()
+    print(schema)
+    
+    assert schema["packager"] == {
+        "title": "Packager",
+        "description": "The package manager of your choosing.",
+        "default": "pip",
+        "type": "enum",
+        "enum": [
+            {
+                "title": "pip",
+                "value": "pip",
+                "description": ""
+            },
+            {
+                "title": "conda",
+                "value": "conda",
+                "description": ""
+            }
+        ]
+    }
+
+    assert schema["compute_platform"] == {
+        "title": "Compute Platform",
+        "description": "Should your gpu or your cpu handle the task?",
+        "enum": [
+            {
+                "title": "CUDA 11.8",
+                "value": "cu118",
+                "description": ""
+            },
+            {
+                "title": "CUDA 12.1",
+                "value": "cu121",
+                "description": "CUDA 12.1 is the latest version of CUDA."
+            }
+        ],
+        "default": "cu118",
+        "type": "enum"
+    }
