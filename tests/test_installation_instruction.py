@@ -64,3 +64,11 @@ def test_parse_schema(test_data_flags_options):
 
     assert schema["title"] == "Scikit-learn installation schema"
     assert schema["description"] == "This is a Schema to construct installation instructions for the python package scikit-learn by Timo Ege."
+
+    assert schema["properties"]["virtualenv"] == {
+        "title": "Use pip virtualenv",
+        "description": "Choose if you want to use a virtual environment to install the package.",
+        "default": False,
+        "type": "boolean",
+        "key": "virtualenv"
+    }

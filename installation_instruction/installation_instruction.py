@@ -80,7 +80,7 @@ class InstallationInstruction:
             result["properties"][key] = {
                 "title": value.get("title", key),
                 "description": value.get("description", ""),
-                "type": value.get("type", "enum"),
+                "type": value.get("type", "string"),
                 "default": value.get("default", None),
                 "key": key,
             }
@@ -92,6 +92,7 @@ class InstallationInstruction:
                         "description": "",
                     } for e in value["enum"]
                 ]
+                result["properties"][key]["type"] = "enum"
             elif type := "anyOf" if "anyOf" in value else "oneOf" if "oneOf" in value else None:
                 result["properties"][key]["enum"] = [
                     {
@@ -100,8 +101,7 @@ class InstallationInstruction:
                         "description": c.get("description", ""),
                     } for c in value[type]
                 ]
-            else:
-                result["properties"][key]["type"] = "string"
+                result["properties"][key]["type"] = "enum"
                 
         return result
 
