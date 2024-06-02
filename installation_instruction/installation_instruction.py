@@ -71,6 +71,9 @@ class InstallationInstruction:
         """
         result = {}
 
+        result["title"] = self.schema.get("title", "")
+        result["description"] = self.schema.get("description", "")
+
         for key, value in self.schema.get('properties', {}).items():
 
             result[key] = {

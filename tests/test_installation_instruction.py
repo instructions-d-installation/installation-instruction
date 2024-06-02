@@ -59,3 +59,6 @@ def test_parse_schema(test_data_flags_options):
         "default": "cu118",
         "type": "enum"
     }
+
+    assert schema["title"] == "Scikit-learn installation schema"
+    assert schema["description"] == "This is a Schema to construct installation instructions for the python package scikit-learn by Timo Ege."
