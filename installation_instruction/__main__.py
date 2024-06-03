@@ -18,12 +18,6 @@ from subprocess import run
 
 import click
 
-from urllib.parse import urlparse
-import git
-import tempfile
-import shutil
-import os
-
 from .__init__ import __version__, __description__, __repository__, __author__, __author_email__, __license__
 from .get_flags_and_options_from_schema import get_flags_and_options
 from .installation_instruction import InstallationInstruction
@@ -52,28 +46,11 @@ class ConfigReadCommand(click.MultiCommand):
 
     def get_command(self, ctx, config_file: str) -> click.Command|None:
 
-        if not isfile(config_file):
-            # Create a temporary directory
-            temp_dir = tempfile.TemporaryDirectory()
-            repo_dir = temp_dir.name
-            print("hello")
-            git.Repo.clone_from(self.path, repo_dir)
-
-        # It's a URL, handle it accordingly
-        #repo_dir, temp_dir = clone_git_repo(folder_path)
-
-        '''config_file_path = _find_config_file_in_folder(config_file)
-
-        if config_file_path:
-            print("Config file found:", config_file_path)
-        else:
-            print("Config file not found 12334:", config_file)
-            return None
-        
-        if not isfile(config_file):
+        config_file_path = _find_config_file_in_folder(config_file)
+        if not isfile(config_file_path):
             click.echo("Config file not found.")
             return None
-        ''' 
+        
         try:
             instruction = InstallationInstruction.from_file(config_file)
             options = get_flags_and_options(instruction.schema)
@@ -111,7 +88,6 @@ class ConfigReadCommand(click.MultiCommand):
             callback=callback,
         )
 
-
 @click.command(cls=ConfigReadCommand, help="Shows installation instructions for your specified config file and parameters.")
 @click.option("--raw", is_flag=True, help="Show installation instructions without pretty print.", default=False)
 @click.pass_context
@@ -137,3 +113,4 @@ main.add_command(install)
 
 if __name__ == "__main__":
     main()
+    
