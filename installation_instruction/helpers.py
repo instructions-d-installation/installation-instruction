@@ -15,14 +15,52 @@
 import re
 from jinja2 import Environment, Template
 
+from urllib.parse import urlparse
+import git
+import tempfile
+import shutil
+import os
+
+def is_git_repo_url(url):
+    parsed_url = urlparse(url)
+    return all([parsed_url.scheme, parsed_url.netloc, parsed_url.path]) and url.endswith('.git')
+
+def clone_git_repo(url):
+    # Create a temporary directory
+    temp_dir = tempfile.TemporaryDirectory()
+    repo_dir = temp_dir.name
+    git.Repo.clone_from(url, repo_dir)
+    return repo_dir, temp_dir
+    
+def check_and_download_install_cfg(repo_dir):
+    install_cfg_path = os.path.join(repo_dir, 'install.cfg')
+    if os.path.isfile(install_cfg_path):
+        temp_file_dir = tempfile.mkdtemp()
+        temp_file_path = os.path.join(temp_file_dir, 'install.cfg')
+        shutil.copy(install_cfg_path, temp_file_path)
+        return temp_file_path, temp_file_dir
+    return None, None
 
 def _find_config_file_in_folder(folder_path: str) -> str | None:
     """
     Finds file with the name `install.cfg` in the folder and returns its path if it exists.
     """
-    pass
+    if folder_path.startswith('http://') or folder_path.startswith('https://'):
+        # It's a URL, handle it accordingly
+        repo_dir, temp_dir = clone_git_repo(folder_path)
+        install_cfg_path, install_cfg_temp_dir = check_and_download_install_cfg(repo_dir)
+        if install_cfg_path:
+            print(f"install.cfg found and downloaded to: {install_cfg_path}")
+            return install_cfg_path
+        else:
+            print("install.cfg not found in the repository root.")
+        # Clean up the cloned repository
+        temp_dir.cleanup()
+    elif os.path.isfile(folder_path):
+        return folder_path
+    return None
 
-def _make_pretty_print_line_breaks(string: str) -> str:
+def make_pretty_print_line_breaks(string):
     """
     Replaces `&& ` with a newline character.
 
@@ -33,7 +71,7 @@ def _make_pretty_print_line_breaks(string: str) -> str:
     """
     return re.sub(r"\s?&&\s?", "\n", string, 0, re.S)
 
-def _get_error_message_from_string(string: str) -> str | None:
+def get_error_message_from_string(string):
     """
     Parses error message of error given by using jinja macro `RAISE_JINJA_MACRO_STRING`. If no error message is found returns `None`.
 
@@ -48,18 +86,18 @@ def _get_error_message_from_string(string: str) -> str | None:
         return None
     return matches.group("errmsg")
 
-def _replace_whitespace_in_string(string: str) -> str:
+def replace_whitespace_in_string(string):
     """
     Replaces eol and whitespaces of a string with a single whitespace.
 
     :param string: String to be processed.
     :type string: str
-    :return: String where whitespace and eol is replaced with one whitespace and whitspace before and after are stripped.
+    :return: String where whitespace and eol is replaced with one whitespace and whitespace before and after are stripped.
     :rtype: str
     """
     return re.sub(r"\s{1,}", " ", string, 0, re.S).strip()
 
-def _split_string_at_delimiter(string: str) -> tuple[str, str]:
+def split_string_at_delimiter(string):
     """
     Extracts part before and after the delimiter "------" or more.
 
@@ -78,7 +116,7 @@ def _split_string_at_delimiter(string: str) -> tuple[str, str]:
                 matches.group("template")
             )
 
-def _load_template_from_string(string: str) -> Template:
+def load_template_from_string(string):
     """
     Returns `jinja2.Template`.
 
@@ -92,3 +130,6 @@ def _load_template_from_string(string: str) -> Template:
         lstrip_blocks=True
     )
     return env.from_string(string)
+
+
+_find_config_file_in_folder('https://github.com/KanushkaGupta/sample.git')

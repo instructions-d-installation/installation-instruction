@@ -18,10 +18,18 @@ from subprocess import run
 
 import click
 
+from urllib.parse import urlparse
+import git
+import tempfile
+import shutil
+import os
+
 from .__init__ import __version__, __description__, __repository__, __author__, __author_email__, __license__
 from .get_flags_and_options_from_schema import get_flags_and_options
 from .installation_instruction import InstallationInstruction
 from .helpers import _make_pretty_print_line_breaks
+from .helpers import _find_config_file_in_folder
+
 
 VERSION_STRING = f"""Version: installation-instruction {__version__}
 Copyright: (C) 2024 {__author_email__}, {__author__}
@@ -44,21 +52,28 @@ class ConfigReadCommand(click.MultiCommand):
 
     def get_command(self, ctx, config_file: str) -> click.Command|None:
 
-        # @Kanushka add here your logic. I thought of the following steps:
-        # Check if config_file is an url.
-        # If yes create a temporary dir. Or do something equivalent.
-        # Find out if said url is a file or a git repo.
-        # If is a file then download it to the temporary dir.
-        # If is a git repo then clone it to the temporary dir and find the actual config file "install.cfg".
-        # Overwrite config_file with the path to the config file.
-        #
-        # It be nice if you implement and use the `function helpers._find_config_file_in_folder`.
-        # Please take a look into helpers.py for the functions definition.
+        if not isfile(config_file):
+            # Create a temporary directory
+            temp_dir = tempfile.TemporaryDirectory()
+            repo_dir = temp_dir.name
+            print("hello")
+            git.Repo.clone_from(self.path, repo_dir)
 
+        # It's a URL, handle it accordingly
+        #repo_dir, temp_dir = clone_git_repo(folder_path)
+
+        '''config_file_path = _find_config_file_in_folder(config_file)
+
+        if config_file_path:
+            print("Config file found:", config_file_path)
+        else:
+            print("Config file not found 12334:", config_file)
+            return None
+        
         if not isfile(config_file):
             click.echo("Config file not found.")
             return None
-
+        ''' 
         try:
             instruction = InstallationInstruction.from_file(config_file)
             options = get_flags_and_options(instruction.schema)
