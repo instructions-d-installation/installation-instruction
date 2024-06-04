@@ -14,6 +14,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 
+## [0.3.0] - 2024-06-04
+
+### Added
+
+* Added schema validation when reading in config. (Before it was only validated when rendering the template.)
+* Added parse function `parse_schema` to `InstallationInstruction` for 
+    [web-installation-instruction](https://github.com/instructions-d-installation/web-installation-instruction)
+    project.
+* Added documentation for release procedure.
+
+
 ## [0.2.0] - 2024-05-30
 
 ### Added
@@ -59,7 +70,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Added contributors.
 
 
-[unreleased]: https://github.com/instructions-d-installation/installation-instruction/compare/v0.2.0...HEAD
+[unreleased]: https://github.com/instructions-d-installation/installation-instruction/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/instructions-d-installation/installation-instruction/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/instructions-d-installation/installation-instruction/compare/v0.1.1...v0.2.0
 [0.1.1]: https://github.com/instructions-d-installation/installation-instruction/compare/v0.1.0...v0.1.1
 [0.1.0]: https://github.com/instructions-d-installation/installation-instruction/releases/tag/v0.1.0
