@@ -37,11 +37,7 @@ dependencies = [
     "jsonschema",
     "PyYAML",
     "click < 9.0.0a0",
-    "urlparse",
-    "git",
-    "tempfile",
-    "shutil",
-    "os"
+    "GitPython",
 ]
 
 [project.optional-dependencies]
