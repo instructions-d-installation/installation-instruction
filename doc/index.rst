@@ -3,9 +3,11 @@ installation-instruction
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Documentation:
 
    intro
+   dev
+   
 
 Indices and tables
 ==================
