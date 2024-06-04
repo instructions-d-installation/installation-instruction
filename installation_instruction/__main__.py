@@ -46,8 +46,8 @@ class ConfigReadCommand(click.MultiCommand):
 
     def get_command(self, ctx, config_file: str) -> click.Command|None:
 
-        config_file_path = _find_config_file_in_folder(config_file)
-        if not isfile(config_file_path):
+        config_file = _find_config_file_in_folder(config_file)
+        if not isfile(config_file):
             click.echo("Config file not found.")
             return None
         

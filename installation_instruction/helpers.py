@@ -58,7 +58,7 @@ def _find_config_file_in_folder(folder_path: str) -> str | None:
         temp_dir.cleanup()
     elif os.path.isfile(folder_path):
         return folder_path
-    return None
+    return folder_path
 
 def make_pretty_print_line_breaks(string):
     """
