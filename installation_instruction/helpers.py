@@ -1,3 +1,4 @@
+
 # Copyright 2024 Adam McKellar, Kanushka Gupta, Timo Ege
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,7 +61,7 @@ def _find_config_file_in_folder(folder_path: str) -> str | None:
         return folder_path
     return folder_path
 
-def make_pretty_print_line_breaks(string):
+def _make_pretty_print_line_breaks(string: str) -> str:
     """
     Replaces `&& ` with a newline character.
 
@@ -71,7 +72,7 @@ def make_pretty_print_line_breaks(string):
     """
     return re.sub(r"\s?&&\s?", "\n", string, 0, re.S)
 
-def get_error_message_from_string(string):
+def _get_error_message_from_string(string: str) -> str | None:
     """
     Parses error message of error given by using jinja macro `RAISE_JINJA_MACRO_STRING`. If no error message is found returns `None`.
 
@@ -86,18 +87,18 @@ def get_error_message_from_string(string):
         return None
     return matches.group("errmsg")
 
-def replace_whitespace_in_string(string):
+def _replace_whitespace_in_string(string: str) -> str:
     """
     Replaces eol and whitespaces of a string with a single whitespace.
 
     :param string: String to be processed.
     :type string: str
-    :return: String where whitespace and eol is replaced with one whitespace and whitespace before and after are stripped.
+    :return: String where whitespace and eol is replaced with one whitespace and whitspace before and after are stripped.
     :rtype: str
     """
     return re.sub(r"\s{1,}", " ", string, 0, re.S).strip()
 
-def split_string_at_delimiter(string):
+def _split_string_at_delimiter(string: str) -> tuple[str, str]:
     """
     Extracts part before and after the delimiter "------" or more.
 
@@ -116,7 +117,7 @@ def split_string_at_delimiter(string):
                 matches.group("template")
             )
 
-def load_template_from_string(string):
+def _load_template_from_string(string: str) -> Template:
     """
     Returns `jinja2.Template`.
 
@@ -130,6 +131,3 @@ def load_template_from_string(string):
         lstrip_blocks=True
     )
     return env.from_string(string)
-
-
-_find_config_file_in_folder('https://github.com/KanushkaGupta/sample.git')
