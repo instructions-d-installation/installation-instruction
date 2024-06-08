@@ -68,3 +68,12 @@ def test_data_flags_options():
     
     return example
 
+@pytest.fixture
+def test_data_flags_options_config_string_with_empty_template():
+    file_path = os.path.join(os.path.dirname(__file__), 'data', 'flags_options_example.schema.yml')
+    with open(file_path,"r") as file:
+        example = file.read()
+
+    example += "\n------\nsomething"
+    
+    return example

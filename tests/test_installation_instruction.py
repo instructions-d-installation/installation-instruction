@@ -15,12 +15,10 @@ def test_validate_and_render(user_input_tests):
 
 
 
-def test_parse_schema(test_data_flags_options):
-    from .conftest import example_schemas
-    install = InstallationInstruction.from_file(example_schemas.get("pytorch"))
-    install.schema = test_data_flags_options
+def test_parse_schema(test_data_flags_options_config_string_with_empty_template):
+    config = test_data_flags_options_config_string_with_empty_template
+    install = InstallationInstruction(config)
     schema = install.parse_schema()
-    print(schema)
     
     assert schema["properties"]["packager"] == {
         "title": "Packager",
