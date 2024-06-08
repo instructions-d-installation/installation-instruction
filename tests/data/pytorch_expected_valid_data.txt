@@ -1,2 +1,0 @@
-Windows does not support ROCm!
-True

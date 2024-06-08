@@ -1,3 +1,4 @@
+
 # Copyright 2024 Adam McKellar, Kanushka Gupta, Timo Ege
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,47 +18,14 @@ import pytest
 import os
 import yaml
 import json
-import glob
 
-example_schemas = {
-    "pytorch":"examples/pytorch/pytorch-instruction.schema.yml.jinja",
-    "scikit":"examples/scikit-learn/scikit-learn-instruction.schema.yml.jinja",
-    "spacy":"examples/spacy/spacy-instruction.schema.yml.jinja"
-}
-
-_user_input_data = []
-_user_input_name = []
-packages = []
-
-# fills the lists with the right data from the data folder and adds the names of the example packages. For example pytorch.
-for filename in glob.glob(os.path.join(os.path.split(__file__)[0], "data", "*valid_data.*")):
-    try:
-        with open(filename, "r") as f:
-            _user_input_data.append(json.load(f))
-            file_name = os.path.basename(filename)
-            _user_input_name.append(file_name)
-            file_name = file_name.split("_")[0]
-            if file_name not in packages:
-                packages.append(file_name)
-    except:
-        with open(filename, "r") as f:
-            split = f.readlines()
-            _user_input_data.append((split[0][:-1],split[1] == 'True'))
-            _user_input_name.append(os.path.basename(filename))
-
-test_data = []
-for package in packages:
-    test_data.append({
-    "valid_data" : _user_input_data[_user_input_name.index(f"{package}_valid_data.json")],
-    "invalid_data" :_user_input_data[ _user_input_name.index(f"{package}_invalid_data.json")],
-    "expected_data" : _user_input_data[_user_input_name.index(f"{package}_expected_valid_data.txt")],
-    "example_file_path" : example_schemas.get(package)
-    })
+with open("tests/data/example_data.json","r") as f:
+    data_test = json.load(f)
 
 
 def pytest_generate_tests(metafunc):
     if "user_input_tests" in metafunc.fixturenames:
-        metafunc.parametrize("user_input_tests",test_data)
+        metafunc.parametrize("user_input_tests",data_test)
 
 
 @pytest.fixture

@@ -1,0 +1,67 @@
+[
+    {
+        "input":
+            {
+                "build": "preview",
+                "os": "win",
+                "package": "pip",
+                "compute_platform": "ro60"
+            },
+        "expected_output": "Windows does not support ROCm!\nTrue",
+        "schema_path":"examples/pytorch/pytorch-instruction.schema.yml.jinja"
+    },
+    {
+        "input":
+            {
+                "os": "Windows",
+                "packager": "pip",
+                "virtualenv": false
+            },
+        "expected_output":"pip install -U scikit-learn\nFalse",
+        "schema_path":"examples/scikit-learn/scikit-learn-instruction.schema.yml.jinja"
+    },
+    {
+        "input":
+            {
+                "os": "windows",
+                "platform": "x86",
+                "package": "pip",
+                "hardware": "cpu"
+            },
+        "expected_output":"pip install -U pip setuptools wheel && pip install -U spacy\nFalse",
+        "schema_path":"examples/spacy/spacy-instruction.schema.yml.jinja"
+    },
+    {
+        "input":
+        {
+            "build": "preview",
+            "os": "win",
+            "package": "piiip",
+            "compute_platform": "ro60"
+        },
+        "expected_output":null,
+        "schema_path":"examples/pytorch/pytorch-instruction.schema.yml.jinja"
+    },
+    {
+        "input":
+        {
+            "os": "Kali",
+            "packager": "pip",
+            "virtualenv": false
+        },
+        "expected_output":null,
+        "schema_path":"examples/scikit-learn/scikit-learn-instruction.schema.yml.jinja"
+
+    },
+    {
+        "input":
+        {
+            "os": "windows",
+            "platform": "arm",
+            "package": "forge",
+            "hardware": "cpu"
+        },
+        "expected_output":null,
+        "schema_path":"examples/spacy/spacy-instruction.schema.yml.jinja"
+    }
+]
