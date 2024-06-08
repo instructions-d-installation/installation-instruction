@@ -15,6 +15,7 @@
 from sys import exit
 from os.path import isfile
 from subprocess import run
+import platform
 
 import click
 
@@ -42,6 +43,23 @@ class ConfigReadCommand(click.MultiCommand):
             options_metavar="",
         )
 
+    def _get_system(self, option_types):
+        system = platform.system().lower()
+        system_names = {
+            'linux': 'lin',
+            'linux2': 'lin',  
+            'darwin': 'mac',
+            'win32': 'win',
+        }
+        if system in system_names.keys:
+            system = system_names.get(system)
+            for type in option_types:
+                if system in type.lower():
+                    return type
+
+        return None
+
+
     def get_command(self, ctx, config_file: str) -> click.Command|None:
         if not isfile(config_file):
             click.echo("Config file not found.")
@@ -54,6 +72,11 @@ class ConfigReadCommand(click.MultiCommand):
             click.echo(click.style("Error (parsing options from schema): " + str(e), fg="red"))
             exit(1)
 
+        for option in options:
+            if '__os__' in option.name:
+                system_default = self._get_system(option.type.choices)
+                if system_default:
+                    option.default = system_default
 
         def callback(**kwargs):
             inst = instruction.validate_and_render(kwargs)
