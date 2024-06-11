@@ -42,9 +42,7 @@ def _get_flags_and_options(schema: dict) -> list[Option]:
         option_description = value.get('description', '')
         option_default = value.get('default', None)
 
-        if 'anyOf' in value:
-            option_type = Choice( [c['const'] for c in value['anyOf'] if 'const' in c] )
-        elif "enum" in value:
+        if "enum" in value:
             option_type = Choice( value["enum"] )
         else:
             option_type = SCHEMA_TO_CLICK_TYPE_MAPPING.get(option_type, click.STRING)

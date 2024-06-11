@@ -1,58 +1,61 @@
-$schema: https://json-schema.org/draft/2020-12/schema
-$id: https://github.com/instructions-d-installation/installation-instruction/examples/pytorch/instruction_pytorch.schema.yml
-title: PyTorch Install Schema
-description: This is a schema which is used for constructing interactive installation instructions.
-type: object
-$comment: by Adam McKellar
-properties:
-  build:
-    title: Build
-    description: Use the latest or the tested version.
-    anyOf:
-      - title: Stable (2.3.0)
-        const: stable
-      - title: Preview (Nightly)
-        const: preview
-    default: stable
-  os:
-    title: Operating System
-    description: The operating system you use.
-    anyOf:
-      - title: Linux
-        const: linux
-      - title: Mac
-        const: mac
-      - title: Windows
-        const: win
-    default: win
-  package:
-    title: Package Manager
-    description: The package manager you use.
-    anyOf:
-      - title: Conda
-        const: conda
-      - title: Pip
-        const: pip
-    default: pip
-  compute_platform:
-    title: Compute Platform
-    description: Should your gpu or your cpu handle the task?
-    anyOf:
-      - title: CUDA 11.8
-        const: cu118
-      - title: CUDA 12.1
-        const: cu121
-      - title: ROCm 6.0
-        const: ro60
-      - title: CPU
-        const: cpu
-    default: cu118
-required:
-  - build
-  - os
-  - package
-  - compute_platform
-additionalProperties: false
+schema:
+  $schema: https://json-schema.org/draft/2020-12/schema
+  $id: https://github.com/instructions-d-installation/installation-instruction/examples/pytorch/instruction_pytorch.schema.yml
+  title: PyTorch Install Schema
+  description: This is a schema which is used for constructing interactive installation instructions.
+  type: object
+  $comment: by Adam McKellar
+  properties:
+    build:
+      title: Build
+      description: Use the latest or the tested version.
+      enum:
+        - stable
+        - preview
+      default: stable
+    os:
+      title: Operating System
+      description: The operating system you use.
+      enum:
+        - linux
+        - mac
+        - win
+      default: win
+    package:
+      title: Package Manager
+      description: The package manager you use.
+      enum:
+        - conda
+        - pip
+      default: pip
+    compute_platform:
+      title: Compute Platform
+      description: Should your gpu or your cpu handle the task?
+      enum:
+        - cu118
+        - cu121
+        - ro60
+        - cpu
+      default: cu118
+  required:
+    - build
+    - os
+    - package
+    - compute_platform
+  additionalProperties: false
+
+pretty:
+  stable: Stable (2.3.0)
+  preview: Preview (Nightly)
+  linux: Linux
+  mac: Mac
+  win: Windows
+  conda: Conda
+  pip: Pip
+  cu118: CUDA 11.8
+  cu121: CUDA 12.1
+  ro60: ROCm 6.0
+  cpu: CPU
 
 ------
 
