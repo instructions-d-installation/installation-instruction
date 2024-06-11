@@ -56,3 +56,5 @@ pretty:
 
 description:
   cu121: CUDA 12.1 is the latest version of CUDA.
+  compute_platform: Not shown.
+  verbose: Activate verbose output.

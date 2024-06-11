@@ -81,8 +81,8 @@ class InstallationInstruction:
         for key, value in self.schema.get('properties', {}).items():
 
             result["properties"][key] = {
-                "title": value.get("title", key),
-                "description": value.get("description", ""),
+                "title": value.get("title", "") or pretty.get(key, key),
+                "description": value.get("description", "") or description.get(key, ""),
                 "type": value.get("type", "string"),
                 "default": value.get("default", None),
                 "key": key,
