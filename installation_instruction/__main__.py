@@ -49,7 +49,7 @@ class ConfigReadCommand(click.MultiCommand):
 
         try:
             instruction = InstallationInstruction.from_file(config_file)
-            options = _get_flags_and_options(instruction.schema)
+            options = _get_flags_and_options(instruction.schema, getattr(instruction, "misc", None))
         except Exception as e:
             click.echo(click.style("Error (parsing options from schema): " + str(e), fg="red"))
             exit(1)

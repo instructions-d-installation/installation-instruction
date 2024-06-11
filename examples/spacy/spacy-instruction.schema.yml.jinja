@@ -1,93 +1,94 @@
-$schema: https://json-schema.org/draft/2020-12/schema
-$id: https://github.com/instructions-d-installation/installation-instruction/examples/spacy/schema_spacy.yml
-title: Spacy Install Schema
-description: This is a schema which is used for constructing interactive installation instructions.
-type: object
-$comment: by Kanushka Gupta
-properties:
-  os:
-    title: Operating System
-    description: Specify your Operating System
-    anyOf:
-      - title: macOs/OSX
-        const: mac
-      - title: Windows
-        const: windows
-      - title: Linux
-        const: linux
-    default: windows
-  platform:
-    title: Platform
-    description: platform
-    anyOf:
-      - title: x86
-        const: x86
-      - title: ARM/M1
-        const: arm
-    default: x86
-  package:
-    title: Package Manager
-    description: The package manager you use.
-    anyOf:
-      - title: Conda
-        const: conda
-      - title: Pip
-        const: pip
-      - title: from source
-        const: source
-    default: pip
-  hardware:
-    title: Hardware
-    description: Hardware you want to use- CPU or GPU?
-    anyOf:
-      - title: CPU
-        const: cpu
-      - title: GPU
-        const: gpu
-    type: string
-    default: cpu
-    
-  configuration:
-    title: Configuration
-    description: the configuration you have
-    anyOf:
-      - title: virtual env
-        const: venv
-      - title: train models
-        const: train_models
-  pipeline:
-    anyOf:
-      - title: efficiency
-        const: efficiency
-      - title: accuracy
-        const: accuracy
-if:
+schema:
+  $schema: https://json-schema.org/draft/2020-12/schema
+  $id: https://github.com/instructions-d-installation/installation-instruction/examples/spacy/schema_spacy.yml
+  title: Spacy Install Schema
+  description: This is a schema which is used for constructing interactive installation instructions.
+  type: object
+  $comment: by Kanushka Gupta
   properties:
-    hardware:
-      const: gpu
-then:
-  properties:
-    cuda_runtime:
+    os:
+      title: Operating System
+      description: Specify your Operating System
       enum:
-        - CUDA 8.0
-        - CUDA 9.0
-        - CUDA 9.1
-        - CUDA 9.2
-        - CUDA 10.0
-        - CUDA 10.1
-        - CUDA 10.2
-        - CUDA 11.0
-        - CUDA 11.1
-        - CUDA 11.2 - 11.x
-        - CUDA 12.x
+        - mac
+        - windows
+        - linux
+      default: windows
+    platform:
+      title: Platform
+      description: platform
+      enum:
+        - x86
+        - arm
+      default: x86
+    package:
+      title: Package Manager
+      description: The package manager you use.
+      enum:
+        - conda
+        - pip
+        - source
+      default: pip
+    hardware:
+      title: Hardware
+      description: Hardware you want to use- CPU or GPU?
+      enum:
+        - cpu
+        - gpu
+      type: string
+      default: cpu
       
-required:
-  - os
-  - platform
-  - package
-  - hardware
-additionalProperties: false
+    configuration:
+      title: Configuration
+      description: the configuration you have
+      enum:
+        - venv
+        - train_models
+    pipeline:
+      enum:
+        - efficiency
+        - accuracy
+  if:
+    properties:
+      hardware:
+        const: gpu
+  then:
+    properties:
+      cuda_runtime:
+        enum:
+          - CUDA 8.0
+          - CUDA 9.0
+          - CUDA 9.1
+          - CUDA 9.2
+          - CUDA 10.0
+          - CUDA 10.1
+          - CUDA 10.2
+          - CUDA 11.0
+          - CUDA 11.1
+          - CUDA 11.2 - 11.x
+          - CUDA 12.x
+        
+  required:
+    - os
+    - platform
+    - package
+    - hardware
+  additionalProperties: false
 
+pretty:
+  mac: macOs/OSX
+  windows: Windows
+  linux: Linux
+  x86: x86
+  arm: ARM/M1
+  pip: Pip
+  conda: Conda
+  cpu: CPU
+  gpu: GPU
+  venv: virtual env
+  train_models: train models
+  efficiency: efficiency
+  accuracy: accuracy
 
 ------
 

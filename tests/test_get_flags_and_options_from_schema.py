@@ -17,7 +17,7 @@ from installation_instruction.get_flags_and_options_from_schema import _get_flag
 
 def test_get_flags_and_options(test_data_flags_options):
     example_schema = test_data_flags_options
-    options = _get_flags_and_options(example_schema)
+    options = _get_flags_and_options(example_schema, {"description": { "verbose": "Activate verbose output." }})
 
     assert len(options) == 6
 
@@ -42,6 +42,7 @@ def test_get_flags_and_options(test_data_flags_options):
     assert options[3].default == "cu118"
 
     assert options[4].opts == ["--verbose"]
+    assert options[4].help == "Activate verbose output."
     assert options[4].required == False
     assert options[4].default == False
 
