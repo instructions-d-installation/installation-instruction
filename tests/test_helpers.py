@@ -95,4 +95,6 @@ something:"""
     assert schema == parsed_schema
     assert template == parsed_template
 
-    
+def test_is_remote_git_repository():
+    assert helpers._is_remote_git_repository("https://github.com/instructions-d-installation/web-installation-instruction.git")
+    assert not helpers._is_remote_git_repository("./instructions-d-installation/web-installation-instruction.git")

@@ -16,50 +16,51 @@
 import re
 from jinja2 import Environment, Template
 
-from urllib.parse import urlparse
 import git
-import tempfile
-import shutil
-import os
+from tempfile import TemporaryDirectory
+import os.path
 
-def is_git_repo_url(url):
-    parsed_url = urlparse(url)
-    return all([parsed_url.scheme, parsed_url.netloc, parsed_url.path]) and url.endswith('.git')
+CONFIG_FILE_NAME = "install.cfg"
 
-def clone_git_repo(url):
-    # Create a temporary directory
-    temp_dir = tempfile.TemporaryDirectory()
-    repo_dir = temp_dir.name
-    git.Repo.clone_from(url, repo_dir)
-    return repo_dir, temp_dir
+def _is_remote_git_repository(url: str) -> bool:
+    """
+    Checks if the given URL might be a remote git repository.
+
+    todo: Make this more robust. Check if it is actually a valid git repository by calling it.
+
+    :param url: URL to be checked.
+    :type url: str
+    :return: True if the URL is a remote git repository, else False.
+    :rtype: bool
+    """
+    return (url.startswith('http://') or url.startswith('https://') ) and url.endswith('.git')
+
+def _clone_git_repo(url: str) -> TemporaryDirectory:
+    """
+    Clones a git repository to a temporary directory.
+
+    :param url: URL of the remote git repository.
+    :type url: str
+    :return: `TemporaryDirectory` object with git repo.
+    :rtype: tempfile.TemporaryDirectory
+    """
+    temp_dir = TemporaryDirectory()
+    git.Repo.clone_from(url, temp_dir.name)
+    return temp_dir
     
-def check_and_download_install_cfg(repo_dir):
-    install_cfg_path = os.path.join(repo_dir, 'install.cfg')
-    if os.path.isfile(install_cfg_path):
-        temp_file_dir = tempfile.mkdtemp()
-        temp_file_path = os.path.join(temp_file_dir, 'install.cfg')
-        shutil.copy(install_cfg_path, temp_file_path)
-        return temp_file_path, temp_file_dir
-    return None, None
+def _config_file_is_in_folder(dir_path: str) -> str | None:
+    """
+    Checks if the file `install.cfg` is in the folder.
 
-def _find_config_file_in_folder(folder_path: str) -> str | None:
+    :param dir_path: Path to the folder.
+    :type dir_path: str
+    :return: Path to the `install.cfg` file if it exists, else None.
+    :rtype: str or None
     """
-    Finds file with the name `install.cfg` in the folder and returns its path if it exists.
-    """
-    if folder_path.startswith('http://') or folder_path.startswith('https://'):
-        # It's a URL, handle it accordingly
-        repo_dir, temp_dir = clone_git_repo(folder_path)
-        install_cfg_path, install_cfg_temp_dir = check_and_download_install_cfg(repo_dir)
-        if install_cfg_path:
-            print(f"install.cfg found and downloaded to: {install_cfg_path}")
-            return install_cfg_path
-        else:
-            print("install.cfg not found in the repository root.")
-        # Clean up the cloned repository
-        temp_dir.cleanup()
-    elif os.path.isfile(folder_path):
-        return folder_path
-    return folder_path
+    install_cfg_path = os.path.join(dir_path, CONFIG_FILE_NAME)
+    if os.path.isfile(install_cfg_path):
+        return install_cfg_path
+    return None
 
 def _make_pretty_print_line_breaks(string: str) -> str:
     """
