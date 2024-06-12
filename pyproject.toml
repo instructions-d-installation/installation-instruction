@@ -16,12 +16,12 @@ description = "Library and CLI for generating installation instructions from jso
 readme = "README.md"
 maintainers = [
     { name = "Adam McKellar", email = "dev@mckellar.eu" },
-    { name = "Kanushka Gupta" },
+    { name = "Kanushka Gupta", email = "kanushkagupta1298@gmail.com" },
     { name = "Timo Ege", email = "timoege@online.de" },
 ]
 authors = [
     { name = "Adam McKellar", email = "dev@mckellar.eu" },
-    { name = "Kanushka Gupta" },
+    { name = "Kanushka Gupta", email = "kanushkagupta1298@gmail.com" },
     { name = "Timo Ege", email = "timoege@online.de" },
 ]
 version = "0.3.0"
@@ -37,6 +37,7 @@ dependencies = [
     "jsonschema",
     "PyYAML",
     "click < 9.0.0a0",
+    "GitPython",
 ]
 
 [project.optional-dependencies]
