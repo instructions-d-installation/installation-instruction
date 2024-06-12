@@ -43,7 +43,7 @@ class ConfigReadCommand(click.MultiCommand):
         super().__init__(
             *args,
             **kwargs,
-            subcommand_metavar="CONFIG_FILE/FOLDER/GIT_REPO [OPTIONS]...",
+            subcommand_metavar="CONFIG_FILE/FOLDER/GIT_REPO_URL [OPTIONS]...",
             options_metavar="",
         )
 

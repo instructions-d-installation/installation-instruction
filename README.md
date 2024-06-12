@@ -69,7 +69,7 @@ Commands:
 Options are dynamically created with the schema part of the config file.   
 
 > [!TIP]
-> Show help for a config file with: `ibi show CONFIG_FILE --help`.
+> Show help for a config file with: `ibi show CONFIG_FILE/FOLDER/GIT_REPO_URL --help`.
 
 
 ## Config
