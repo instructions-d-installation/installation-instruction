@@ -21,6 +21,7 @@ from tempfile import TemporaryDirectory
 import os.path
 
 CONFIG_FILE_NAME = "install.cfg"
+ALLOWED_GIT_URL_PREFIXES = ["http://", "https://", "git://", "ssh://", "ftp://", "ftps://"]
 
 def _is_remote_git_repository(url: str) -> bool:
     """
@@ -33,7 +34,7 @@ def _is_remote_git_repository(url: str) -> bool:
     :return: True if the URL is a remote git repository, else False.
     :rtype: bool
     """
-    return (url.startswith('http://') or url.startswith('https://') ) and url.endswith('.git')
+    return any([url.startswith(prefix) for prefix in ALLOWED_GIT_URL_PREFIXES])
 
 def _clone_git_repo(url: str) -> TemporaryDirectory:
     """
@@ -45,7 +46,7 @@ def _clone_git_repo(url: str) -> TemporaryDirectory:
     :rtype: tempfile.TemporaryDirectory
     """
     temp_dir = TemporaryDirectory()
-    git.Repo.clone_from(url, temp_dir.name)
+    git.Repo.clone_from(url, temp_dir.name, multi_options=["--depth=1"])
     return temp_dir
     
 def _config_file_is_in_folder(dir_path: str) -> str | None:
