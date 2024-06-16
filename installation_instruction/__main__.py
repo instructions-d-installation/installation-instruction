@@ -29,6 +29,22 @@ Copyright: (C) 2024 {__author_email__}, {__author__}
 License: {__license__}
 Repository: {__repository__}"""
 
+def _get_system(option_types):
+    
+    system = platform.system()
+    system_names = {
+        'Linux': 'lin',
+        'Darwin': 'mac',
+        'Windows': 'win',
+    }
+    
+    sub_default = system_names.get(system,None)
+    for type in option_types:
+        default_type = type.lower()
+        if sub_default in default_type: 
+            return type
+
+    return None
 
 class ConfigReadCommand(click.MultiCommand):
     """
@@ -42,22 +58,6 @@ class ConfigReadCommand(click.MultiCommand):
             subcommand_metavar="CONFIG_FILE [OPTIONS]...",
             options_metavar="",
         )
-
-    def _get_system(self, option_types):
-        system = platform.system().lower()
-        system_names = {
-            'linux': 'lin',
-            'linux2': 'lin',  
-            'darwin': 'mac',
-            'win32': 'win',
-        }
-        if system in system_names.keys:
-            system = system_names.get(system)
-            for type in option_types:
-                if system in type.lower():
-                    return type
-
-        return None
 
 
     def get_command(self, ctx, config_file: str) -> click.Command|None:
@@ -74,7 +74,7 @@ class ConfigReadCommand(click.MultiCommand):
 
         for option in options:
             if '__os__' in option.name:
-                system_default = self._get_system(option.type.choices)
+                system_default = _get_system(option.type.choices)
                 if system_default:
                     option.default = system_default
 
