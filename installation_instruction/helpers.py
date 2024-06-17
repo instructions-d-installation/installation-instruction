@@ -1,3 +1,4 @@
+
 # Copyright 2024 Adam McKellar, Kanushka Gupta, Timo Ege
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +16,52 @@
 import re
 from jinja2 import Environment, Template
 
+import git
+from tempfile import TemporaryDirectory
+import os.path
+
+CONFIG_FILE_NAME = "install.cfg"
+ALLOWED_GIT_URL_PREFIXES = ["http://", "https://", "git://", "ssh://", "ftp://", "ftps://"]
+
+def _is_remote_git_repository(url: str) -> bool:
+    """
+    Checks if the given URL might be a remote git repository.
+
+    todo: Make this more robust. Check if it is actually a valid git repository by calling it.
+
+    :param url: URL to be checked.
+    :type url: str
+    :return: True if the URL is a remote git repository, else False.
+    :rtype: bool
+    """
+    return any([url.startswith(prefix) for prefix in ALLOWED_GIT_URL_PREFIXES])
+
+def _clone_git_repo(url: str) -> TemporaryDirectory:
+    """
+    Clones a git repository to a temporary directory.
+
+    :param url: URL of the remote git repository.
+    :type url: str
+    :return: `TemporaryDirectory` object with git repo.
+    :rtype: tempfile.TemporaryDirectory
+    """
+    temp_dir = TemporaryDirectory()
+    git.Repo.clone_from(url, temp_dir.name, multi_options=["--depth=1"])
+    return temp_dir
+    
+def _config_file_is_in_folder(dir_path: str) -> str | None:
+    """
+    Checks if the file `install.cfg` is in the folder.
+
+    :param dir_path: Path to the folder.
+    :type dir_path: str
+    :return: Path to the `install.cfg` file if it exists, else None.
+    :rtype: str or None
+    """
+    install_cfg_path = os.path.join(dir_path, CONFIG_FILE_NAME)
+    if os.path.isfile(install_cfg_path):
+        return install_cfg_path
+    return None
 
 def _make_pretty_print_line_breaks(string: str) -> str:
     """

@@ -75,11 +75,14 @@ class InstallationInstruction:
         result["description"] = self.schema.get("description", "")
         result["properties"] = {}
 
+        pretty = self.misc.get("pretty", {})
+        description = self.misc.get("description", {})
+
         for key, value in self.schema.get('properties', {}).items():
 
             result["properties"][key] = {
-                "title": value.get("title", key),
-                "description": value.get("description", ""),
+                "title": value.get("title", "") or pretty.get(key, key),
+                "description": value.get("description", "") or description.get(key, ""),
                 "type": value.get("type", "string"),
                 "default": value.get("default", None),
                 "key": key,
@@ -87,19 +90,10 @@ class InstallationInstruction:
             if "enum" in value:
                 result["properties"][key]["enum"] = [
                     {
-                        "title": e,
+                        "title": pretty.get(e, e),
                         "key": e,
-                        "description": "",
+                        "description": description.get(e, ""),
                     } for e in value["enum"]
-                ]
-                result["properties"][key]["type"] = "enum"
-            elif type := "anyOf" if "anyOf" in value else "oneOf" if "oneOf" in value else None:
-                result["properties"][key]["enum"] = [
-                    {
-                        "title": c.get("title", c.get("const", "")),
-                        "key": c.get("const", ""),
-                        "description": c.get("description", ""),
-                    } for c in value[type]
                 ]
                 result["properties"][key]["type"] = "enum"
                 
@@ -114,19 +108,25 @@ class InstallationInstruction:
         :raise Exception: If schema part of config is neither valid json nor valid yaml.
         :raise Exception: If no delimiter is found.
         """
-        (schema, template) = helpers._split_string_at_delimiter(config)
+        (schema_str, template) = helpers._split_string_at_delimiter(config)
         try:
-            self.schema = json.load(schema)
+            schema = json.load(schema_str)
         except:
             try:
-                self.schema = safe_load(schema)
+                schema = safe_load(schema_str)
             except:
                 raise Exception("Schema is neither a valid json nor a valid yaml.")
+            
+        if "schema" in schema:
+            self.schema = schema["schema"]
+            self.misc = {key: schema[key] for key in schema if key != "schema"}
+        else:
+            self.schema = schema
         
         try:
             Draft202012Validator.check_schema(self.schema)
-        except exceptions.SchemaError:
-            raise Exception("The given schema file is not a valid json schema.")
+        except exceptions.SchemaError as e:
+            raise Exception(f"The given schema file is not a valid json schema.\n\n{e}")
         self.template = helpers._load_template_from_string(RAISE_JINJA_MACRO_STRING+template)
 
 

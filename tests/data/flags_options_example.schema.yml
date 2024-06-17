@@ -1,53 +1,60 @@
-$schema: https://json-schema.org/draft/2020-12/schema
-$id: https://github.com/instructions-d-installation/installation-instruction/examples/scikit-learn/scikit-learn-instruction.schema.yml
-title: Scikit-learn installation schema
-description: This is a Schema to construct installation instructions for the python package scikit-learn by Timo Ege.
-type: object
-properties:
-  os:
-    title: Operating System
-    description: The operating system in which the package is installed.
-    enum: 
-      - Windows
-      - macOS
-      - Linux
+schema:
+  $schema: https://json-schema.org/draft/2020-12/schema
+  $id: https://github.com/instructions-d-installation/installation-instruction/examples/scikit-learn/scikit-learn-instruction.schema.yml
+  title: Scikit-learn installation schema
+  description: This is a Schema to construct installation instructions for the python package scikit-learn by Timo Ege.
+  type: object
+  properties:
+    os:
+      title: Operating System
+      description: The operating system in which the package is installed.
+      enum: 
+        - Windows
+        - macOS
+        - Linux
 
 
-  packager:
-    title: Packager
-    description: The package manager of your choosing.
-    enum: 
-      - pip
-      - conda
-    default: pip
+    packager:
+      title: Packager
+      description: The package manager of your choosing.
+      enum: 
+        - pip
+        - conda
+      default: pip
 
-  virtualenv:
-    title: Use pip virtualenv
-    description: Choose if you want to use a virtual environment to install the package.   
-    type: boolean 
-    default: false
+    virtualenv:
+      title: Use pip virtualenv
+      description: Choose if you want to use a virtual environment to install the package.   
+      type: boolean 
+      default: false
 
-  compute_platform:
-    title: Compute Platform
-    description: Should your gpu or your cpu handle the task?
-    anyOf:
-      - title: CUDA 11.8
-        const: cu118
-      - title: CUDA 12.1
-        const: cu121
-        description: CUDA 12.1 is the latest version of CUDA.
-    default: cu118
-  
-  verbose:
-    type: boolean
-    default: false
+    compute_platform:
+      title: Compute Platform
+      description: Should your gpu or your cpu handle the task?
+      enum:
+        - cu118
+        - cu121
+      default: cu118
+    
+    verbose:
+      type: boolean
+      default: false
 
-  requiered_flag:
-    type: boolean
+    requiered_flag:
+      type: boolean
 
-required:
-  - os
-  - packager
-  - requiered_flag
+  required:
+    - os
+    - packager
+    - requiered_flag
 
-additionalProperties: false
+  additionalProperties: false
+
+pretty:
+  cu118: CUDA 11.8
+  cu121: CUDA 12.1
+
+description:
+  cu121: CUDA 12.1 is the latest version of CUDA.
+  compute_platform: Not shown.
+  verbose: Activate verbose output.

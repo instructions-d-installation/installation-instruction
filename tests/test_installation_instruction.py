@@ -71,3 +71,5 @@ def test_parse_schema(test_data_flags_options_config_string_with_empty_template)
         "type": "boolean",
         "key": "virtualenv"
     }
+
+    assert schema["properties"]["verbose"]["description"] == "Activate verbose output."

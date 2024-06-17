@@ -34,7 +34,7 @@ def test_data_flags_options():
     with open(file_path,"r") as file:
         example = yaml.safe_load(file)
     
-    return example
+    return example["schema"]
 
 @pytest.fixture
 def test_data_flags_options_config_string_with_empty_template():

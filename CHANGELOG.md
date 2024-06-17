@@ -9,9 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* Added git remote repositories and directories as potential sources for config files in the cli.
+* `title` and `description` can be set from `pretty` and `description` keys at root.
+
+
 ### Changed
 
+* Moved `title` and `description` from `anyOf` to outside of schema. `anyOf` is now usable as intended for json schema.
+
+
 ### Removed
+
+* Removed `title` and `description` support from `anyOf`.
 
 
 ## [0.3.0] - 2024-06-04

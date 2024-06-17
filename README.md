@@ -69,7 +69,7 @@ Commands:
 Options are dynamically created with the schema part of the config file.   
 
 > [!TIP]
-> Show help for a config file with: `ibi show CONFIG_FILE --help`.
+> Show help for a config file with: `ibi show CONFIG_FILE/FOLDER/GIT_REPO_URL --help`.
 
 
 ## Config
@@ -86,7 +86,28 @@ Options are dynamically created with the schema part of the config file.
 * When creating a schema use the following schema draft version: https://json-schema.org/draft/2020-12/schema
 * `title` are used for pretty print option names.
 * `description` is used for the options help message.
-* `anyOf` with nested `const` and `title` are a special case as a replacement for `enum` but with pretty print name.
+* For adding a description and a pretty print name to enum values (for [web-installation-instruction](https://github.com/instructions-d-installation/web-installation-instruction)):
+  1. Indent the schema with the key `schema`.
+  2. Add `pretty` and `description` keys.
+  3. Create lists like `key: Pretty Key`.
+* `title` and `description` from within the schema overwrite `pretty` and `description` outside of the schema.
+
+```yaml
+schema:
+  name: installation-instruction
+  type: object
+  properties:
+    method:
+      enum:
+        - pipx
+        - pip
+pretty:
+  pipx: Pipx
+  pip: Pip
+description:
+  pipx: Installs python packages into virtual environments.
+  pip: Standard python package manager.
+```
 
 
 ### Template
