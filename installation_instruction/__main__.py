@@ -31,18 +31,25 @@ License: {__license__}
 Repository: {__repository__}"""
 
 def _get_system(option_types):
+    """
+    Returns the os from the list of possible os systems defined in the schema.
+
+    :param option_types: list of system from the schema.
+    :type option_types: list
+    :return: os system from input list or None.
+    :rtype: string or None
+    """    
     
     system = platform.system()
     system_names = {
-        'Linux': 'lin',
+        'Linux': 'linux',
         'Darwin': 'mac',
         'Windows': 'win',
     }
     
-    sub_default = system_names.get(system,None)
+    new_default = system_names.get(system,None)
     for type in option_types:
-        default_type = type.lower()
-        if sub_default in default_type: 
+        if new_default in type.lower(): 
             return type
 
     return None
@@ -95,6 +102,7 @@ class ConfigReadCommand(click.MultiCommand):
             _red_echo("Error (parsing options from schema): " + str(e))
             exit(1)
 
+        #set new default value for __os__ Option
         for option in options:
             if '__os__' in option.name:
                 system_default = _get_system(option.type.choices)
