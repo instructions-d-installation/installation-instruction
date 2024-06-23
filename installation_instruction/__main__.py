@@ -15,6 +15,7 @@
 from sys import exit
 from os.path import isfile, isdir
 from subprocess import run
+import platform
 
 import click
 
@@ -29,6 +30,29 @@ Copyright: (C) 2024 {__author_email__}, {__author__}
 License: {__license__}
 Repository: {__repository__}"""
 
+def _get_system(option_types):
+    """
+    Returns the os from the list of possible os systems defined in the schema.
+
+    :param option_types: list of system from the schema.
+    :type option_types: list
+    :return: os system from input list or None.
+    :rtype: string or None
+    """    
+    
+    system = platform.system()
+    system_names = {
+        'Linux': 'linux',
+        'Darwin': 'mac',
+        'Windows': 'win',
+    }
+    
+    new_default = system_names.get(system,None)
+    for type in option_types:
+        if new_default in type.lower(): 
+            return type
+
+    return None
 
 def _red_echo(text: str):
     click.echo(click.style(text, fg="red"))
@@ -46,6 +70,7 @@ class ConfigReadCommand(click.MultiCommand):
             subcommand_metavar="CONFIG_FILE/FOLDER/GIT_REPO_URL [OPTIONS]...",
             options_metavar="",
         )
+
 
     def get_command(self, ctx, config_file: str) -> click.Command|None:
 
@@ -77,6 +102,12 @@ class ConfigReadCommand(click.MultiCommand):
             _red_echo("Error (parsing options from schema): " + str(e))
             exit(1)
 
+        #set new default value for __os__ Option
+        for option in options:
+            if '__os__' in option.name:
+                system_default = _get_system(option.type.choices)
+                if system_default:
+                    option.default = system_default
 
         def callback(**kwargs):
             inst = instruction.validate_and_render(kwargs)

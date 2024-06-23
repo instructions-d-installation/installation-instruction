@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Added git remote repositories and directories as potential sources for config files in the cli.
 * `title` and `description` can be set from `pretty` and `description` keys at root.
+* Added default key for os systems.
 
 
 ### Changed
