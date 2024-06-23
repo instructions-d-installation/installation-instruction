@@ -122,6 +122,7 @@ class InstallationInstruction:
             self.misc = {key: schema[key] for key in schema if key != "schema"}
         else:
             self.schema = schema
+            self.misc = {}
         
         try:
             Draft202012Validator.check_schema(self.schema)
