@@ -24,7 +24,7 @@ authors = [
     { name = "Kanushka Gupta", email = "kanushkagupta1298@gmail.com" },
     { name = "Timo Ege", email = "timoege@online.de" },
 ]
-version = "0.3.0"
+version = "0.4.0"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 classifiers = [
