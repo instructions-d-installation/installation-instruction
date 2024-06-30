@@ -67,6 +67,39 @@ schema:
           - CUDA 11.1
           - CUDA 11.2 - 11.x
           - CUDA 12.x
+
+     languages:
+      title: Trained Pipelines
+      description: Hardware you want to use- CPU or GPU?
+      enum:
+        - Catalan
+        - Chinese
+        - Croatian
+        - Danish
+        - Dutch
+        - English
+        - Finnish
+        - French
+        - German
+        - Greek
+        - Italian
+        - Japanese
+        - Korean
+        - Lithuanian
+        - Macedonian
+        - Multi-language
+        - Norwegian 
+        - BokmålPolish
+        - Portuguese
+        - Romanian
+        - Russian
+        - Slovenian
+        - Spanish
+        - Swedish
+        - Ukrainian
+      type: array
+      default: cpu
+
         
   required:
     - os
