@@ -48,53 +48,74 @@ schema:
         - venv
         - train_models
     
-   trained_pipelines: 
-      title: Trained Pipelines
-      description: the language package you want to include
-      type: array
-      items: 
-        type: string
-        enum: [
-          "Catalan", "Chinese", "Croatian", "Danish", "Dutch", "English", "Finnish",
-          "French", "German", "Greek", "Italian", "Japanese", "Korean", "Lithuanian",
-          "Macedonian", "Multi-language", "Norwegian Bokmål", "Polish", "Portuguese",
-          "Romanian", "Russian", "Slovenian", "Spanish", "Swedish", "Ukrainian"
-        ]
-        
-  if:
-    properties:
-      trained_pipelines:
-        then: 
-          properties:   
-            pipeline: 
-              title: Select pipeline for
-              description: Select pipeline for -
-              anyOf: 
-                - efficiency
-                - accuracy
-              type: string
-              default: efficiency
+  trained_pipelines: 
+    title: Trained Pipelines
+    description: the language package you want to include
+    type: array
+    items: 
+      type: string
+      enum: 
+        - Catalan
+        - Chinese
+        - Croatian 
+        - Danish
+        - Dutch
+        - English
+        - Finnish
+        - French
+        - German 
+        - Greek
+        - Italian 
+        - Japanese
+        - Korean 
+        - Lithuanian
+        - Macedonian
+        - Multi-language
+        - Norwegian Bokmål
+        - Polish
+        - Portuguese
+        - Romanian
+        - Russian
+        - Slovenian
+        - Spanish 
+        - Swedish
+        - Ukrainian
+  allOf:      
+    - if:
+        properties:
+          trained_pipelines:
+            minLength: 1
+      then: 
+        properties:   
+          pipeline: 
+            title: Select pipeline for
+            description: Select pipeline for -
+            enum: 
+              - efficiency
+              - accuracy
+            type: string
+            default: efficiency
 
-  if:
-    properties:
-      hardware:
-        const: gpu
-  then:
-    properties:
-      cuda_runtime:
-        enum:
-          - CUDA 8.0
-          - CUDA 9.0
-          - CUDA 9.1
-          - CUDA 9.2
-          - CUDA 10.0
-          - CUDA 10.1
-          - CUDA 10.2
-          - CUDA 11.0
-          - CUDA 11.1
-          - CUDA 11.2 - 11.x
-          - CUDA 12.x
-          
+    - if:
+        properties:
+          hardware:
+            const: gpu
+      then:
+        properties:
+          cuda_runtime:
+            enum:
+              - CUDA 8.0
+              - CUDA 9.0
+              - CUDA 9.1
+              - CUDA 9.2
+              - CUDA 10.0
+              - CUDA 10.1
+              - CUDA 10.2
+              - CUDA 11.0
+              - CUDA 11.1
+              - CUDA 11.2 - 11.x
+              - CUDA 12.x
+            
   required: [
     "os",
     "platform",
