@@ -111,10 +111,10 @@ class InstallationInstruction:
         try:
             schema = json.load(schema_str)
         except:
-            try:
-                schema = safe_load(schema_str)
-            except:
-                raise Exception("Schema is neither a valid json nor a valid yaml.")
+            #try:
+            schema = safe_load(schema_str)
+            # except:
+            #     raise Exception("Schema is neither a valid json nor a valid yaml.")
             
         if "schema" in schema:
             self.schema = schema["schema"]
