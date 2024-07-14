@@ -16,7 +16,6 @@
 from yaml import safe_load
 import json
 from jsonschema import validate, Draft202012Validator, exceptions
-from jinja2 import Environment, Template
 from jinja2.exceptions import UndefinedError
 
 import installation_instruction.helpers as helpers

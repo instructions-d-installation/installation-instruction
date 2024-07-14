@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* Added `cat` command: Users can now see the source of an `install.cfg` file with `ibi cat`.
+
+
+### Changed
+
+* Switched to sandboxed rendering of template for security purposes.
+
+
 ## [0.4.0] - 2024-06-24
 
 ### Added
