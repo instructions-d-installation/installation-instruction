@@ -62,6 +62,7 @@ Options:
   -h, --help  Show this message and exit.
 
 Commands:
+  cat      Shows source of installation instructions config file.
   install  Installs with config and parameters given.
   show     Shows installation instructions for your specified config file...
 ```
@@ -91,7 +92,6 @@ Options are dynamically created with the schema part of the config file.
   2. Add `pretty` and `description` keys.
   3. Create lists like `key: Pretty Key`.
 * `title` and `description` from within the schema overwrite `pretty` and `description` outside of the schema.
-* For the package to set the default os to the running system, name the property `__os__`.
 
 ```yaml
 schema:
@@ -108,6 +108,15 @@ pretty:
 description:
   pipx: Installs python packages into virtual environments.
   pip: Standard python package manager.
+```
+
+* For the package to set the default os to the running system, name the property `__os__`.
+
+```yaml
+__os__:
+  - windows
+  - linux
+  - macos
 ```
 
 
