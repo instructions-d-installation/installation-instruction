@@ -18,11 +18,12 @@ from subprocess import run
 import platform
 
 import click
+from yaml import safe_dump
 
 from .__init__ import __version__, __description__, __repository__, __author__, __author_email__, __license__
 from .get_flags_and_options_from_schema import _get_flags_and_options
 from .installation_instruction import InstallationInstruction
-from .helpers import _make_pretty_print_line_breaks, _is_remote_git_repository, _clone_git_repo, _config_file_is_in_folder
+from .helpers import _make_pretty_print_line_breaks, _red_echo, _get_install_config_file
 
 
 VERSION_STRING = f"""Version: installation-instruction {__version__}
@@ -54,9 +55,6 @@ def _get_system(option_types):
 
     return None
 
-def _red_echo(text: str):
-    click.echo(click.style(text, fg="red"))
-
 
 class ConfigReadCommand(click.MultiCommand):
     """
@@ -74,26 +72,7 @@ class ConfigReadCommand(click.MultiCommand):
 
     def get_command(self, ctx, config_file: str) -> click.Command|None:
 
-        temp_dir = None
-        if _is_remote_git_repository(config_file):
-            try:
-                temp_dir = _clone_git_repo(config_file)
-            except Exception as e:
-                _red_echo("Error (cloning git repository):\n\n" + str(e))
-                exit(1)
-            config_file = temp_dir.name
-        if isdir(config_file):
-            if path := _config_file_is_in_folder(config_file):
-                config_file = path
-            else:
-                if temp_dir is not None:
-                    _red_echo("Config file not found in repository.")
-                else:
-                    _red_echo(f"Config file not found in folder {config_file}")
-                exit(1)
-        if not isfile(config_file):
-            _red_echo(f"{config_file} is not a file.")
-            exit(1)
+        (_temp_dir, config_file) = _get_install_config_file(config_file)
         
         try:
             instruction = InstallationInstruction.from_file(config_file)
@@ -138,6 +117,14 @@ class ConfigReadCommand(click.MultiCommand):
             callback=callback,
         )
 
+@click.command(help="Shows source of installation instructions config file.")
+@click.argument("path")
+def cat(path):
+    (_temp_dir, config_file) = _get_install_config_file(path)
+    with open(config_file, "r") as file:
+        config_string = file.read()
+    print(config_string)
+
 @click.command(cls=ConfigReadCommand, help="Shows installation instructions for your specified config file and parameters.")
 @click.option("--raw", is_flag=True, help="Show installation instructions without pretty print.", default=False)
 @click.pass_context
@@ -158,6 +145,7 @@ def install(ctx, verbose):
 def main(ctx):
     ctx.ensure_object(dict)
 
+main.add_command(cat)
 main.add_command(show)
 main.add_command(install)
 

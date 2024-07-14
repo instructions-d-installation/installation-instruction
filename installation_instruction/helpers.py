@@ -13,15 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import re
-from jinja2 import Environment, Template
-
-import git
 from tempfile import TemporaryDirectory
 import os.path
+from os.path import isfile, isdir
+import re
+
+from jinja2 import Template
+from jinja2.sandbox import SandboxedEnvironment
+
+import click
+import git
 
 CONFIG_FILE_NAME = "install.cfg"
 ALLOWED_GIT_URL_PREFIXES = ["http://", "https://", "git://", "ssh://", "ftp://", "ftps://"]
+
+def _red_echo(text: str):
+    click.echo(click.style(text, fg="red"))
 
 def _is_remote_git_repository(url: str) -> bool:
     """
@@ -62,6 +69,39 @@ def _config_file_is_in_folder(dir_path: str) -> str | None:
     if os.path.isfile(install_cfg_path):
         return install_cfg_path
     return None
+
+def _get_install_config_file(path: str) -> tuple[TemporaryDirectory|None, str]:
+    """
+    Checks wether path is a git url or a dir, finds the config file and asserts that said file is a file.
+
+    :param path: Url, path to dir or file.
+    :type path: str
+    :return: Returns a tuple with a temporary dir needed for cloning a git repository (on distruction temporary dir is deleted), and the found config file path.
+    :rtype: tuple[TemporaryDirectory|None, str]
+    """
+    config_file = path
+    temp_dir = None
+    if _is_remote_git_repository(config_file):
+        try:
+            temp_dir = _clone_git_repo(config_file)
+        except Exception as e:
+            _red_echo("Error (cloning git repository):\n\n" + str(e))
+            exit(1)
+        config_file = temp_dir.name
+    if isdir(config_file):
+        if path := _config_file_is_in_folder(config_file):
+            config_file = path
+        else:
+            if temp_dir is not None:
+                _red_echo("Config file not found in repository.")
+            else:
+                _red_echo(f"Config file not found in folder {config_file}")
+            exit(1)
+    if not isfile(config_file):
+        _red_echo(f"{config_file} is not a file.")
+        exit(1)
+
+    return (temp_dir, config_file)
 
 def _make_pretty_print_line_breaks(string: str) -> str:
     """
@@ -128,7 +168,7 @@ def _load_template_from_string(string: str) -> Template:
     :return: jinja2 Template object.
     :rtype: jinja2.Template
     """
-    env = Environment(
+    env = SandboxedEnvironment(
         trim_blocks=True,
         lstrip_blocks=True
     )
