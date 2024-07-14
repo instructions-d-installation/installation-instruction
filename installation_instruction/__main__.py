@@ -13,12 +13,10 @@
 # limitations under the License.
 
 from sys import exit
-from os.path import isfile, isdir
 from subprocess import run
 import platform
 
 import click
-from yaml import safe_dump
 
 from .__init__ import __version__, __description__, __repository__, __author__, __author_email__, __license__
 from .get_flags_and_options_from_schema import _get_flags_and_options
