@@ -15,7 +15,7 @@
 from sys import exit
 from os.path import isfile, isdir
 from subprocess import run
-import platform
+import platform, os , json
 
 import click
 
@@ -29,6 +29,8 @@ VERSION_STRING = f"""Version: installation-instruction {__version__}
 Copyright: (C) 2024 {__author_email__}, {__author__}
 License: {__license__}
 Repository: {__repository__}"""
+
+defaultfile_path = "custom_defaults.json"
 
 def _get_system(option_types):
     """
@@ -57,6 +59,26 @@ def _get_system(option_types):
 def _red_echo(text: str):
     click.echo(click.style(text, fg="red"))
 
+def _parse_default_string(default_string):
+    try:
+        key, value = default_string.split('=')
+        return key.strip(), value.strip()
+    except ValueError:
+        _red_echo("Error: Default string must be in the format 'key=value'.")
+        exit(1)
+
+def _load_defaults():
+    if not isfile(defaultfile_path):
+        with open(defaultfile_path, 'w') as f:
+            json.dump({}, f)
+        return {}
+    else:
+        with open(defaultfile_path, 'r') as f:
+            return json.load(f)
+
+def _save_defaults(defaults):
+    with open(defaultfile_path, 'w') as f:
+        json.dump(defaults, f, indent=4)
 
 class ConfigReadCommand(click.MultiCommand):
     """
@@ -128,6 +150,17 @@ class ConfigReadCommand(click.MultiCommand):
                     if ctx.obj["INSTALL_VERBOSE"]:
                         click.echo(str(result.stdout))
                     click.echo(click.style("Installation successful.", fg="green"))
+            elif ctx.obj["MODE"] == "default":
+                click.echo(click.style("Setting default installation instruction.", fg="blue"))
+                project_name = os.path.basename(config_file)
+                key, value = _parse_default_string(ctx.obj["DEFAULT_STRING"])
+                defaults = _load_defaults()
+                if project_name not in defaults:
+                    defaults[project_name] = {}
+                defaults[project_name][key] = value
+                _save_defaults(defaults)
+                click.echo(f"Default for {project_name}: {key}={value} has been set.")
+                
 
             exit(0)
             
@@ -152,6 +185,13 @@ def install(ctx, verbose):
     ctx.obj['MODE'] = "install"
     ctx.obj['INSTALL_VERBOSE'] = verbose
 
+@click.command(cls=ConfigReadCommand, help="Sets default values for the installation instructions of the given config file. Needs an argument in format \"key=default_value\".")
+@click.argument("key")
+@click.pass_context
+def default(ctx, key):
+    ctx.obj['MODE'] = "default"
+    ctx.obj['key'] = key
+
 @click.group(context_settings={"help_option_names": ["-h", "--help"]}, help=__description__)
 @click.version_option(version=__version__, message=VERSION_STRING)
 @click.pass_context
@@ -160,6 +200,7 @@ def main(ctx):
 
 main.add_command(show)
 main.add_command(install)
+main.add_command(default)
 
 if __name__ == "__main__":
     main()
