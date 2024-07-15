@@ -45,7 +45,7 @@ schema:
       title: Configuration
       description: the configuration you have
       enum:
-        - virtual env
+        - virtual_env
         - train_models
       default: virtual env
     
@@ -249,24 +249,55 @@ pretty:
   {% endif %}
 {% endmacro %}
 
+{% macro virtual_env_command %} 
+  {% if configuration == "virtual_env" %}
+    {%if package == "pip"%}
+      python -m venv .env &&
+      .env\Scripts\activate
+    {% endif%}
+    {%if package == "conda"%}
+      conda create -n venv &&
+      conda activate venv
+    {% endif%}
+    {%if package == "source"%}
+      python -m venv .env &&
+      .env\Scripts\activate
+    {% endif%}
+  {%endif%}
+
+  {% if configuration == "train_models" %}
+    {%if package == "pip"%}
+      -'[transformers,lookups]'
+    {% endif%}
+    {%if package == "conda"%}
+      conda install -c conda-forge spacy-transformers &&
+      # packages only available via pip &&
+      pip install spacy-lookups-data &&
+    {% endif%}
+    {%if package == "source"%}
+      -'[transformers,lookups]'
+    {% endif%}
+  {%endif%}
+{% endmacro%}
+
 {% if package == "pip" %}
-  pip install -U pip setuptools wheel &&
-  pip install -U spacy
-  {% if hardware == "cpu" %}
-    {% if os == "mac" %}
-      {% if platform == "arm" %}
-        -'[apple]'
-      {% endif %}
-    {% endif %}
-  {% endif %}
-  {% if hardware == "gpu" %}
-    {{cuda_runtime}}
-    {% if platform == "arm" %}
+    pip install -U pip setuptools wheel &&
+    pip install -U spacy
+    {% if hardware == "cpu" %}
       {% if os == "mac" %}
-        -'[apple]'
+        {% if platform == "arm" %}
+          -'[apple]'
+        {% endif %}
       {% endif %}
     {% endif %}
-  {% endif %}
+    {% if hardware == "gpu" %}
+      {{cuda_runtime}}
+      {% if platform == "arm" %}
+        {% if os == "mac" %}
+          -'[apple]'
+        {% endif %}
+      {% endif %}
+    {% endif %}
 {% endif %}
 
 {% if package == "conda" %}
@@ -291,12 +322,11 @@ pretty:
         '[]'
       {% endif %}
       {% if os == "linux" %}
-        {{cuda_runtime}}
+        -'.{{cuda_runtime}}'
       {% endif %}
       {% if os == "mac" %}
-        '[apple]'
+        '.[apple]'
       {% endif %}
     {% endif %}
   {% endif %}
 {% endif %}
-
