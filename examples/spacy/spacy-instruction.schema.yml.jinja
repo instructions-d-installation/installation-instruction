@@ -47,7 +47,7 @@ schema:
       enum:
         - virtual_env
         - train_models
-      default: virtual env
+      default: virtual_env
     
   trained_pipelines: 
     title: Trained Pipelines
@@ -117,13 +117,12 @@ schema:
               - CUDA 11.2 - 11.x
               - CUDA 12.x
             
-  required: [
-    "os",
-    "platform",
-    "package",
-    "hardware",
-    "configuration"
-  ]
+  required: 
+    - os
+    - platform
+    - package
+    - hardware
+    - configuration
 
 pretty:
   mac: macOs/OSX
@@ -135,13 +134,13 @@ pretty:
   conda: Conda
   cpu: CPU
   gpu: GPU
-  virtual env: virtual env
+  virtual_env: virtual env
   train_models: train models
   efficiency: efficiency
   accuracy: accuracy
 
-------
-{% macro trained_pipeline_command %}
+---------
+{% macro trained_pipeline_command (os, platform, package)  %}
   {% if pipeline == "efficiency" %}
     {% if trained_pipelines == "Catalan" %}
       python -m spacy download ca_core_news_sm
@@ -192,8 +191,8 @@ pretty:
     {% elif trained_pipelines == "Swedish" %}
       python -m spacy download sv_core_news_sm
     {% elif trained_pipelines == "Ukrainian" %}
-      python -m spacy download uk_core_news_sm     
-    {% endif %}
+      python -m spacy download uk_core_news_sm
+  {% endif %}
   {% elif pipeline == "accuracy" %}
     {% if trained_pipelines == "Catalan" %}
       python -m spacy download ca_core_news_trf
@@ -249,65 +248,54 @@ pretty:
   {% endif %}
 {% endmacro %}
 
-{% macro virtual_env_command %} 
+{% macro virtual_env_command(os, platform, package)  %}
   {% if configuration == "virtual_env" %}
-    {%if package == "pip"%}
+    {% if package == "pip" %}
       python -m venv .env &&
       .env\Scripts\activate
-    {% endif%}
-    {%if package == "conda"%}
+    {% elif package == "conda" %}
       conda create -n venv &&
       conda activate venv
-    {% endif%}
-    {%if package == "source"%}
+    {% elif package == "source" %}
       python -m venv .env &&
       .env\Scripts\activate
-    {% endif%}
-  {%endif%}
-
-  {% if configuration == "train_models" %}
-    {%if package == "pip"%}
+    {% endif %}
+  {% elif configuration == "train_models" %}
+    {% if package == "pip" %}
       -'[transformers,lookups]'
-    {% endif%}
-    {%if package == "conda"%}
+    {% elif package == "conda" %}
       conda install -c conda-forge spacy-transformers &&
       # packages only available via pip &&
-      pip install spacy-lookups-data &&
-    {% endif%}
-    {%if package == "source"%}
+      pip install spacy-lookups-data
+    {% elif package == "source" %}
       -'[transformers,lookups]'
-    {% endif%}
-  {%endif%}
-{% endmacro%}
+    {% endif %}
+  {% endif %}
+{% endmacro %}
 
 {% if package == "pip" %}
-    pip install -U pip setuptools wheel &&
-    pip install -U spacy
-    {% if hardware == "cpu" %}
-      {% if os == "mac" %}
-        {% if platform == "arm" %}
-          -'[apple]'
-        {% endif %}
-      {% endif %}
-    {% endif %}
-    {% if hardware == "gpu" %}
-      {{cuda_runtime}}
+  pip install -U pip setuptools wheel &&
+  pip install -U spacy
+  {% if hardware == "cpu" %}
+    {% if os == "mac" %}
       {% if platform == "arm" %}
-        {% if os == "mac" %}
-          -'[apple]'
-        {% endif %}
+        -'[apple]'
       {% endif %}
     {% endif %}
-{% endif %}
-
-{% if package == "conda" %}
+  {% elif hardware == "gpu" %}
+    {{cuda_runtime}}
+    {% if platform == "arm" %}
+      {% if os == "mac" %}
+        -'[apple]'
+      {% endif %}
+    {% endif %}
+  {% endif %}
+{% elif package == "conda" %}
   conda install -c conda-forge spacy
   {% if hardware == "gpu" %}
     conda install -c conda-forge cupy
   {% endif %}
-{% endif %}
-
-{% if package == "source" %}
+{% elif package == "source" %}
   pip install -U pip setuptools wheel &&
   git clone https://github.com/explosion/spaCy &&
   cd spaCy &&
@@ -316,15 +304,12 @@ pretty:
   {% if hardware == "gpu" %}
     {% if platform == "x86" %}
       {{cuda_runtime}}
-    {% endif %}
-    {% if platform == "arm" %}
+    {% elif platform == "arm" %}
       {% if os == "windows" %}
         '[]'
-      {% endif %}
-      {% if os == "linux" %}
+      {% elif os == "linux" %}
         -'.{{cuda_runtime}}'
-      {% endif %}
-      {% if os == "mac" %}
+      {% elif os == "mac" %}
         '.[apple]'
       {% endif %}
     {% endif %}
