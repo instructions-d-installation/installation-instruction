@@ -140,7 +140,7 @@ pretty:
   accuracy: accuracy
 
 ---------
-{% macro trained_pipeline_command (os, platform, package)  %}
+{% macro trained_pipeline_command (os, platform, package, pipeline)  %}
   {% if pipeline == "efficiency" %}
     {% if trained_pipelines == "Catalan" %}
       python -m spacy download ca_core_news_sm
@@ -252,13 +252,13 @@ pretty:
   {% if configuration == "virtual_env" %}
     {% if package == "pip" %}
       python -m venv .env &&
-      .env\Scripts\activate
+      .env\Scripts\activate &&
     {% elif package == "conda" %}
       conda create -n venv &&
-      conda activate venv
+      conda activate venv &&
     {% elif package == "source" %}
       python -m venv .env &&
-      .env\Scripts\activate
+      .env\Scripts\activate &&
     {% endif %}
   {% elif configuration == "train_models" %}
     {% if package == "pip" %}
@@ -266,7 +266,7 @@ pretty:
     {% elif package == "conda" %}
       conda install -c conda-forge spacy-transformers &&
       # packages only available via pip &&
-      pip install spacy-lookups-data
+      pip install spacy-lookups-data &&
     {% elif package == "source" %}
       -'[transformers,lookups]'
     {% endif %}
@@ -274,8 +274,24 @@ pretty:
 {% endmacro %}
 
 {% if package == "pip" %}
+  {%if configuration == true %}
+    {{ virtual_env_command(os, platform, package) }}
+  {%endif%}
+
   pip install -U pip setuptools wheel &&
   pip install -U spacy
+
+  {% if trained_pipelines == true %}
+    {{ trained_pipeline_command(os, platform, package, pipeline) }}
+  {%endif%}
+
+  {#{% if trained_pipelines %}
+  #  {% for pipeline in trained_pipelines %}
+  #    python -m spacy download {{ pipeline.lower().replace(" ", "_") }}
+  #  {% endfor %}
+  {% endif %}
+  #}
+
   {% if hardware == "cpu" %}
     {% if os == "mac" %}
       {% if platform == "arm" %}
@@ -290,17 +306,39 @@ pretty:
       {% endif %}
     {% endif %}
   {% endif %}
+
 {% elif package == "conda" %}
+
+  {%if configuration == true %}
+    {{ virtual_env_command(os, platform, package) }}
+  {%endif%}
+
   conda install -c conda-forge spacy
+
+  {% if trained_pipelines == true %}
+    {{ trained_pipeline_command(os, platform, package, pipeline) }}
+  {%endif%}
+
   {% if hardware == "gpu" %}
     conda install -c conda-forge cupy
   {% endif %}
+
 {% elif package == "source" %}
+
+  {%if configuration == true %}
+    {{ virtual_env_command(os, platform, package) }}
+  {%endif%}
+
   pip install -U pip setuptools wheel &&
   git clone https://github.com/explosion/spaCy &&
   cd spaCy &&
   pip install -r requirements.txt &&
   pip install --no-build-isolation --editable .
+
+  {% if trained_pipelines == true %}
+    {{ trained_pipeline_command(os, platform, package, pipeline) }}
+  {%endif%}
+  
   {% if hardware == "gpu" %}
     {% if platform == "x86" %}
       {{cuda_runtime}}
