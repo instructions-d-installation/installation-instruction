@@ -1,3 +1,4 @@
+
 # Copyright 2024 Adam McKellar, Kanushka Gupta, Timo Ege
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -76,6 +77,7 @@ class InstallationInstruction:
 
         pretty = self.misc.get("pretty", {})
         description = self.misc.get("description", {})
+        item = self.misc.get("item", [])
 
         for key, value in self.schema.get('properties', {}).items():
 
@@ -95,6 +97,16 @@ class InstallationInstruction:
                     } for e in value["enum"]
                 ]
                 result["properties"][key]["type"] = "enum"
+            if value.get("type") == "array":
+                result["properties"][key]["items"] = [
+                    {
+                        "title": pretty.get(a, a),
+                        "key": a,
+                        "description": description.get(a, ""),
+                    } for a in value["items"]["enum"]
+                ]
+                result["properties"][key]["type"] = "array"
+
                 
         return result
 
@@ -111,10 +123,10 @@ class InstallationInstruction:
         try:
             schema = json.load(schema_str)
         except:
-            #try:
-            schema = safe_load(schema_str)
-            # except:
-            #     raise Exception("Schema is neither a valid json nor a valid yaml.")
+            try:
+                schema = safe_load(schema_str)
+            except:
+                raise Exception("Schema is neither a valid json nor a valid yaml.")
             
         if "schema" in schema:
             self.schema = schema["schema"]
@@ -143,4 +155,3 @@ class InstallationInstruction:
         with open(path, 'r') as file:
             config = file.read()
         return cls(config)
-

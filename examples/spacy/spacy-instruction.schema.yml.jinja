@@ -5,7 +5,7 @@ schema:
   description: This is a schema which is used for constructing interactive installation instructions.
   type: object
   $comment: by Kanushka Gupta
-  properties: 
+  properties:
     os:
       title: Operating System
       description: Specify your Operating System
@@ -49,38 +49,38 @@ schema:
         - train_models
       default: virtual_env
     
-  trained_pipelines: 
-    title: Trained Pipelines
-    description: the language package you want to include
-    type: array
-    items: 
-      type: string
-      enum: 
-        - Catalan
-        - Chinese
-        - Croatian 
-        - Danish
-        - Dutch
-        - English
-        - Finnish
-        - French
-        - German 
-        - Greek
-        - Italian 
-        - Japanese
-        - Korean 
-        - Lithuanian
-        - Macedonian
-        - Multi-language
-        - Norwegian Bokmål
-        - Polish
-        - Portuguese
-        - Romanian
-        - Russian
-        - Slovenian
-        - Spanish 
-        - Swedish
-        - Ukrainian
+    trained_pipelines: 
+      title: Trained Pipelines
+      description: the language package you want to include
+      type: array
+      items: 
+        type: string
+        enum: 
+          - Catalan
+          - Chinese
+          - Croatian 
+          - Danish
+          - Dutch
+          - English
+          - Finnish
+          - French
+          - German 
+          - Greek
+          - Italian 
+          - Japanese
+          - Korean 
+          - Lithuanian
+          - Macedonian
+          - Multi-language
+          - Norwegian Bokmål
+          - Polish
+          - Portuguese
+          - Romanian
+          - Russian
+          - Slovenian
+          - Spanish 
+          - Swedish
+          - Ukrainian
   allOf:      
     - if:
         properties:
@@ -122,7 +122,6 @@ schema:
     - platform
     - package
     - hardware
-    - configuration
 
 pretty:
   mac: macOs/OSX
