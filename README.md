@@ -40,12 +40,14 @@ properties:
       - pipx
       - pip
 ----------------------------------
-{% if method == "pip" %}
-  python -m pip
-{% else %}
-  pipx
-{% endif %}
-  install installation-instruction
+{% call command() %}
+  {% if method == "pip" %}
+    python -m pip
+  {% else %}
+    pipx
+  {% endif %}
+    install installation-instruction
+{% endcall %}
 ```
 
 
@@ -122,8 +124,8 @@ __os__:
 
 ### Template
 
-* You can have as much whitespace and line breaks as you wish in and inbetween your commands.
-* Commands must be seperated by `&&`! (`pip install installation-instruction && pip uninstall installation-instruction`.)
+* Non empty lines are executed one by one.
+* Wrapping a command with `{% call command() %}` and `{% endcall %}` essentially removes all line breaks for convenience.
 * If you wish to stop the render from within the template you can use the macro `raise`. (`{{ raise("no support!") }}`.) 
 
 

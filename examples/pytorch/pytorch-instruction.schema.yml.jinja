@@ -59,6 +59,9 @@ pretty:
 
 ------
 
+{# `command` is macro which simply removes line breaks. #}
+{% call command() %}
+
 {# Adams spaghetti code #}
 {% if package == "conda" %}
     conda install
@@ -123,3 +126,4 @@ pretty:
         {% endif %}
     {% endif %}
 {% endif %}
+{% endcall %}
