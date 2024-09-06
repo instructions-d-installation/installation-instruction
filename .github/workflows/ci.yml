@@ -1,15 +1,20 @@
 name: CI
 
 on:
-  # We run CI on pushes to the main branch
   push:
     branches:
       - main
-  # and on all pull requests to the main branch
+    paths:
+      - "installation_instruction/**"
+      - "examples/**"
+      - "tests/**"
   pull_request:
     branches:
       - main
-  # as well as upon manual triggers through the 'Actions' tab of the Github UI
+    paths:
+      - "installation_instruction/**"
+      - "examples/**"
+      - "tests/**"
   workflow_dispatch:
 
 jobs:
