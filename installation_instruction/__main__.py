@@ -21,7 +21,7 @@ import click
 from .__init__ import __version__, __description__, __repository__, __author__, __author_email__, __license__
 from .get_flags_and_options_from_schema import _get_flags_and_options
 from .installation_instruction import InstallationInstruction
-from .helpers import _make_pretty_print_line_breaks, _red_echo, _get_install_config_file
+from .helpers import _red_echo, _get_install_config_file
 
 
 VERSION_STRING = f"""Version: installation-instruction {__version__}
@@ -89,22 +89,20 @@ class ConfigReadCommand(click.MultiCommand):
         def callback(**kwargs):
             inst = instruction.validate_and_render(kwargs)
             if inst[1]:
-                _red_echo("Error: " + inst[0])
+                _red_echo("Error: " + "\n".join(inst[0]))
                 exit(1)
             if ctx.obj["MODE"] == "show":
-                if ctx.obj["RAW"]:
-                    click.echo(inst[0])
-                else:
-                    click.echo(_make_pretty_print_line_breaks(inst[0]))
+                click.echo("\n".join(inst[0]))
             elif ctx.obj["MODE"] == "install":
-                result = run(inst[0], shell=True, text=True, capture_output=True)
-                if result.returncode != 0:
-                    _red_echo("Installation failed with:\n" + str(result.stdout) + "\n" + str(result.stderr))
-                    exit(1)
-                else:
-                    if ctx.obj["INSTALL_VERBOSE"]:
-                        click.echo(str(result.stdout))
-                    click.echo(click.style("Installation successful.", fg="green"))
+                for command in inst[0]:
+                    result = run(command, shell=True, text=True, capture_output=True)
+                    if result.returncode != 0:
+                        _red_echo("Installation failed with:\n" + command + "\n\n" + result.stdout + "\n" + result.stderr)
+                        exit(1)
+                    else:
+                        if ctx.obj["INSTALL_VERBOSE"]:
+                            click.echo(result.stdout.strip())
+                click.echo(click.style("Installation successful.", fg="green"))
 
             exit(0)
             
@@ -124,11 +122,9 @@ def cat(path):
     print(config_string)
 
 @click.command(cls=ConfigReadCommand, help="Shows installation instructions for your specified config file and parameters.")
-@click.option("--raw", is_flag=True, help="Show installation instructions without pretty print.", default=False)
 @click.pass_context
-def show(ctx, raw):
+def show(ctx):
     ctx.obj['MODE'] = "show"
-    ctx.obj['RAW'] = raw
 
 @click.command(cls=ConfigReadCommand, help="Installs with config and parameters given.")
 @click.option("-v", "--verbose", is_flag=True, help="Show verbose output.", default=False)

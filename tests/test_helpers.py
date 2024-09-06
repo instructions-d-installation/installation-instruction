@@ -58,14 +58,19 @@ def test__get_error_message_from_string_without_err_message():
 
 def test_replace_whitespace_in_string():
     string = """
-     python  -m pip
+     python     -m pip
     install
 
     installation_instruction
 
     """
-    res = helpers._replace_whitespace_in_string(string)
-    assert res == "python -m pip install installation_instruction"
+    res = helpers._replace_whitespace_in_string_and_split_it(string)
+    assert res == [
+        "python -m pip"
+        "install"
+        "installation_instruction"
+    ]
+
 
 def test_split_string_at_delimiter_with_delimiter():
     string = """
