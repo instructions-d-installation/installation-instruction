@@ -32,8 +32,8 @@ something
 
     install = InstallationInstruction(example_config)
 
-    assert install.validate_and_render({ "err": True }) == ("test message", True)
-    assert install.validate_and_render({ "err": False }) == ("something something", False)
+    assert install.validate_and_render({ "err": True }) == (["test message"], True)
+    assert install.validate_and_render({ "err": False }) == (["something", "something"], False)
 
 
 
@@ -66,9 +66,9 @@ def test_replace_whitespace_in_string():
     """
     res = helpers._replace_whitespace_in_string_and_split_it(string)
     assert res == [
-        "python -m pip"
-        "install"
-        "installation_instruction"
+        "python -m pip",
+        "install",
+        "installation_instruction",
     ]
 
 
