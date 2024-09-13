@@ -31,8 +31,6 @@ Copyright: (C) 2024 {__author_email__}, {__author__}
 License: {__license__}
 Repository: {__repository__}"""
 
-PATH_TO_DEFAULT_FILE = None
-
 def _get_system(option_types):
     """
     Returns the os from the list of possible os systems defined in the schema.
@@ -155,8 +153,6 @@ class ConfigCommandGroup(click.Group):
 
     def get_command(self, ctx, config_file: str) -> click.Command|None:
         
-        if ctx.obj["MODE"] == "default":
-            exit(0)
         temp_dir = None
         if _is_remote_git_repository(config_file):
             try:
@@ -186,17 +182,26 @@ class ConfigCommandGroup(click.Group):
             exit(1)
 
         def callback(**kwargs):
+            schema = instruction.parse_schema()
+            with open("installation_instruction\PATH_TO_DEAFAULT_FILE.json", "r") as f:
+                PATH_TO_DEFAULT_FILE = json.load(f)
+            
+
             if ctx.obj["MODE"] == "add":
                 new_file= False
+                
                 if not isfile(PATH_TO_DEFAULT_FILE):
                     PATH_TO_DEFAULT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"DEFAULT_DATA.json")
+                    with open("installation_instruction\PATH_TO_DEAFAULT_FILE.json", "w") as f:
+                        json.dump(PATH_TO_DEFAULT_FILE,f)
+                    click.echo(f"successfully created a new file at:")
+                    click.echo(PATH_TO_DEFAULT_FILE)
                     new_file = True
 
                 default_data = {}
                 if not new_file:
                     with open(PATH_TO_DEFAULT_FILE,"r") as f:
                         default_data = json.load(f)
-                schema = instruction.parse_schema()
                 title = schema.get("title")
                 new_project = True
                 if title in default_data.keys():
@@ -218,9 +223,14 @@ class ConfigCommandGroup(click.Group):
                             defaults_settings[option.name]= option.type.choices[0]
                 
                 default_data[title] = defaults_settings
-                with open(PATH_TO_DEFAULT_FILE,"w") as json_file:
-                    json.dump(default_data, json_file)
-                click.echo(f"successfully applied changes for {title} in the default_data.")
+                with open(PATH_TO_DEFAULT_FILE,"w") as f:
+                    json.dump(default_data, f)
+                if new_file:
+                    click.echo(f"successfully created a new default file.")
+                if new_project:
+                    click.echo(f"successfully added {title} to the default_data.")
+                else:
+                    click.echo(f"successfully applied changes for {title} in the default_data.")
 
             elif ctx.obj["MODE"] == "remove":
                 if not isfile(PATH_TO_DEFAULT_FILE):
@@ -229,24 +239,31 @@ class ConfigCommandGroup(click.Group):
                 
                 with open(PATH_TO_DEFAULT_FILE,"r") as f:
                     default_data = json.load(f)
-                schema = instruction.parse_schema()
                 title = schema.get("title")
                 deleted_item = default_data.pop(title,None)
                 if not deleted_item:
                     _red_echo(f"There exists no project to remove.")
                 else:
-                    with open(PATH_TO_DEFAULT_FILE,"w") as json_file:
-                        json.dump(default_data, json_file)
-                    click.echo(f"successfully deleted {title} from the default_data.")    
+                    with open(PATH_TO_DEFAULT_FILE,"w") as f:
+                        json.dump(default_data, f)
+                    click.echo(f"successfully deleted {title} from the default_data.") 
+                    if not default_data:
+                        os.remove(PATH_TO_DEFAULT_FILE)
+                        click.echo(f"removed default file as it was empty.") 
+
             elif ctx.obj["MODE"] == "list":
                 if not isfile(PATH_TO_DEFAULT_FILE):
-                    _red_echo(f"There exists no Default File to remove from.")
+                    _red_echo(f"There exists no default file to list projects from.")
                     exit(1)
                 with open(PATH_TO_DEFAULT_FILE,"r") as f:
                     default_data = json.load(f)
-                schema = instruction.parse_schema()
+                
                 title = schema.get("title")
-                click.echo(default_data.get(title))
+                if not default_data.get(title,False):
+                    click.echo(f"{title} has no entry in the default file.")
+                else:
+                    click.echo(f"{title} has the following default configurations:")
+                    click.echo(default_data.get(title))
             
             exit(0)
         return click.Command(
@@ -269,31 +286,27 @@ def install(ctx, verbose):
     ctx.obj['MODE'] = "install"
     ctx.obj['INSTALL_VERBOSE'] = verbose
 
-@click.group(cls=ConfigCommandGroup, context_settings={"help_option_names": ["-h", "--help"]}, help="Default command group with add, remove, and list subcommands.")
+@click.group( context_settings={"help_option_names": ["-h", "--help"]}, help="Default command group with add, remove, and list subcommands.")
 @click.pass_context
 def default(ctx):
     ctx.ensure_object(dict)
-    ctx.obj['MODE'] = "default"
     if ctx.invoked_subcommand is None:
         click.echo('default needs a subcommand.(add, remove or list)')
 
 @default.command(cls=ConfigCommandGroup,help="Add a new configuration.")
 @click.pass_context
-def add(ctx, config_file):
+def add(ctx):
     ctx.obj['MODE'] = "add"
-    ctx.obj['CONFIG_FILE'] = config_file
 
 @default.command(cls=ConfigCommandGroup, help="Remove an existing configuration.")
 @click.pass_context
-def remove(ctx, config_file):
+def remove(ctx):
     ctx.obj['MODE'] = "remove"
-    ctx.obj['CONFIG_FILE'] = config_file
 
 @default.command(cls=ConfigCommandGroup, help="List all available configurations.")
 @click.pass_context
-def list(ctx,config_file):
+def list(ctx):
     ctx.obj['MODE'] = "list"
-    ctx.obj['CONFIG_FILE'] = config_file
 
 @click.group(context_settings={"help_option_names": ["-h", "--help"]}, help=__description__)
 @click.version_option(version=__version__, message=VERSION_STRING)

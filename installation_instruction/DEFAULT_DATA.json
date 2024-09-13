@@ -1,0 +1,1 @@
+{"PyTorch Install Schema": {"build": "stable", "os": "linux", "package": "pip", "compute_platform": "cu118"}}
