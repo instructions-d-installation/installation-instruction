@@ -1,1 +1,13 @@
-{"PyTorch Install Schema": {"build": "stable", "os": "linux", "package": "pip", "compute_platform": "cu118"}}
+{
+    "PyTorch Install Schema": {
+        "build": "stable",
+        "os": "win",
+        "package": "conda",
+        "compute_platform": "cu118"
+    },
+    "Scikit-learn installation schema": {
+        "os": "Linux",
+        "packager": "pip",
+        "virtualenv": false
+    }
+}

@@ -151,8 +151,8 @@ class ConfigCommandGroup(click.Group):
             options_metavar="",
         )
 
-    def get_command(self, ctx, config_file: str) -> click.Command|None:
-        
+    def get_command(self, ctx, config_file: str , **kwargs) -> click.Command|None:
+        click.echo(kwargs)
         temp_dir = None
         if _is_remote_git_repository(config_file):
             try:
@@ -185,11 +185,8 @@ class ConfigCommandGroup(click.Group):
             schema = instruction.parse_schema()
             with open("installation_instruction\PATH_TO_DEAFAULT_FILE.json", "r") as f:
                 PATH_TO_DEFAULT_FILE = json.load(f)
-            
-
             if ctx.obj["MODE"] == "add":
                 new_file= False
-                
                 if not isfile(PATH_TO_DEFAULT_FILE):
                     PATH_TO_DEFAULT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"DEFAULT_DATA.json")
                     with open("installation_instruction\PATH_TO_DEAFAULT_FILE.json", "w") as f:
@@ -197,7 +194,8 @@ class ConfigCommandGroup(click.Group):
                     click.echo(f"successfully created a new file at:")
                     click.echo(PATH_TO_DEFAULT_FILE)
                     new_file = True
-
+                #if not new_file:
+                    #given_param = {k for k in kwargs.items() if ctx.get_parameter_source(k) == click.core.ParameterSource.COMMANDLINE}
                 default_data = {}
                 if not new_file:
                     with open(PATH_TO_DEFAULT_FILE,"r") as f:
@@ -212,25 +210,45 @@ class ConfigCommandGroup(click.Group):
                 
                 for option in options:
                     if option.name in kwargs.keys():
-                        if kwargs.get(option.name) in option.type.choices:
-                            defaults_settings[option.name]= kwargs.get(option.name)
+                        if type(option.type) == click.Choice:
+                            if kwargs.get(option.name) in option.type.choices:
+                                defaults_settings[option.name]= kwargs.get(option.name)
+                            else:
+                                _red_echo(f"There is no {kwargs.get(option.name)} option in {option.name}")
                         else:
-                            _red_echo(f"There is no {kwargs.get(option.name)} option in {option.name}")
-                    elif option.name in kwargs.keys() and new_project:
-                        if option.default:
-                            defaults_settings[option.name]= option.default
-                        else:
-                            defaults_settings[option.name]= option.type.choices[0]
+                            if type(option.type)== click.types.StringParamType:
+                                defaults_settings[option.name]= kwargs.get(option.name)
+                            elif type(option.type)== click.types.IntParamType:
+                                defaults_settings[option.name]= kwargs.get(option.name)
+                            elif type(option.type)== click.types.FloatParamType:
+                                defaults_settings[option.name]= kwargs.get(option.name)
+                            elif type(option.type)== click.types.BoolParamType:
+                                defaults_settings[option.name] = kwargs.get(option.name, False)
+                    elif new_project:
+                        if option.required:
+                            if option.default:
+                                defaults_settings[option.name]= option.default
+                            else:
+                                if type(option.type)== click.types.Choice:
+                                    defaults_settings[option.name]= option.type.choices[0]
+                                elif type(option.type)== click.STRING:
+                                    defaults_settings[option.name]=" "
+                                elif type(option.type)== click.INT:
+                                    defaults_settings[option.name]= 1
+                                elif type(option.type)== click.FLOAT:
+                                    defaults_settings[option.name]= 1.0
+                                elif type(option.type)== click.BOOL:
+                                    defaults_settings[option.name]= False
                 
                 default_data[title] = defaults_settings
                 with open(PATH_TO_DEFAULT_FILE,"w") as f:
-                    json.dump(default_data, f)
+                    json.dump(default_data, f,indent= 4)
                 if new_file:
-                    click.echo(f"successfully created a new default file.")
+                    click.echo("successfully created a new default file.")
                 if new_project:
                     click.echo(f"successfully added {title} to the default_data.")
                 else:
-                    click.echo(f"successfully applied changes for {title} in the default_data.")
+                    click.echo(f"successfully applied changes to {title} in the default_data.")
 
             elif ctx.obj["MODE"] == "remove":
                 if not isfile(PATH_TO_DEFAULT_FILE):
@@ -245,7 +263,7 @@ class ConfigCommandGroup(click.Group):
                     _red_echo(f"There exists no project to remove.")
                 else:
                     with open(PATH_TO_DEFAULT_FILE,"w") as f:
-                        json.dump(default_data, f)
+                        json.dump(default_data, f,indent=4)
                     click.echo(f"successfully deleted {title} from the default_data.") 
                     if not default_data:
                         os.remove(PATH_TO_DEFAULT_FILE)
@@ -286,24 +304,23 @@ def install(ctx, verbose):
     ctx.obj['MODE'] = "install"
     ctx.obj['INSTALL_VERBOSE'] = verbose
 
-@click.group( context_settings={"help_option_names": ["-h", "--help"]}, help="Default command group with add, remove, and list subcommands.")
+@click.group( context_settings={"help_option_names": ["-h", "--help"]}, help="Default command to create custom default settings with add, remove, and list.")
 @click.pass_context
 def default(ctx):
-    ctx.ensure_object(dict)
     if ctx.invoked_subcommand is None:
         click.echo('default needs a subcommand.(add, remove or list)')
 
-@default.command(cls=ConfigCommandGroup,help="Add a new configuration.")
+@default.command(cls=ConfigCommandGroup,help="Add a new project configuration or change existing ones.")
 @click.pass_context
 def add(ctx):
     ctx.obj['MODE'] = "add"
 
-@default.command(cls=ConfigCommandGroup, help="Remove an existing configuration.")
+@default.command(cls=ConfigCommandGroup, help="Remove an existing default configuration of a project.")
 @click.pass_context
 def remove(ctx):
     ctx.obj['MODE'] = "remove"
 
-@default.command(cls=ConfigCommandGroup, help="List all available configurations.")
+@default.command(cls=ConfigCommandGroup, help="Lists default configurations of a project.")
 @click.pass_context
 def list(ctx):
     ctx.obj['MODE'] = "list"

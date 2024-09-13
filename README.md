@@ -62,6 +62,7 @@ Options:
   -h, --help  Show this message and exit.
 
 Commands:
+  default  Default command to create custom default settings with add,...
   install  Installs with config and parameters given.
   show     Shows installation instructions for your specified config file...
 ```
