@@ -15,10 +15,10 @@
 from sys import exit
 from os.path import isfile, isdir
 from subprocess import run
-import platform
 import os
 import click
 import json
+import platformdirs
 
 from .__init__ import __version__, __description__, __repository__, __author__, __author_email__, __license__
 from .get_flags_and_options_from_schema import _get_flags_and_options
@@ -30,30 +30,6 @@ VERSION_STRING = f"""Version: installation-instruction {__version__}
 Copyright: (C) 2024 {__author_email__}, {__author__}
 License: {__license__}
 Repository: {__repository__}"""
-
-def _get_system(option_types):
-    """
-    Returns the os from the list of possible os systems defined in the schema.
-
-    :param option_types: list of system from the schema.
-    :type option_types: list
-    :return: os system from input list or None.
-    :rtype: string or None
-    """    
-    
-    system = platform.system()
-    system_names = {
-        'Linux': 'linux',
-        'Darwin': 'mac',
-        'Windows': 'win',
-    }
-    
-    new_default = system_names.get(system,None)
-    for type in option_types:
-        if new_default in type.lower(): 
-            return type
-
-    return None
 
 def _red_echo(text: str):
     click.echo(click.style(text, fg="red"))
@@ -98,17 +74,10 @@ class ConfigReadCommand(click.MultiCommand):
         
         try:
             instruction = InstallationInstruction.from_file(config_file)
-            options = _get_flags_and_options(instruction.schema, getattr(instruction, "misc", None))
+            options = _get_flags_and_options(instruction.schema, getattr(instruction, "misc", None),inst=True)
         except Exception as e:
             _red_echo("Error (parsing options from schema): " + str(e))
             exit(1)
-
-        #set new default value for __os__ Option
-        for option in options:
-            if '__os__' in option.name:
-                system_default = _get_system(option.type.choices)
-                if system_default:
-                    option.default = system_default
 
         def callback(**kwargs):
             inst = instruction.validate_and_render(kwargs)
@@ -152,7 +121,6 @@ class ConfigCommandGroup(click.Group):
         )
 
     def get_command(self, ctx, config_file: str , **kwargs) -> click.Command|None:
-        click.echo(kwargs)
         temp_dir = None
         if _is_remote_git_repository(config_file):
             try:
@@ -173,44 +141,54 @@ class ConfigCommandGroup(click.Group):
         if not isfile(config_file):
             _red_echo(f"{config_file} is not a file.")
             exit(1)
-        
+
+        user_data_dir = platformdirs.user_data_dir("default_data_local","installation_instruction")
+        os.makedirs(user_data_dir, exist_ok=True)
+        PATH_TO_DEFAULT_FILE = os.path.join(user_data_dir, "DEFAULT_DATA.json")
+        ctx.obj['path'] = PATH_TO_DEFAULT_FILE
+        default_data = {}
+        if isfile(PATH_TO_DEFAULT_FILE):
+            with open(PATH_TO_DEFAULT_FILE,"r") as f:
+                default_data = json.load(f)
+            ctx.obj['default_data'] = default_data
+            ctx.obj['new_file'] = False
+        else:
+            ctx.obj['new_file'] = True
         try:
             instruction = InstallationInstruction.from_file(config_file)
-            options = _get_flags_and_options(instruction.schema, getattr(instruction, "misc", None))
+            schema = instruction.parse_schema()
+            title = schema.get("title")
+            ctx.obj['title'] = title
+            if title in default_data.keys():
+                options = _get_flags_and_options(instruction.schema, getattr(instruction, "misc", None),no_default= True)
+            else:
+                options = _get_flags_and_options(instruction.schema, getattr(instruction, "misc", None))
         except Exception as e:
             _red_echo("Error (parsing options from schema): " + str(e))
             exit(1)
+        click.echo(PATH_TO_DEFAULT_FILE)
 
         def callback(**kwargs):
-            schema = instruction.parse_schema()
-            with open("installation_instruction\PATH_TO_DEAFAULT_FILE.json", "r") as f:
-                PATH_TO_DEFAULT_FILE = json.load(f)
+            new_file = ctx.obj['new_file']
+            PATH_TO_DEFAULT_FILE = ctx.obj['path']
             if ctx.obj["MODE"] == "add":
-                new_file= False
-                if not isfile(PATH_TO_DEFAULT_FILE):
-                    PATH_TO_DEFAULT_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)),"DEFAULT_DATA.json")
-                    with open("installation_instruction\PATH_TO_DEAFAULT_FILE.json", "w") as f:
-                        json.dump(PATH_TO_DEFAULT_FILE,f)
-                    click.echo(f"successfully created a new file at:")
-                    click.echo(PATH_TO_DEFAULT_FILE)
-                    new_file = True
-                #if not new_file:
-                    #given_param = {k for k in kwargs.items() if ctx.get_parameter_source(k) == click.core.ParameterSource.COMMANDLINE}
+                
                 default_data = {}
                 if not new_file:
                     with open(PATH_TO_DEFAULT_FILE,"r") as f:
                         default_data = json.load(f)
-                title = schema.get("title")
+                title = ctx.obj['title']
                 new_project = True
                 if title in default_data.keys():
                     new_project = False
                 defaults_settings = {}
                 if not new_project:
                     defaults_settings = default_data.get(title)
-                
                 for option in options:
                     if option.name in kwargs.keys():
-                        if type(option.type) == click.Choice:
+                        if kwargs.get(option.name) == None:
+                            pass
+                        elif type(option.type) == click.Choice:
                             if kwargs.get(option.name) in option.type.choices:
                                 defaults_settings[option.name]= kwargs.get(option.name)
                             else:
@@ -223,7 +201,10 @@ class ConfigCommandGroup(click.Group):
                             elif type(option.type)== click.types.FloatParamType:
                                 defaults_settings[option.name]= kwargs.get(option.name)
                             elif type(option.type)== click.types.BoolParamType:
-                                defaults_settings[option.name] = kwargs.get(option.name, False)
+                                if defaults_settings.get(option.name) == True:
+                                    defaults_settings[option.name] = False
+                                else:
+                                    defaults_settings[option.name] = kwargs.get(option.name, False)
                     elif new_project:
                         if option.required:
                             if option.default:
@@ -257,7 +238,7 @@ class ConfigCommandGroup(click.Group):
                 
                 with open(PATH_TO_DEFAULT_FILE,"r") as f:
                     default_data = json.load(f)
-                title = schema.get("title")
+                title = ctx.obj['title']
                 deleted_item = default_data.pop(title,None)
                 if not deleted_item:
                     _red_echo(f"There exists no project to remove.")
@@ -276,7 +257,7 @@ class ConfigCommandGroup(click.Group):
                 with open(PATH_TO_DEFAULT_FILE,"r") as f:
                     default_data = json.load(f)
                 
-                title = schema.get("title")
+                title = ctx.obj['title']
                 if not default_data.get(title,False):
                     click.echo(f"{title} has no entry in the default file.")
                 else:

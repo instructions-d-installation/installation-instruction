@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+* added custom default options for fast repeating installing.
+
 ## [0.4.0] - 2024-06-24
 
 ### Added

@@ -14,6 +14,10 @@
 
 import click
 from click import Option, Choice
+import os
+import platformdirs
+import json
+from os.path import isfile
 
 SCHEMA_TO_CLICK_TYPE_MAPPING = {
     "string": click.STRING,
@@ -22,7 +26,7 @@ SCHEMA_TO_CLICK_TYPE_MAPPING = {
     "boolean": click.BOOL,
 }
 
-def _get_flags_and_options(schema: dict, misc: dict = None) -> list[Option]:
+def _get_flags_and_options(schema: dict, misc: dict = None, no_default: bool = False, inst: bool = False) -> list[Option]:
     """
     Generates Click flags and options from a JSON schema.
 
@@ -37,13 +41,30 @@ def _get_flags_and_options(schema: dict, misc: dict = None) -> list[Option]:
 
     description = misc.get("description", {}) if misc is not None else {}
 
+    change_default = False
+    if inst:
+        project_title = schema.get("title")
+        user_data_dir = platformdirs.user_data_dir("default_data_local","installation_instruction")
+        PATH_TO_DEFAULT_FILE = os.path.join(user_data_dir, "DEFAULT_DATA.json")
+        default_data = {}
+        if isfile(PATH_TO_DEFAULT_FILE):
+            with open(PATH_TO_DEFAULT_FILE,"r") as f:
+                default_data = json.load(f)
+        if project_title in default_data.keys():
+            default_data = default_data.get(project_title)
+            change_default = True
+
+
     for key, value in schema.get('properties', {}).items():
         pretty_key = key
         pretty_key = pretty_key.replace('_', '-').replace(' ', '-')
         option_name = '--{}'.format(pretty_key)
         option_type = value.get('type', 'string')
         option_description = value.get('description', '') or description.get(key, "")
-        option_default = value.get('default', None)
+        if change_default and inst:
+            option_default = default_data.get(key)
+        else:
+            option_default = value.get('default', None)
 
         if "enum" in value:
             option_type = Choice( value["enum"] )
@@ -54,7 +75,9 @@ def _get_flags_and_options(schema: dict, misc: dict = None) -> list[Option]:
         is_flag=(option_type == click.BOOL)
         if is_flag and required:
             option_name = option_name + "/--no-{}".format(pretty_key)
-
+        if no_default:
+            required = False
+            option_default = None
         options.append(Option(
             param_decls=[option_name],
             type=option_type,
