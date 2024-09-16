@@ -40,7 +40,7 @@ def _get_flags_and_options(schema: dict, misc: dict = None) -> list[Option]:
         if "enum" in value:
             option_type = Choice(value["enum"])
         elif option_type == 'array' and value.get('items', {}).get('enum'):
-            option_type = click.Choice(value['items']['enum'], case_sensitive=False, multiple=True)
+            option_type = click.Choice(value['items']['enum'], case_sensitive=False, multiple = True)
         else:
             option_type = SCHEMA_TO_CLICK_TYPE_MAPPING.get(option_type, click.STRING)
 

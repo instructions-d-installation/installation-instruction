@@ -33,7 +33,7 @@ schema:
 
     hardware:
       title: Hardware
-      description: Hardware you want to use- CPU or GPU?
+      description: Hardware you want to use - CPU or GPU?
       enum:
         - cpu
         - gpu
@@ -44,13 +44,13 @@ schema:
       title: Configuration
       description: the configuration you have
       enum:
-        - virtual_env
-        - train_models
-      default: virtual_env
+        - virtual-env
+        - train-models
+      default: virtual-env
     
     trained-pipelines: 
       title: Trained Pipelines
-      description: the language package you want to include
+      description: The language package you want to include
       type: array
       items:
         type: string
