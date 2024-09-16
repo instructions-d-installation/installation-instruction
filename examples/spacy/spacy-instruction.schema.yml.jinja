@@ -48,11 +48,11 @@ schema:
         - train_models
       default: virtual_env
     
-    trained_pipelines: 
+    trained-pipelines: 
       title: Trained Pipelines
       description: the language package you want to include
       type: array
-      items: 
+      items:
         type: string
         enum: 
           - Catalan
@@ -80,6 +80,8 @@ schema:
           - Spanish 
           - Swedish
           - Ukrainian
+      unevaluatedItems: false
+      default: []
   allOf:      
     - if:
         properties:
@@ -282,13 +284,6 @@ pretty:
   {% if trained_pipelines == true %}
     {{ trained_pipeline_command(os, platform, package, pipeline) }}
   {%endif%}
-
-  {#{% if trained_pipelines %}
-  #  {% for pipeline in trained_pipelines %}
-  #    python -m spacy download {{ pipeline.lower().replace(" ", "_") }}
-  #  {% endfor %}
-  {% endif %}
-  #}
 
   {% if hardware == "cpu" %}
     {% if os == "mac" %}
