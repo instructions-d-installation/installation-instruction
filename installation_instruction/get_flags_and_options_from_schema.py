@@ -24,15 +24,6 @@ SCHEMA_TO_CLICK_TYPE_MAPPING = {
 }
 
 def _get_flags_and_options(schema: dict, misc: dict = None) -> list[Option]:
-    """
-    Generates Click flags and options from a JSON schema.
-
-    :param schema: Schema which contains the options.
-    :param misc: Additional descriptions and pretty print names nested.
-    :type schema: dict
-    :return: List of all the clickoptions from the schema.
-    :rtype: list[Option]
-    """
     options = []
     required_args = set(schema.get('required', []))
 
@@ -47,12 +38,14 @@ def _get_flags_and_options(schema: dict, misc: dict = None) -> list[Option]:
         option_default = value.get('default', None)
 
         if "enum" in value:
-            option_type = Choice( value["enum"] )
+            option_type = Choice(value["enum"])
+        elif option_type == 'array' and value.get('items', {}).get('enum'):
+            option_type = click.Choice(value['items']['enum'], case_sensitive=False, multiple=True)
         else:
             option_type = SCHEMA_TO_CLICK_TYPE_MAPPING.get(option_type, click.STRING)
 
         required = (key in required_args) and option_default is None
-        is_flag=(option_type == click.BOOL)
+        is_flag = (option_type == click.BOOL)
         if is_flag and required:
             option_name = option_name + "/--no-{}".format(pretty_key)
 

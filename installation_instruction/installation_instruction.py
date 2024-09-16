@@ -107,7 +107,6 @@ class InstallationInstruction:
                 ]
                 result["properties"][key]["type"] = "array"
 
-                
         return result
 
 
