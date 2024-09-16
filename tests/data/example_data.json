@@ -28,7 +28,7 @@
                 "package": "pip",
                 "hardware": "cpu"
             },
-        "expected_output":"pip install -U pip setuptools wheel && pip install -U spacy\nFalse",
+        "expected_output":"pip install -U pip setuptools wheel && pip install -U spacy",
         "schema_path":"examples/spacy/spacy-instruction.schema.yml.jinja"
     },
     {
@@ -57,11 +57,11 @@
         "input":
         {
             "os": "windows",
-            "platform": "arm",
-            "package": "forge",
+            "platform": "x86",
+            "package": "conda",
             "hardware": "cpu"
         },
-        "expected_output":null,
+        "expected_output":"conda install -c conda-forge spacy",
         "schema_path":"examples/spacy/spacy-instruction.schema.yml.jinja"
     }
 ]

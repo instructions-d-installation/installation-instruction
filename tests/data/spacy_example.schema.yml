@@ -24,8 +24,8 @@ schema:
       default: x86
 
     package:
-      title: Package Manager
-      description: Specufy the package manager you use.
+      title: Packager
+      description: The package manager of your choosing.
       enum:
         - pip
         - conda
@@ -85,7 +85,7 @@ schema:
   required: 
     - os
     - platform
-    - package
+    - packager
     - hardware
 
 pretty:

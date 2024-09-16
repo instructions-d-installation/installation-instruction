@@ -1,4 +1,3 @@
-
 # Copyright 2024 Adam McKellar, Kanushka Gupta, Timo Ege
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -47,20 +46,19 @@ def test_data_flags_options_config_string_with_empty_template():
     return example
 
 @pytest.fixture
-def test_data_flags_options():
+def spacy_schema():
     file_path = os.path.join(os.path.dirname(__file__), 'data', 'spacy_example.schema.yml')
-    with open(file_path,"r") as file:
+    with open(file_path, "r") as file:
         example = yaml.safe_load(file)
     
     return example["schema"]
 
 @pytest.fixture
-def test_data_flags_options_config_string_with_empty_template():
+def spacy_config_string_with_empty_template():
     file_path = os.path.join(os.path.dirname(__file__), 'data', 'spacy_example.schema.yml')
-    with open(file_path,"r") as file:
+    with open(file_path, "r") as file:
         example = file.read()
 
     example += "\n------\nsomething"
     
     return example
-
