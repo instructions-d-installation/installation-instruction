@@ -1,10 +1,5 @@
 # How to Compile Sphinx Docs for Dummies
 
-You need to have `sphinx-build` installed:
-```
-python -m pip install sphinx-build
-```
-
 ## Windows
 
 From project root:
