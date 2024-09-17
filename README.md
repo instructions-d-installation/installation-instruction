@@ -92,7 +92,6 @@ Options are dynamically created with the schema part of the config file.
   2. Add `pretty` and `description` keys.
   3. Create lists like `key: Pretty Key`.
 * `title` and `description` from within the schema overwrite `pretty` and `description` outside of the schema.
-* For the package to set the default os to the running system, name the property `__os__`.
 
 ```yaml
 schema:
