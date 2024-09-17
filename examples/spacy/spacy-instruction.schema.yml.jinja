@@ -93,9 +93,11 @@ pretty:
 ------
 
 {% if package == "pip" %}
-  pip install -U pip setuptools wheel &&
-  pip install -U spacy
+  pip install -U pip setuptools wheel
 
+  {% call command() %}
+    pip install -U spacy
+    
     {% if hardware == "cpu"  %}
       {% if os == "mac"%}
         {% if platform == "arm"%}
@@ -108,10 +110,11 @@ pretty:
       {% if os == "linux"%}
         [cuda111]
       {% endif %}
-      {%if os == "mac"%}
+      {% if os == "mac" %}
         [apple]
-      {%endif%}
-    {%endif%}
+      {% endif %}
+    {% endif %}
+  {% endcall %}
 {%endif%}    
 
 {% if package == "conda" %}     
@@ -122,26 +125,29 @@ pretty:
 {%endif%}
 
 {%if package == "source"%}
-  pip install -U pip setuptools wheel &&
-  git clone https://github.com/explosion/spaCy &&
-  cd spaCy &&
-  pip install -r requirements.txt &&
-  pip install --no-build-isolation --editable .
+  pip install -U pip setuptools wheel
+  git clone https://github.com/explosion/spaCy
+  cd spaCy
+  pip install -r requirements.txt
 
-  {% if hardware == "gpu"%}
-    {% if platform == "x86"%}
-      '[cuda111]'
-    {%endif%}
-    {% if platform == "arm"%}
-      {%if os == "windows"%}
-        '[]'
-      {%endif%}
-      {% if os == "linux"%} 
+  {% call command() %}
+    pip install --no-build-isolation --editable .
+
+    {% if hardware == "gpu"%}
+      {% if platform == "x86"%}
         '[cuda111]'
       {%endif%}
-      {% if os == "mac"%} 
-        '[apple]'
+      {% if platform == "arm"%}
+        {%if os == "windows"%}
+          '[]'
+        {%endif%}
+        {% if os == "linux"%} 
+          '[cuda111]'
+        {%endif%}
+        {% if os == "mac"%} 
+          '[apple]'
+        {%endif%}
       {%endif%}
     {%endif%}
-  {%endif%}
+  {% endcall %}
 {%endif%}

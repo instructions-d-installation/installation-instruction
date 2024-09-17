@@ -7,7 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+* Added `cat` command: Users can now see the source of an `install.cfg` file with `ibi cat`.
+* Added `command` macro, which explicitly removes line breaks.
+* Added that each line is executed as command individually.
 * added custom default options for fast repeating installing.
+
+## Removed
+
+* Removed implicit removal of line breaks.
+* removed automatic added default key for os systems.
+
+
+### Changed
+
+* Switched to sandboxed rendering of template for security purposes.
+
 
 ## [0.4.0] - 2024-06-24
 

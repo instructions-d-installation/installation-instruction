@@ -40,12 +40,14 @@ properties:
       - pipx
       - pip
 ----------------------------------
-{% if method == "pip" %}
-  python -m pip
-{% else %}
-  pipx
-{% endif %}
-  install installation-instruction
+{% call command() %}
+  {% if method == "pip" %}
+    python -m pip
+  {% else %}
+    pipx
+  {% endif %}
+    install installation-instruction
+{% endcall %}
 ```
 
 
@@ -62,7 +64,9 @@ Options:
   -h, --help  Show this message and exit.
 
 Commands:
+
   default  Default command to create custom default settings with add,...
+  cat      Shows source of installation instructions config file.
   install  Installs with config and parameters given.
   show     Shows installation instructions for your specified config file...
 ```
@@ -110,11 +114,20 @@ description:
   pip: Standard python package manager.
 ```
 
+* For the package to set the default os to the running system, name the property `__os__`.
+
+```yaml
+__os__:
+  - windows
+  - linux
+  - macos
+```
+
 
 ### Template
 
-* You can have as much whitespace and line breaks as you wish in and inbetween your commands.
-* Commands must be seperated by `&&`! (`pip install installation-instruction && pip uninstall installation-instruction`.)
+* Non empty lines are executed one by one.
+* Wrapping a command with `{% call command() %}` and `{% endcall %}` essentially removes all line breaks for convenience.
 * If you wish to stop the render from within the template you can use the macro `raise`. (`{{ raise("no support!") }}`.) 
 
 
