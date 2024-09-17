@@ -83,6 +83,7 @@ class InstallationInstruction:
         """
         result = {}
 
+        result["$id"] = self.schema.get("$id","")
         result["title"] = self.schema.get("title", "")
         result["description"] = self.schema.get("description", "")
         result["properties"] = {}
