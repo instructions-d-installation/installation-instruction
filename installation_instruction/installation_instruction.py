@@ -59,7 +59,6 @@ class InstallationInstruction:
         :raise Exception: If schema or user input is invalid.
         """
         validate(input, self.schema)
-
         try:
             instruction = self.template.render(input)
         except UndefinedError as e:

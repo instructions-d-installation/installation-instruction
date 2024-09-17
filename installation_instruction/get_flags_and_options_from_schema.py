@@ -75,7 +75,6 @@ def _get_flags_and_options(schema: dict, misc: dict = None, inst: bool = False) 
         is_flag=(option_type == click.BOOL)
         if is_flag and required:
             option_name = option_name + "/--no-{}".format(pretty_key)
-        
         if not inst:
             alt_default[key]=option_default
             required = False
