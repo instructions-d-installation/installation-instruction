@@ -29,7 +29,7 @@ RAISE_JINJA_MACRO_STRING = """
 
 COMMAND_JINJA_MACRO_STRING = """
 {% macro command() %}
-    {% filter replace("\n", "") %}
+    {% filter replace("\n", " ") %}
         {{ caller() }}
     {% endfilter %} 
 {% endmacro %}
