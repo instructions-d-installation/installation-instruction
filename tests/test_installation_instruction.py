@@ -4,17 +4,17 @@ from installation_instruction.installation_instruction import InstallationInstru
 
 
 def test_validate_and_render(user_input_tests):
-
     install = InstallationInstruction.from_file(user_input_tests.get("schema_path"))
-    expected_output = user_input_tests.get("expected_output")
+    expected_message = user_input_tests.get("expected_message")
+    expected_error = user_input_tests.get("expected_error")
 
-    if expected_output is None:
+    if expected_message is None or expected_error is None:
         with pytest.raises(Exception):
             install.validate_and_render(user_input_tests.get("input"))
     else:
         good_installation_instruction = install.validate_and_render(user_input_tests.get("input"))
-        expected = expected_output.split("\n")
-        assert (expected[0],expected[1]=="True") == good_installation_instruction
+        print(good_installation_instruction)
+        assert (expected_message, expected_error) == good_installation_instruction
 
 def test_parse_schema(test_data_flags_options_config_string_with_empty_template):
     config = test_data_flags_options_config_string_with_empty_template

@@ -5,8 +5,8 @@ installation-instruction
    :maxdepth: 2
    :caption: Documentation:
 
-   intro
-   dev
+   usage_docs/usage
+   dev_docs/dev
    
 
 Indices and tables
