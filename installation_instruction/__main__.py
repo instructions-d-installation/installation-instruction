@@ -157,32 +157,26 @@ class ConfigCommandGroup(click.Group):
         try:
             instruction = InstallationInstruction.from_file(config_file)
             schema = instruction.parse_schema()
-            title = schema.get("title")
+            title = schema.get("$id")
             ctx.obj['title'] = title
-            if title in default_data.keys():
-                options = _get_flags_and_options(instruction.schema, getattr(instruction, "misc", None),no_default= True)
-            else:
-                options = _get_flags_and_options(instruction.schema, getattr(instruction, "misc", None))
+            options, ctx.obj['defaults'] = _get_flags_and_options(instruction.schema, getattr(instruction, "misc", None)) 
         except Exception as e:
             _red_echo("Error (parsing options from schema): " + str(e))
             exit(1)
-        click.echo(PATH_TO_DEFAULT_FILE)
 
         def callback(**kwargs):
             new_file = ctx.obj['new_file']
             PATH_TO_DEFAULT_FILE = ctx.obj['path']
             if ctx.obj["MODE"] == "add":
-                
+                orig_default = ctx.obj['defaults']
                 default_data = {}
                 if not new_file:
                     with open(PATH_TO_DEFAULT_FILE,"r") as f:
                         default_data = json.load(f)
                 title = ctx.obj['title']
-                new_project = True
-                if title in default_data.keys():
-                    new_project = False
+                exist_project = title in default_data.keys()
                 defaults_settings = {}
-                if not new_project:
+                if exist_project:
                     defaults_settings = default_data.get(title)
                 for option in options:
                     if option.name in kwargs.keys():
@@ -197,39 +191,47 @@ class ConfigCommandGroup(click.Group):
                             if type(option.type)== click.types.StringParamType:
                                 defaults_settings[option.name]= kwargs.get(option.name)
                             elif type(option.type)== click.types.IntParamType:
-                                defaults_settings[option.name]= kwargs.get(option.name)
+                                try:
+                                    def_val = int(kwargs.get(option.name))
+                                except ValueError:
+                                    _red_echo(f"{kwargs.get(option.name)} is no int!")
+                                    exit(1)
+                                defaults_settings[option.name]= def_val
                             elif type(option.type)== click.types.FloatParamType:
-                                defaults_settings[option.name]= kwargs.get(option.name)
+                                try:
+                                    def_val = float(kwargs.get(option.name))
+                                except ValueError:
+                                    _red_echo(f"{kwargs.get(option.name)} is no float!")
+                                    exit(1)
+                                defaults_settings[option.name]= def_val
                             elif type(option.type)== click.types.BoolParamType:
                                 if defaults_settings.get(option.name) == True:
                                     defaults_settings[option.name] = False
                                 else:
                                     defaults_settings[option.name] = kwargs.get(option.name, False)
-                    elif new_project:
-                        if option.required:
-                            if option.default:
-                                defaults_settings[option.name]= option.default
-                            else:
-                                if type(option.type)== click.types.Choice:
-                                    defaults_settings[option.name]= option.type.choices[0]
-                                elif type(option.type)== click.STRING:
-                                    defaults_settings[option.name]=" "
-                                elif type(option.type)== click.INT:
-                                    defaults_settings[option.name]= 1
-                                elif type(option.type)== click.FLOAT:
-                                    defaults_settings[option.name]= 1.0
-                                elif type(option.type)== click.BOOL:
-                                    defaults_settings[option.name]= False
-                
-                default_data[title] = defaults_settings
-                with open(PATH_TO_DEFAULT_FILE,"w") as f:
-                    json.dump(default_data, f,indent= 4)
-                if new_file:
-                    click.echo("successfully created a new default file.")
-                if new_project:
-                    click.echo(f"successfully added {title} to the default_data.")
+                remove = []
+                for key in defaults_settings.keys():
+                    if str(defaults_settings.get(key)) == str(orig_default.get(key)):
+                        remove.append(key)
+                for key in remove:
+                    defaults_settings.pop(key)
+                if defaults_settings:
+                    default_data[title] = defaults_settings
                 else:
-                    click.echo(f"successfully applied changes to {title} in the default_data.")
+                    default_data.pop(title)
+                if not default_data:
+                    os.remove(PATH_TO_DEFAULT_FILE)
+                    click.echo(f"removed default file as all setting were the same like the defaults of the developer.") 
+                else:
+                    with open(PATH_TO_DEFAULT_FILE,"w") as f:
+                        json.dump(default_data, f,indent= 4)
+                    if new_file:
+                        click.echo("successfully created a new default file at:")
+                        click.echo(PATH_TO_DEFAULT_FILE)
+                    if exist_project:
+                        click.echo(f"successfully added {title} to the default_data.")
+                    else:
+                        click.echo(f"successfully applied changes to {title} in the default_data.")
 
             elif ctx.obj["MODE"] == "remove":
                 if not isfile(PATH_TO_DEFAULT_FILE):
@@ -261,8 +263,13 @@ class ConfigCommandGroup(click.Group):
                 if not default_data.get(title,False):
                     click.echo(f"{title} has no entry in the default file.")
                 else:
-                    click.echo(f"{title} has the following default configurations:")
-                    click.echo(default_data.get(title))
+                    click.echo("")
+                    click.echo(f"{title} has the following user default configurations:")
+                    click.echo("")
+                    dic = default_data.get(title)
+                    for i in dic.keys():
+                        click.echo(f"{i}: {dic.get(i)}")
+                    click.echo("")
             
             exit(0)
         return click.Command(
