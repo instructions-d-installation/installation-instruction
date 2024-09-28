@@ -53,20 +53,27 @@ echo "Virtualenv is {{ "enabled" if virtualenv else "disabled" }}!"
 
 This advanced example uses most functions of the package. In the following list the code is described starting from the top. 
 
-* The schema starts with the $schema, $id , title and description keys which are importent for the processing of the schema in the runtime.
+* The schema starts with the $schema, $id , title and description keys.
 * Afterwards the properties `__os__` and `virtualenv` are defined.
-* The property `__os__` is an enum type with the following choices:
-    * windows
-    * macos
-    * linux  
-    
-    As the name is `__os__` it also uses the feature of automatically setting the default value to the system it is currently running on.
-* The property `virtuealenv` is a boolean type with the default value false. Properties with boolean type are automatically registered as flags in the cli. 
-* After the properties is a list of required options. In this list are all the properties listed which are required to install a package. In this case it is `__os__`.
+  * The property `__os__` is an enum type with the following choices:
+      * windows
+      * macos
+      * linux  
+      
+       `__os__` is a special key with the feature of automatically setting the default value to the system it is currently running on (`["windows", "linux", "macos"]`).
+  * The property `virtuealenv` is of boolean type with the default value false. Properties with boolean type are automatically registered as flags in the cli. 
+* After the properties is a list of required options. In this list are all the properties listed which are not optional in the installation of the package. In this case it is `__os__`.
 * Next is the list pretty for the pretty prints. This list just changes words in the help file to make it more readable. In this case windows would be turned to Windows.
-* 
-* 
-* 
-* 
-* 
-* 
+* Next is the `------` which splits the file into the schema and jinja part. 
+* The first statement of the jinja part `{% call command() %}` ... `{% endcall %}` removes all the linebreaks. In this case it removes  the linebrak between the echo line and the line choosen in the if-block. 
+* The if block chooses a line based on the `__os__` property.
+* The last line echos if the virtualenv property is enabled or disabled.
+* For example the input:
+  ```bash
+  ibi show . ----os-- windows --virtualenv
+  ```
+  will have the following output: 
+  ```bash
+  echo "This is Windows!"
+  echo "Virtualenv is activated!"`
+  ```
