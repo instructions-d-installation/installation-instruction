@@ -38,6 +38,7 @@ dependencies = [
     "PyYAML",
     "click < 9.0.0a0",
     "GitPython",
+    "platformdirs",
 ]
 
 [project.optional-dependencies]

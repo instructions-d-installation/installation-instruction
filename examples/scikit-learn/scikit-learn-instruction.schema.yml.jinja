@@ -35,7 +35,7 @@ additionalProperties: false
 
 ------
 
-{% if package == "conda" %}
+{% if packager == "conda" %}
     conda create -n sklearn-env -c conda-forge scikit-learn
     conda activate sklearn-env
 {% else %}
