@@ -112,6 +112,9 @@ description:
   pip: Standard python package manager.
 ```
 
+> [!CAUTION]
+> Currently `__os__` automatic detection not working.
+
 * For the package to set the default os to the running system, name the property `__os__`.
 
 ```yaml
