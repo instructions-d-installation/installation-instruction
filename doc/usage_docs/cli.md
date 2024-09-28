@@ -26,5 +26,5 @@ an url to a git repository with a config file in its root.
 
 ### `cat`
 
-`cat` prints the 
+`cat` prints the the entire `install.cfg` as is.
 
