@@ -48,3 +48,9 @@ Havind a composite format configuration file has some adavantages and some disad
 The missing IDE support can be bypassed by developing the configuration in different files (`.yml` and `.json`).
 The composite format could be build in the future by the cli from those separate files.
 
+
+## CLI
+
+Options for configurations are generated on the fly.
+Click `MultiCommand` is used for loading the configuration file and parsing the schema for options.
+

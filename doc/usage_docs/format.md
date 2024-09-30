@@ -3,14 +3,14 @@
 ## Config
 
 The config is comprised of a single file `install.cfg`.It has two parts delimited by `------` (6 or more `-`).
-Both parts should be developed in different files for language server support. The language of the first part is yaml and for the second is jinja2. 
+Both parts should be developed in different files for language server support. The language of the first part is [YAML] and for the second is [Jinja]. 
 
 
 ### Schema
 
-The first section of the config is a [json-Schema](https://json-schema.org/).
-It can be written in [JSON](https://www.json.org/json-en.html) or to JSON capabilites restricted [YAML](https://yaml.org/).
-The schema is restricted to the following draft version: https://json-schema.org/draft/2020-12/schema.
+The first section of the config is a [json-Schema].
+It can be written in [JSON] or to JSON capabilites restricted [YAML].
+The schema is restricted to the following draft version: <https://json-schema.org/draft/2020-12/schema>.
 
 For functional usage the schema needs to include the following properties:
 
@@ -18,7 +18,7 @@ For functional usage the schema needs to include the following properties:
 * `title` are used for pretty print option names.
 * `description` is used for the options help message.
 
----
+
 Here are the exact steps to adding a description and a pretty print name to enum values (for [web-installation-instruction](https://github.com/instructions-d-installation/web-installation-instruction)):
   1. Indent the schema with the key `schema`.
   2. Add `pretty` and `description` keys.
@@ -43,7 +43,7 @@ description:
   pip: Standard python package manager.
 ```
 
----
+
 The schema is tested by the Draft202012Validator from the jsonschema python package. 
 
 For the package to set the default os to the running system, give the property which specified the os the name `__os__`.
@@ -54,6 +54,8 @@ __os__:
   - linux
   - macos
 ```
+
+
 ### Jinja template
 
 In the second part of the file a Jinja template is written. 
@@ -90,5 +92,8 @@ If you wish to stop the render from within the template you can use the macro `r
     {% endif %}
 {% endif %}
 ```
-❌  
-✅
+
+[YAML]: https://yaml.org/
+[JSON]: https://www.json.org/json-en.html
+[Jinja]: https://jinja.palletsprojects.com/en/3.1.x/templates/
+[json-Schema]: https://json-schema.org/

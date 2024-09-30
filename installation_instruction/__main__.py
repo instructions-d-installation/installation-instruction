@@ -12,6 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+"""
+Code of the click custom commands `install`, `show` and `default`.
+The commands `install` and `show` are ConfigReadCommand instances
+while the subcommands `add`, `remove` and `list` from the multi command default 
+are ConfigCommandGroup instances.
+"""
+
 from sys import exit
 from os.path import isfile, isdir
 from subprocess import run

@@ -53,7 +53,7 @@ echo "Virtualenv is {{ "enabled" if virtualenv else "disabled" }}!"
 
 This advanced example uses most functions of the package. In the following list the code is described starting from the top. 
 
-* The schema starts with the $schema, $id , title and description keys.
+* The schema starts with the `$schema`, `$id` , title and description keys.
 * Afterwards the properties `__os__` and `virtualenv` are defined.
   * The property `__os__` is an enum type with the following choices:
       * windows
@@ -65,7 +65,7 @@ This advanced example uses most functions of the package. In the following list 
 * After the properties is a list of required options. In this list are all the properties listed which are not optional in the installation of the package. In this case it is `__os__`.
 * Next is the list pretty for the pretty prints. This list just changes words in the help file to make it more readable. In this case windows would be turned to Windows.
 * Next is the `------` which splits the file into the schema and jinja part. 
-* The first statement of the jinja part `{% call command() %}` ... `{% endcall %}` removes all the linebreaks. In this case it removes  the linebrak between the echo line and the line choosen in the if-block. 
+* The first statement of the jinja part `{% call command() %} ... {% endcall %}` removes all the linebreaks. In this case it removes  the linebrak between the echo line and the string choosen in the if-block. 
 * The if block chooses a line based on the `__os__` property.
 * The last line echos if the virtualenv property is enabled or disabled.
 * For example the input:
