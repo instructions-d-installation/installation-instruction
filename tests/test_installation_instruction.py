@@ -4,11 +4,11 @@ from installation_instruction.installation_instruction import InstallationInstru
 
 
 def test_validate_and_render(user_input_tests):
-
     install = InstallationInstruction.from_file(user_input_tests.get("schema_path"))
-    expected_output = user_input_tests.get("expected_output")
+    expected_message = user_input_tests.get("expected_message")
+    expected_error = user_input_tests.get("expected_error")
 
-    if expected_output is None:
+    if expected_message is None or expected_error is None:
         with pytest.raises(Exception):
             install.validate_and_render(user_input_tests.get("input"))
     else:

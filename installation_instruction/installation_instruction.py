@@ -28,13 +28,26 @@ RAISE_JINJA_MACRO_STRING = """
 {% endmacro %}
 """
 
+COMMAND_JINJA_MACRO_STRING = """
+{% macro command() %}
+    {% filter replace("\n", " ") %}
+        {{ caller() }}
+    {% endfilter %} 
+{% endmacro %}
+"""
+
+MACROS = [
+    RAISE_JINJA_MACRO_STRING,
+    COMMAND_JINJA_MACRO_STRING,
+]
+
 
 class InstallationInstruction:
     """
     Class holding schema and template for validating and rendering installation instruction.
     """
 
-    def validate_and_render(self, input: dict) -> tuple[str, bool]:
+    def validate_and_render(self, input: dict) -> tuple[list[str], bool]:
         """
         Validates user input against schema and renders with the template.
         Returns installation instructions and False. 
@@ -47,16 +60,15 @@ class InstallationInstruction:
         :raise Exception: If schema or user input is invalid.
         """
         validate(input, self.schema)
-
         try:
             instruction = self.template.render(input)
         except UndefinedError as e:
             if errmsg := helpers._get_error_message_from_string(str(e)):
-                return (errmsg, True)
+                return ([errmsg], True)
             else:
                 raise e
         
-        instruction = helpers._replace_whitespace_in_string(instruction)
+        instruction = helpers._replace_whitespace_in_string_and_split_it(instruction)
 
         return (instruction, False)
     
@@ -71,6 +83,7 @@ class InstallationInstruction:
         """
         result = {}
 
+        result["$id"] = self.schema.get("$id","")
         result["title"] = self.schema.get("title", "")
         result["description"] = self.schema.get("description", "")
         result["properties"] = {}
@@ -138,7 +151,7 @@ class InstallationInstruction:
             Draft202012Validator.check_schema(self.schema)
         except exceptions.SchemaError as e:
             raise Exception(f"The given schema file is not a valid json schema.\n\n{e}")
-        self.template = helpers._load_template_from_string(RAISE_JINJA_MACRO_STRING+template)
+        self.template = helpers._load_template_from_string("".join(MACROS)  + template)
 
 
     @classmethod

@@ -17,8 +17,7 @@ from installation_instruction.get_flags_and_options_from_schema import _get_flag
 
 def test_get_flags_and_options(test_data_flags_options):
     example_schema = test_data_flags_options
-    options = _get_flags_and_options(example_schema, {"description": { "verbose": "Activate verbose output." }})
-
+    options = _get_flags_and_options(example_schema, {"description": { "verbose": "Activate verbose output." }},inst=True)
     assert len(options) == 6
 
     assert options[0].opts == ["--os"]

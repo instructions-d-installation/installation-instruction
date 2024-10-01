@@ -103,17 +103,6 @@ def _get_install_config_file(path: str) -> tuple[TemporaryDirectory|None, str]:
 
     return (temp_dir, config_file)
 
-def _make_pretty_print_line_breaks(string: str) -> str:
-    """
-    Replaces `&& ` with a newline character.
-
-    :param string: String to be processed.
-    :type string: str
-    :return: String with `&& ` replaced with newline character.
-    :rtype: str
-    """
-    return re.sub(r"\s?&&\s?", "\n", string, 0, re.S)
-
 def _get_error_message_from_string(string: str) -> str | None:
     """
     Parses error message of error given by using jinja macro `RAISE_JINJA_MACRO_STRING`. If no error message is found returns `None`.
@@ -129,16 +118,22 @@ def _get_error_message_from_string(string: str) -> str | None:
         return None
     return matches.group("errmsg")
 
-def _replace_whitespace_in_string(string: str) -> str:
+def _replace_whitespace_in_string_and_split_it(string: str) -> list[str]:
     """
-    Replaces eol and whitespaces of a string with a single whitespace.
+    Replaces eol whitespaces of a string with a single whitespace or none.
 
     :param string: String to be processed.
     :type string: str
-    :return: String where whitespace and eol is replaced with one whitespace and whitspace before and after are stripped.
+    :return: String where whitespace is replaced with one whitespace and whitspace before and after are stripped.
     :rtype: str
     """
-    return re.sub(r"\s{1,}", " ", string, 0, re.S).strip()
+    multiline_string = str.splitlines(string)
+    string_list = []
+    for s in multiline_string:
+        s = s.strip()
+        if s:
+            string_list += [re.sub(r"\s{2,}", " ", s, 0)]
+    return string_list
 
 def _split_string_at_delimiter(string: str) -> tuple[str, str]:
     """

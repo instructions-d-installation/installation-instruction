@@ -283,9 +283,11 @@ pretty:
     {{ virtual_env_command(os, platform, package) }}
   {% endif %}
 
-  pip install -U pip setuptools wheel &&
-  pip install -U spacy
+  pip install -U pip setuptools wheel
 
+  {% call command() %}
+    pip install -U spacy
+    
   {% if trained_pipelines == true %}
     {{ trained_pipeline_command(os, platform, package, pipeline) }}
   {% endif %}
@@ -306,6 +308,12 @@ pretty:
       {% endif %}
     {% endif %}
   {% endif %}
+      {% if os == "mac" %}
+        [apple]
+      {% endif %}
+    {% endif %}
+  {% endcall %}
+{%endif%}    
 
 {% elif package == "conda" %}
 
@@ -331,11 +339,13 @@ pretty:
     {{ virtual_env_command(os, platform, package) }}
   {% endif %}
 
-  pip install -U pip setuptools wheel &&
-  git clone https://github.com/explosion/spaCy &&
-  cd spaCy &&
-  pip install -r requirements.txt &&
-  pip install --no-build-isolation --editable .
+  pip install -U pip setuptools wheel
+  git clone https://github.com/explosion/spaCy
+  cd spaCy
+  pip install -r requirements.txt
+
+  {% call command() %}
+    pip install --no-build-isolation --editable .
 
   {% if trained_pipelines == true %}
     {{ trained_pipeline_command(os, platform, package, pipeline) }}
