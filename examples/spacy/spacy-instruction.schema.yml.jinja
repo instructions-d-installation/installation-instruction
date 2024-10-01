@@ -16,7 +16,7 @@ schema:
 
     platform:
       title: Platform
-      description: Specify your system platform
+      description: platform
       enum:
         - x86
         - arm 
@@ -42,7 +42,7 @@ schema:
 
     configuration:
       title: Configuration
-      description: The configuration you have
+      description: the configuration you have
       enum:
         - virtual-env
         - train-models
@@ -50,7 +50,7 @@ schema:
     
     trained-pipelines: 
       title: Trained Pipelines
-      description: The language packages you want to include
+      description: The language package you want to include
       type: array
       items:
         type: string
@@ -85,13 +85,13 @@ schema:
   allOf:      
     - if:
         properties:
-          trained-pipelines:
+          trained_pipelines:
             minItems: 1
       then: 
         properties:   
           pipeline: 
-            title: Select Pipeline
-            description: Select the pipeline optimization strategy
+            title: Select pipeline for
+            description: Select pipeline for -
             enum: 
               - efficiency
               - accuracy
@@ -104,9 +104,7 @@ schema:
             const: gpu
       then:
         properties:
-          cuda-runtime:
-            title: CUDA Runtime Version
-            description: Specify the CUDA runtime version you want to use
+          cuda_runtime:
             enum:
               - CUDA 8.0
               - CUDA 9.0
@@ -119,9 +117,7 @@ schema:
               - CUDA 11.1
               - CUDA 11.2 - 11.x
               - CUDA 12.x
-            type: string
-            default: CUDA 10.0
-                
+            
   required: 
     - os
     - platform
@@ -142,7 +138,6 @@ pretty:
   train_models: train models
   efficiency: efficiency
   accuracy: accuracy
-  cuda_runtime: CUDA Runtime Version  
 
 ---------
 {% macro trained_pipeline_command (os, platform, package, pipeline)  %}
@@ -279,18 +274,16 @@ pretty:
 {% endmacro %}
 
 {% if package == "pip" %}
-  {% if configuration == true %}
+  {%if configuration == true %}
     {{ virtual_env_command(os, platform, package) }}
-  {% endif %}
+  {%endif%}
 
-  pip install -U pip setuptools wheel
+  pip install -U pip setuptools wheel &&
+  pip install -U spacy
 
-  {% call command() %}
-    pip install -U spacy
-    
   {% if trained_pipelines == true %}
     {{ trained_pipeline_command(os, platform, package, pipeline) }}
-  {% endif %}
+  {%endif%}
 
   {% if hardware == "cpu" %}
     {% if os == "mac" %}
@@ -299,68 +292,54 @@ pretty:
       {% endif %}
     {% endif %}
   {% elif hardware == "gpu" %}
-    {% if cuda_runtime %}
-      {{ cuda_runtime }}
-    {% endif %}
+    {{cuda_runtime}}
     {% if platform == "arm" %}
       {% if os == "mac" %}
         -'[apple]'
       {% endif %}
     {% endif %}
   {% endif %}
-      {% if os == "mac" %}
-        [apple]
-      {% endif %}
-    {% endif %}
-  {% endcall %}
-{%endif%}    
 
 {% elif package == "conda" %}
 
-  {% if configuration == true %}
+  {%if configuration == true %}
     {{ virtual_env_command(os, platform, package) }}
-  {% endif %}
+  {%endif%}
 
   conda install -c conda-forge spacy
 
   {% if trained_pipelines == true %}
     {{ trained_pipeline_command(os, platform, package, pipeline) }}
-  {% endif %}
+  {%endif%}
 
   {% if hardware == "gpu" %}
-    {% if cuda_runtime %}
-      conda install -c conda-forge cupy
-    {% endif %}
+    conda install -c conda-forge cupy
   {% endif %}
 
 {% elif package == "source" %}
 
-  {% if configuration == true %}
+  {%if configuration == true %}
     {{ virtual_env_command(os, platform, package) }}
-  {% endif %}
+  {%endif%}
 
-  pip install -U pip setuptools wheel
-  git clone https://github.com/explosion/spaCy
-  cd spaCy
-  pip install -r requirements.txt
-
-  {% call command() %}
-    pip install --no-build-isolation --editable .
+  pip install -U pip setuptools wheel &&
+  git clone https://github.com/explosion/spaCy &&
+  cd spaCy &&
+  pip install -r requirements.txt &&
+  pip install --no-build-isolation --editable .
 
   {% if trained_pipelines == true %}
     {{ trained_pipeline_command(os, platform, package, pipeline) }}
-  {% endif %}
+  {%endif%}
   
   {% if hardware == "gpu" %}
     {% if platform == "x86" %}
-      {% if cuda_runtime %}
-        {{ cuda_runtime }}
-      {% endif %}
+      {{cuda_runtime}}
     {% elif platform == "arm" %}
       {% if os == "windows" %}
         '[]'
       {% elif os == "linux" %}
-        -'.{{ cuda_runtime }}'
+        -'.{{cuda_runtime}}'
       {% elif os == "mac" %}
         '.[apple]'
       {% endif %}

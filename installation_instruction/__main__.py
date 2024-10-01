@@ -27,6 +27,7 @@ import os
 import click
 import json
 import platformdirs
+import platform
 
 from .__init__ import __version__, __description__, __repository__, __author__, __author_email__, __license__
 from .get_flags_and_options_from_schema import _get_flags_and_options  
@@ -39,6 +40,29 @@ Copyright: (C) 2024 {__author_email__}, {__author__}
 License: {__license__}
 Repository: {__repository__}"""
 
+def _get_system(option_types):
+    """
+    Returns the os from the list of possible os systems defined in the schema.
+
+    :param option_types: list of system from the schema.
+    :type option_types: list
+    :return: os system from input list or None.
+    :rtype: string or None
+    """    
+    
+    system = platform.system()
+    system_names = {
+        'Linux': 'linux',
+        'Darwin': 'mac',
+        'Windows': 'win',
+    }
+    
+    new_default = system_names.get(system,None)
+    for type in option_types:
+        if new_default in type.lower(): 
+            return type
+
+    return None
 
 class ConfigReadCommand(click.MultiCommand):
     """
@@ -53,14 +77,13 @@ class ConfigReadCommand(click.MultiCommand):
             options_metavar="",
         )
 
-
     def get_command(self, ctx, config_file: str) -> click.Command|None:
 
         (_temp_dir, config_file) = _get_install_config_file(config_file)
         
         try:
             instruction = InstallationInstruction.from_file(config_file)
-            options = _get_flags_and_options(instruction.schema, getattr(instruction, "misc", None),inst=True)
+            options = _get_flags_and_options(instruction.schema, getattr(instruction, "misc", None), inst=True)
         except Exception as e:
             _red_echo("Error (parsing options from schema): " + str(e))
             exit(1)
@@ -74,23 +97,23 @@ class ConfigReadCommand(click.MultiCommand):
 
         def callback(**kwargs):
             trained_pipelines = kwargs.get('trained_pipelines')
-            cuda_runtime = kwargs.get('cuda_runtime')  # Ensure you capture cuda_runtime
-                
+            cuda_runtime = kwargs.get('cuda_runtime')  # Capture cuda_runtime
+            
             # Additional handling for trained_pipelines if necessary
             if trained_pipelines:
                 click.echo(f"Selected trained pipelines: {', '.join(trained_pipelines)}")
             
-            inst = instruction.validate_and_render(kwargs)
-            if inst[1]:
-                _red_echo("Error: " + "\n".join(inst[0]))
+            inst, error_flag = instruction.validate_and_render(kwargs)
+            if error_flag:
+                _red_echo("Error: " + "\n".join(inst))
                 exit(1)
             if ctx.obj["MODE"] == "show":
-                click.echo("\n".join(inst[0]))
+                click.echo("\n".join(inst))
             elif ctx.obj["MODE"] == "install":
-                for command in inst[0]:
+                for command in inst:
                     result = run(command, shell=True, text=True, capture_output=True)
                     if result.returncode != 0:
-                        _red_echo("Installation failed with:\n" + command + "\n\n" + result.stdout + "\n" + result.stderr)
+                        _red_echo(f"Installation failed with command:\n{command}\n\nOutput:\n{result.stdout}\nErrors:\n{result.stderr}")
                         exit(1)
                     else:
                         if ctx.obj["INSTALL_VERBOSE"]:

@@ -21,7 +21,6 @@ from jinja2.exceptions import UndefinedError
 
 import installation_instruction.helpers as helpers
 
-
 RAISE_JINJA_MACRO_STRING = """
 {% macro raise(error) %}
     {{ None['[ERROR] ' ~ error][0] }}
@@ -41,7 +40,6 @@ MACROS = [
     COMMAND_JINJA_MACRO_STRING,
 ]
 
-
 class InstallationInstruction:
     """
     Class holding schema and template for validating and rendering installation instruction.
@@ -51,15 +49,19 @@ class InstallationInstruction:
         """
         Validates user input against schema and renders with the template.
         Returns installation instructions and False. 
-        If jinja macro `raise` is called returns error message and True.
+        If Jinja macro `raise` is called, returns error message and True.
 
-        :param input: Enduser input.
-        :ptype input: dict
-        :return: Returns instructions as string and False. Or Error and True.
-        :rtpye: (str, bool)
-        :raise Exception: If schema or user input is invalid.
+        :param input: End-user input.
+        :type input: dict
+        :return: Returns instructions as a list of strings and a boolean flag.
+        :rtype: (list[str], bool)
+        :raises Exception: If schema or user input is invalid.
         """
-        validate(input, self.schema)
+        try:
+            validate(instance=input, schema=self.schema)
+        except exceptions.ValidationError as e:
+            return ([f"Schema validation error: {e.message}"], True)
+        
         try:
             instruction = self.template.render(input)
         except UndefinedError as e:
@@ -125,20 +127,20 @@ class InstallationInstruction:
 
     def __init__(self, config: str) -> None:
         """
-        Returns `InstallationInstruction` from config string. This also adds raise macro to template.
+        Initializes the `InstallationInstruction` from a config string. This also adds raise macro to template.
 
-        :param config: Config string with schema and template seperated by delimiter.
-        :raise Exception: If schema part of config is neither valid json nor valid yaml.
-        :raise Exception: If no delimiter is found.
+        :param config: Config string with schema and template separated by delimiter.
+        :raises Exception: If schema part of config is neither valid JSON nor valid YAML.
+        :raises Exception: If no delimiter is found.
         """
         (schema_str, template) = helpers._split_string_at_delimiter(config)
         try:
-            schema = json.load(schema_str)
-        except:
+            schema = json.loads(schema_str)
+        except json.JSONDecodeError:
             try:
                 schema = safe_load(schema_str)
             except:
-                raise Exception("Schema is neither a valid json nor a valid yaml.")
+                raise Exception("Schema is neither a valid JSON nor a valid YAML.")
             
         if "schema" in schema:
             self.schema = schema["schema"]
@@ -150,9 +152,9 @@ class InstallationInstruction:
         try:
             Draft202012Validator.check_schema(self.schema)
         except exceptions.SchemaError as e:
-            raise Exception(f"The given schema file is not a valid json schema.\n\n{e}")
+            raise Exception(f"The given schema file is not a valid JSON schema.\n\n{e}")
+        
         self.template = helpers._load_template_from_string("".join(MACROS)  + template)
-
 
     @classmethod
     def from_file(cls, path: str):
@@ -160,7 +162,7 @@ class InstallationInstruction:
         Returns class initialized via config file from path.
 
         :param path: Path to config file.
-        :ptype path: str
+        :type path: str
         :return: InstallationInstruction class
         :rtype: InstallationInstruction
         """
