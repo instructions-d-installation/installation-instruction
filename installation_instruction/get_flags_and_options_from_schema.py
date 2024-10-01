@@ -15,6 +15,12 @@
 
 import click
 from click import Option, Choice
+from os.path import isfile
+import os
+import click
+import json
+import platformdirs
+
 
 SCHEMA_TO_CLICK_TYPE_MAPPING = {
     "string": click.STRING,
@@ -165,7 +171,5 @@ def handle_conditions(ctx, param, value):
     for k, v in ctx.params.items():
         if isinstance(v, tuple):
             ctx.params[k] = list(v)
-
-    # Additional custom validation can be added here if needed
 
     return value
