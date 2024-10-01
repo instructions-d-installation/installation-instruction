@@ -16,7 +16,7 @@ schema:
 
     platform:
       title: Platform
-      description: platform
+      description: Specify your system platform
       enum:
         - x86
         - arm 
@@ -42,7 +42,7 @@ schema:
 
     configuration:
       title: Configuration
-      description: the configuration you have
+      description: The configuration you have
       enum:
         - virtual-env
         - train-models
@@ -50,7 +50,7 @@ schema:
     
     trained-pipelines: 
       title: Trained Pipelines
-      description: The language package you want to include
+      description: The language packages you want to include
       type: array
       items:
         type: string
@@ -85,13 +85,13 @@ schema:
   allOf:      
     - if:
         properties:
-          trained_pipelines:
+          trained-pipelines:
             minItems: 1
       then: 
         properties:   
           pipeline: 
-            title: Select pipeline for
-            description: Select pipeline for -
+            title: Select Pipeline
+            description: Select the pipeline optimization strategy
             enum: 
               - efficiency
               - accuracy
@@ -104,7 +104,9 @@ schema:
             const: gpu
       then:
         properties:
-          cuda_runtime:
+          cuda-runtime:
+            title: CUDA Runtime Version
+            description: Specify the CUDA runtime version you want to use
             enum:
               - CUDA 8.0
               - CUDA 9.0
@@ -117,7 +119,9 @@ schema:
               - CUDA 11.1
               - CUDA 11.2 - 11.x
               - CUDA 12.x
-            
+            type: string
+            default: CUDA 10.0
+                
   required: 
     - os
     - platform
@@ -138,6 +142,7 @@ pretty:
   train_models: train models
   efficiency: efficiency
   accuracy: accuracy
+  cuda_runtime: CUDA Runtime Version  
 
 ---------
 {% macro trained_pipeline_command (os, platform, package, pipeline)  %}
@@ -274,16 +279,16 @@ pretty:
 {% endmacro %}
 
 {% if package == "pip" %}
-  {%if configuration == true %}
+  {% if configuration == true %}
     {{ virtual_env_command(os, platform, package) }}
-  {%endif%}
+  {% endif %}
 
   pip install -U pip setuptools wheel &&
   pip install -U spacy
 
   {% if trained_pipelines == true %}
     {{ trained_pipeline_command(os, platform, package, pipeline) }}
-  {%endif%}
+  {% endif %}
 
   {% if hardware == "cpu" %}
     {% if os == "mac" %}
@@ -292,7 +297,9 @@ pretty:
       {% endif %}
     {% endif %}
   {% elif hardware == "gpu" %}
-    {{cuda_runtime}}
+    {% if cuda_runtime %}
+      {{ cuda_runtime }}
+    {% endif %}
     {% if platform == "arm" %}
       {% if os == "mac" %}
         -'[apple]'
@@ -302,25 +309,27 @@ pretty:
 
 {% elif package == "conda" %}
 
-  {%if configuration == true %}
+  {% if configuration == true %}
     {{ virtual_env_command(os, platform, package) }}
-  {%endif%}
+  {% endif %}
 
   conda install -c conda-forge spacy
 
   {% if trained_pipelines == true %}
     {{ trained_pipeline_command(os, platform, package, pipeline) }}
-  {%endif%}
+  {% endif %}
 
   {% if hardware == "gpu" %}
-    conda install -c conda-forge cupy
+    {% if cuda_runtime %}
+      conda install -c conda-forge cupy
+    {% endif %}
   {% endif %}
 
 {% elif package == "source" %}
 
-  {%if configuration == true %}
+  {% if configuration == true %}
     {{ virtual_env_command(os, platform, package) }}
-  {%endif%}
+  {% endif %}
 
   pip install -U pip setuptools wheel &&
   git clone https://github.com/explosion/spaCy &&
@@ -330,16 +339,18 @@ pretty:
 
   {% if trained_pipelines == true %}
     {{ trained_pipeline_command(os, platform, package, pipeline) }}
-  {%endif%}
+  {% endif %}
   
   {% if hardware == "gpu" %}
     {% if platform == "x86" %}
-      {{cuda_runtime}}
+      {% if cuda_runtime %}
+        {{ cuda_runtime }}
+      {% endif %}
     {% elif platform == "arm" %}
       {% if os == "windows" %}
         '[]'
       {% elif os == "linux" %}
-        -'.{{cuda_runtime}}'
+        -'.{{ cuda_runtime }}'
       {% elif os == "mac" %}
         '.[apple]'
       {% endif %}

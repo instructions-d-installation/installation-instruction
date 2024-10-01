@@ -19,7 +19,7 @@ import platform
 import click
 
 from .__init__ import __version__, __description__, __repository__, __author__, __author_email__, __license__
-from .get_flags_and_options_from_schema import _get_flags_and_options
+from .get_flags_and_options_from_schema import _get_flags_and_options  
 from .installation_instruction import InstallationInstruction
 from .helpers import _make_pretty_print_line_breaks, _red_echo, _get_install_config_file
 
@@ -79,7 +79,7 @@ class ConfigReadCommand(click.MultiCommand):
             _red_echo("Error (parsing options from schema): " + str(e))
             exit(1)
 
-        #set new default value for __os__ Option
+        # Set new default value for __os__ Option
         for option in options:
             if '__os__' in option.name:
                 system_default = _get_system(option.type.choices)
@@ -88,7 +88,8 @@ class ConfigReadCommand(click.MultiCommand):
 
         def callback(**kwargs):
             trained_pipelines = kwargs.get('trained_pipelines')
-            
+            cuda_runtime = kwargs.get('cuda_runtime')  # Ensure you capture cuda_runtime
+                
             # Additional handling for trained_pipelines if necessary
             if trained_pipelines:
                 click.echo(f"Selected trained pipelines: {', '.join(trained_pipelines)}")
@@ -155,4 +156,3 @@ main.add_command(install)
 
 if __name__ == "__main__":
     main()
-    
