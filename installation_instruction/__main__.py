@@ -100,8 +100,8 @@ class ConfigReadCommand(click.MultiCommand):
             cuda_runtime = kwargs.get('cuda_runtime')  # Capture cuda_runtime
             
             # Additional handling for trained_pipelines if necessary
-            if trained_pipelines:
-                click.echo(f"Selected trained pipelines: {', '.join(trained_pipelines)}")
+            #if trained_pipelines:
+            #    click.echo(f"Selected trained pipelines: {', '.join(trained_pipelines)}")
             
             inst, error_flag = instruction.validate_and_render(kwargs)
             if error_flag:

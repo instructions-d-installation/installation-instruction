@@ -21,7 +21,6 @@ import click
 import json
 import platformdirs
 
-
 SCHEMA_TO_CLICK_TYPE_MAPPING = {
     "string": click.STRING,
     "integer": click.INT,
@@ -29,7 +28,7 @@ SCHEMA_TO_CLICK_TYPE_MAPPING = {
     "boolean": click.BOOL,
 }
 
-def _parse_option(key, value, required_args, description, is_conditional=False):
+def _parse_option(key, value, required_args, description, is_conditional):
     """
     Helper function to parse individual options, including conditional ones.
     """
@@ -39,13 +38,15 @@ def _parse_option(key, value, required_args, description, is_conditional=False):
     option_description = value.get('description', '') or description.get(key, "")
     option_default = value.get('default', None)
 
+    multiple = False
+
     if "enum" in value:
-        # Preserve spaces in enum choices by not replacing them with underscores
         enum_choices = value["enum"]
         option_type = Choice(enum_choices, case_sensitive=False)
     elif option_type == 'array' and value.get('items', {}).get('enum'):
         choice_enum = value['items']['enum']
-        option_type = Choice(choice_enum, case_sensitive=False, multiple=True)
+        option_type = Choice(choice_enum, case_sensitive=False)
+        multiple = True
         if option_default is None:
             option_default = ()
         elif isinstance(option_default, list):
@@ -73,6 +74,7 @@ def _parse_option(key, value, required_args, description, is_conditional=False):
         show_default=True,
         show_choices=True,
         is_flag=is_flag,
+        multiple= multiple
     )
 
 def extract_options(schema, required_args, description, is_conditional=False, options_dict=None):
@@ -83,7 +85,7 @@ def extract_options(schema, required_args, description, is_conditional=False, op
         options_dict = {}
     # Update the required_args with the required fields from this schema
     current_required_args = required_args | set(schema.get('required', []))
-
+    print(schema, "------------------")
     if 'properties' in schema:
         for key, value in schema['properties'].items():
             option = _parse_option(key, value, current_required_args, description, is_conditional)
