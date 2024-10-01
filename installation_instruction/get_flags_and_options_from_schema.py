@@ -24,6 +24,14 @@ SCHEMA_TO_CLICK_TYPE_MAPPING = {
 }
 
 def _get_flags_and_options(schema: dict, misc: dict = None) -> list[Option]:
+    """
+    Generates Click flags and options from a JSON schema.
+    :param schema: Schema which contains the options.
+    :param misc: Additional descriptions and pretty print names nested.
+    :type schema: dict
+    :return: List of all the clickoptions from the schema.
+    :rtype: list[Option]
+    """
     options = []
     required_args = set(schema.get('required', []))
 

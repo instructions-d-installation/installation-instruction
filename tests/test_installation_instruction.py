@@ -19,9 +19,7 @@ def test_validate_and_render(user_input_tests):
         expected_flag = expected[1] == "True" if len(expected) > 1 else False
 
         assert (expected_command, expected_flag) == good_installation_instruction
-        #assert (expected[0],expected[1]=="True") == good_installation_instruction
         
-
 def test_parse_schema(test_data_flags_options_config_string_with_empty_template):
     config = test_data_flags_options_config_string_with_empty_template
     install = InstallationInstruction(config)
