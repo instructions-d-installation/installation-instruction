@@ -104,7 +104,7 @@ schema:
             const: gpu
       then:
         properties:
-          cuda_runtime:
+          cuda-runtime:
             enum:
               - CUDA 8.0
               - CUDA 9.0
@@ -344,9 +344,7 @@ pretty:
       {% set _ = commands.append("pip install spacy[apple]") %}
     {% endif %}
   {% endif %}
-
-  # Finalize installation
-  {% set _ = commands.append('echo "Spacy installation completed successfully."') %}
+  
 {% elif package == "conda" %}
   {% if configuration %}
     {% set env_commands = virtual_env_command(os, platform, package, configuration).split('&&') %}
@@ -369,8 +367,7 @@ pretty:
     {% set _ = commands.append("conda install -c conda-forge cupy -y") %}
   {% endif %}
 
-  # Finalize installation
-  {% set _ = commands.append('echo "Spacy installation completed successfully."') %}
+  
 {% elif package == "source" %}
   {% if configuration %}
     {% set env_commands = virtual_env_command(os, platform, package, configuration).split('&&') %}
@@ -405,9 +402,7 @@ pretty:
       {% endif %}
     {% endif %}
   {% endif %}
-
-  # Finalize installation
-  {% set _ = commands.append('echo "Spacy installation from source completed successfully."') %}
+   
 {% endif %}
 
 {{ commands | join(' && ') }}
