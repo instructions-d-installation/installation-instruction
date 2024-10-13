@@ -87,11 +87,6 @@ class ConfigReadCommand(click.MultiCommand):
                     option.default = system_default
 
         def callback(**kwargs):
-            trained_pipelines = kwargs.get('trained_pipelines')
-            
-            # Additional handling for trained_pipelines if necessary
-            if trained_pipelines:
-                click.echo(f"Selected trained pipelines: {', '.join(trained_pipelines)}")
             
             inst = instruction.validate_and_render(kwargs)
             if inst[1]:
