@@ -77,7 +77,6 @@ class InstallationInstruction:
 
         pretty = self.misc.get("pretty", {})
         description = self.misc.get("description", {})
-        item = self.misc.get("item", [])
 
         for key, value in self.schema.get('properties', {}).items():
 
