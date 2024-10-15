@@ -3,7 +3,7 @@
         "input":
             {
                 "build": "preview",
-                "os": "win",
+                "__os__": "windows",
                 "package": "pip",
                 "compute_platform": "ro60"
             },
@@ -38,7 +38,7 @@
         "input":
         {
             "build": "preview",
-            "os": "win",
+            "__os__": "windows",
             "package": "piiip",
             "compute_platform": "ro60"
         },
