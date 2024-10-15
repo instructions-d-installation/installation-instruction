@@ -13,14 +13,13 @@ schema:
         - stable
         - preview
       default: stable
-    os:
+    __os__:
       title: Operating System
       description: The operating system you use.
       enum:
         - linux
-        - mac
-        - win
-      default: win
+        - macos
+        - windows
     package:
       title: Package Manager
       description: The package manager you use.
@@ -39,7 +38,7 @@ schema:
       default: cu118
   required:
     - build
-    - os
+    - __os__
     - package
     - compute_platform
   additionalProperties: false
@@ -48,8 +47,8 @@ pretty:
   stable: Stable (2.3.0)
   preview: Preview (Nightly)
   linux: Linux
-  mac: Mac
-  win: Windows
+  macos: Mac
+  windows: Windows
   conda: Conda
   pip: Pip
   cu118: CUDA 11.8
@@ -59,7 +58,7 @@ pretty:
 
 ------
 
-{# `command` is macro which simply removes line breaks. #}
+{# command is macro which simply removes line breaks. #}
 {% call command() %}
 
 {# Adams spaghetti code #}
