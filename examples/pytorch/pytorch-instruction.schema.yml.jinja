@@ -65,7 +65,7 @@ pretty:
 {% if package == "conda" %}
     conda install
 
-    {% if os == "mac" %}
+    {% if __os__ == "macos" %}
         {% if compute_platform == "cpu" %}
             pytorch{{ "-nightly" if build == "preview" }}::pytorch torchvision torchaudio
         {% else %}
@@ -90,7 +90,7 @@ pretty:
 {% elif package == "pip" %}
     pip3 install {{ "--pre" if build == "preview" }} torch torchvision torchaudio
 
-    {% if os == "mac" %}
+    {% if __os__ == "macos" %}
         {{ raise("Mac does not support ROCm or CUDA!") if compute_platform != "cpu" }}
         {% if build == "preview" %}
             --index-url https://download.pytorch.org/whl/nightly/cpu
@@ -104,13 +104,13 @@ pretty:
             {% if build == "preview" %}
                 --index-url https://download.pytorch.org/whl/nightly/cu121
             {% else %}
-                {% if os == "win" %}
+                {% if __os__ == "windows" %}
                     --index-url https://download.pytorch.org/whl/cu121
                 {% endif %}
             {% endif %}
 
         {% elif compute_platform == "ro60" %}
-            {{ raise("Windows does not support ROCm!") if os != "linux" }}
+            {{ raise("Windows does not support ROCm!") if __os__ != "linux" }}
             --index-url https://download.pytorch.org/whl/{{ "nightly/" if build == "preview" }}rocm6.0
 
         {# CPU #}
@@ -118,7 +118,7 @@ pretty:
             {% if build == "preview" %}
                 --index-url https://download.pytorch.org/whl/nightly/cpu
             {% else %}
-                {% if os == "linux" %}
+                {% if __os__ == "linux" %}
                     --index-url https://download.pytorch.org/whl/cpu
                 {% endif %}
             {% endif %}
