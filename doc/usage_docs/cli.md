@@ -26,5 +26,29 @@ an url to a git repository with a config file in its root.
 
 ### `cat`
 
-`cat` prints the the entire `install.cfg` as is.
+`cat` prints the the entire `install.cfg` as output into the terminal.
+
+### `install`
+
+`install` takes the user input parmeters and installs the package with the user specifications.
+
+### `show`
+
+`show` takes the user input parmeters and prints the installation commands into the terminal without executing them.
+
+### `default`
+
+`default` is used to safe default settings specified by the user.
+
+#### `add`
+
+`add` safes and changes custom default settings of a user to a json file. 
+
+#### `list`
+
+`list` prints all the custom settings of a package in the terminal.
+
+#### `remove`
+
+`remove` removes deletes a project from the json file.
 
